@@ -1,0 +1,25 @@
+package databaseB;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+//Starts the DB B
+public class DatabaseB {
+	
+	//Maps Ingredient Name to Ingredient
+	private HashMap<String, Ingredient> inventory;
+	
+	//Ticket Queue = holds all ticket orders
+	private ArrayList<Ticket> ticketQueue;
+	
+	public DatabaseB(){
+		inventory = new HashMap<String, Ingredient>();
+		ticketQueue = new ArrayList<Ticket>();
+	}
+	
+	
+	
+	
+}

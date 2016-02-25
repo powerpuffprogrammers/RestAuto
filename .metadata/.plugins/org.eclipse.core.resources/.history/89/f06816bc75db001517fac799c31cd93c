@@ -1,0 +1,19 @@
+package databaseB;
+
+public class Ingredient {
+	private Double amountLeftInInventory;
+	private String unit;
+	private String name;
+	private Double threshold;
+	
+	public Ingredient(){
+		
+	}
+	
+	public Double checkThreshold(){
+		if(amountLeftInInventory==null || threshold==null){
+			return 0;
+		}
+		return amountLeftInInventory - threshold;
+	}
+}

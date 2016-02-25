@@ -1,0 +1,16 @@
+package dataBaseC;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+import java.sql.Time;
+
+public class Table {
+	
+	private Time timeLastSeated;
+	private int tableNumber;
+	private char status;
+	
+	public Table(){
+		
+	}
+}

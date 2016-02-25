@@ -1,0 +1,9 @@
+package databaseB;
+
+import java.util.ArrayList;
+
+public class Ticket {
+	private int tableNumber;
+	private char status;
+	private ArrayList<Dish> listOfDishes;
+}

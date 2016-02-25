@@ -1,0 +1,13 @@
+package dataBaseC;
+import java.sql.Time;
+import java.util.ArrayList;
+
+public class Table {
+	
+	Time timeLastSeated;
+	int tableNumber;
+	
+	public Table(){
+		
+	}
+}

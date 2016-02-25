@@ -1,0 +1,35 @@
+package databaseB;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import databaseB.Dish;
+import databaseB.Ingredient;
+
+//Starts the DB B
+public class DatabaseB {
+	
+	//Matches Employee ID with employee
+	private ArrayList<Employee> employeeList;
+	
+	//First String maps category (Drink, App, Entree, Dessert) to a map
+	//Inner map maps dish name to dish
+	private HashMap<String, HashMap<String,Dish>> menu;
+	
+	//Maps Ingredient Name to Ingredient
+	private HashMap<String, Ingredient> inventory;
+	
+	//Maps Ingredient Name to Ingredient
+	private HashMap<String, Ingredient> inventory;
+
+	public DatabaseB(){
+		employeeList = new ArrayList<Employee>();
+		menu = new HashMap<String, HashMap<String,Dish>>();
+	}
+	
+	public logIn(){
+		
+		
+	}
+	
+}

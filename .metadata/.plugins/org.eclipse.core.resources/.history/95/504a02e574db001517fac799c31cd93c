@@ -1,0 +1,8 @@
+package databaseB;
+
+public class Ingredient {
+	private int amount;
+	private String unit;
+	private String name;
+	private int threshold;
+}

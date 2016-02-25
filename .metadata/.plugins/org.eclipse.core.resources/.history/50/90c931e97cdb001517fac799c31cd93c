@@ -1,0 +1,41 @@
+package databaseB;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+//This guy will take care of calling decrementing
+public class Dish {
+	//Status of dish = u=unstarted, s=started, f=finished
+	private char status;
+	//Points to the dish data object that holds the name of the object and ingredients of that dish
+	private DishData dishData;
+	
+	public Dish(DishData dishData){
+		status='u';
+		this.dishData= dishData;
+	}
+	
+	//returns false if failed to change status
+	//whoever calls me must update the head chefs screen after
+	public boolean changeStatus(char newStatus){
+		if(status == 'u' && newStatus=='s'){
+			status = newStatus;
+			//decrement each ingredient
+			return true;
+			//whoever called me should check on the threshold next
+		}
+		if(status == 's' && newStatus=='u'){
+			status = newStatus;
+			//increment each ingredient
+			return true;
+		}
+		if(status == 's' && newStatus=='f'){
+			status = newStatus;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public 
+	
+}

@@ -1,0 +1,13 @@
+package databaseB;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+public class Dish {
+	//Status of dish = u=unstarted, s=started, f=finished
+	private char status;
+	private DishData dishData;
+	
+	public Dish(DishData dishData){
+		status='u';
+	}
+}

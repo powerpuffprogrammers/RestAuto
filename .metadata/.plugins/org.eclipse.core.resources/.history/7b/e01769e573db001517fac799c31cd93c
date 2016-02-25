@@ -1,0 +1,15 @@
+package databaseB;
+
+import java.util.HashMap;
+
+public class DishData {
+	//Name of the dish
+	private String name;
+	//Ingredients in the dish
+	private HashMap<String, Ingredient> listOfIngredients;
+	
+	public Dish(){
+		
+	}
+	
+}

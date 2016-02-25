@@ -1,0 +1,36 @@
+package dataBaseC;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+import java.util.Date;
+
+public class Table {
+	
+	//time table was last sat
+	private Date timeLastSeated;
+	//table number
+	private int tableNumber;
+	//status of table: r=ready, o=on check, s=seated
+	private char status;
+	//waiter who has this table
+	private String waiter;
+	//how many people can sit at this table
+	private int maxOccupancy;
+	
+	public Table(int tableNumber){
+		this.tableNumber=tableNumber;
+		status='r';
+	}
+	
+	public boolean seat(String waiter){
+		if(status!='r'){
+			return false;
+		}
+		this.waiter=waiter;
+		timeLastSeated= new Date();
+		this.status='s';
+		//updateScreen()
+		//sendServerMessage
+		return true;
+	}
+}

@@ -1,0 +1,23 @@
+package dataBaseC;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+import java.sql.Time;
+
+public class Table {
+	
+	//time table was last sat
+	private Time timeLastSeated;
+	//table number
+	private int tableNumber;
+	//status of table: r=ready, o=on check, s=seated
+	private char status;
+	//waiter who has this table
+	private String waiter;
+	
+	
+	public Table(int tableNumber){
+		this.tableNumber=tableNumber;
+		status='r';
+	}
+}
