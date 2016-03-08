@@ -1,6 +1,0 @@
-package databaseB;
-
-public class Dish {
-	private char status;
-	private DishData dishData;
-}

@@ -1,8 +1,0 @@
-package databaseB;
-
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
-
-public class Dish {
-	private char status;
-	private DishData dishData;
-}

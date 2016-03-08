@@ -11,7 +11,7 @@ public class Employee {
 	private char position;
 	
 	//Create a new employee
-	public Employee(String name, long id, char position){
+	public Employee(String name, short id, char position){
 		this.name= name;
 		this.id=id;
 		this.position=position;

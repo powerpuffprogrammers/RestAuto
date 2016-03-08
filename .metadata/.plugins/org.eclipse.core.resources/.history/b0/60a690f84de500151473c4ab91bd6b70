@@ -25,12 +25,12 @@ public class HostInterface {
 			//allTables = getMapofTablesFromDataBase();
 			readyTables = new HashMap<Integer, Table>();
 			notReadyTables =  new HashMap<Integer, Table>();
-			Iterator<Integer> it = allTables.keySet().iterator();
+			Iterator it = allTables.keySet().iterator();
 			while( it.hasNext()){
-			        Integer key= it.next();
-			        Table table = allTables.get(key);
+			        Map.Entry<Integer,Table> entry= (Entry<Integer, Table>) it.next();
+			        Table table = entry.getValue();
 			        table.setStatus('r');
-			        readyTables .put(key, table);
+			        readyTables .put(entry.getKey(), table);
 	
 			}
 	}
@@ -43,7 +43,7 @@ public class HostInterface {
 		
 		
 		
-		/*
+		
 		currTable = allTable[e.tableNumber];     // edit this to HashMap
 		char oldStatus = currTable.status;
 	    if(oldStatus==e.newstatus){
@@ -60,7 +60,6 @@ public class HostInterface {
 	    currTable.status = e.newtablestaus;        
 	   //update the screen
 		redrawHostScreen();
-		*/
 	}        
 
 

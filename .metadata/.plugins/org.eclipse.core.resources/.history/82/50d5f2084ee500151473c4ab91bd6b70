@@ -43,7 +43,7 @@ public class HostInterface {
 		
 		
 		
-		/*
+		
 		currTable = allTable[e.tableNumber];     // edit this to HashMap
 		char oldStatus = currTable.status;
 	    if(oldStatus==e.newstatus){
@@ -60,7 +60,6 @@ public class HostInterface {
 	    currTable.status = e.newtablestaus;        
 	   //update the screen
 		redrawHostScreen();
-		*/
 	}        
 
 

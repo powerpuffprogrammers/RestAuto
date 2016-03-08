@@ -1,8 +1,0 @@
-package databaseB;
-
-public class Ingredient {
-	private Double amountLeftInInventory;
-	private String unit;
-	private String name;
-	private Double threshold;
-}

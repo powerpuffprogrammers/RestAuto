@@ -48,7 +48,7 @@ public class ChefInterface {
 	}
 	
 	//To implement:
-//	public void changeDish(Dish d, char dishStatus);
+	public void changeDish(Dish d, char dishStatus);
 	
-//	public void removeIngredientToInventory(String ingredientName);
+	public void removeIngredientToInventory(String ingredientName);
 }
