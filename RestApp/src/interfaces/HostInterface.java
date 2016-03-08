@@ -17,10 +17,11 @@ public class HostInterface {
     HashMap<Integer, Table> readyTables;
     HashMap<Integer, Table> notReadyTables;
     
+    //Array list of notifications that the host screen still has to display
     ArrayList<Notification> pendingNotifications;
     
 	public HostInterface(){
-			//stuff about logging in….
+			//Code about logging in….
 			pendingNotifications = new ArrayList<Notification>();
 			//allTables = getMapofTablesFromDataBase();
 			readyTables = new HashMap<Integer, Table>();
@@ -65,15 +66,32 @@ public class HostInterface {
 
 
 //handles messages that it gets from manager or waiter
-	public void hostMessageListener(Message m){
-		
+	public void hostMessageListener(Message m){	
 		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
-			
+			String content = m.getContent();
+			//looks through the content of the message to get the table number
+			Integer tableNum = getTableNumberFromMessage(content);
+			if(tableNum!=null){
+				Table currTab =allTables.get(tableNum);
+				if(currTab!=null){
+					//if that table is seated
+					if(currTab.getStatus() == 's'){
+						//change status to on check
+						currTab.setStatus('o');
+					}
+				}		
+			}
 		}            
 		else if(m.getSenderPosition()== 'm'){//if manager sent the message = 
 			    makeNotification(m.getContent());
 		}
-	
+		redrawHostScreen();
+	}
+
+
+	private Integer getTableNumberFromMessage(String content) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	//create a notification on the hosts screen with this content
