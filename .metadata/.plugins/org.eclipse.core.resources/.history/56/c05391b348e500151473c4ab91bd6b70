@@ -1,0 +1,32 @@
+package interfaces;
+
+import java.util.HashMap;
+import java.util.Iterator;
+
+import dataBaseC.Table;
+
+public class HostInterface {
+
+	HashMap<Integer, Table> allTables;
+    HashMap<Integer, Table> readyTables;
+    HashMap<Integer, Table> notReadyTables;
+    
+	public HostInterface(){
+			//stuff about logging in….
+			//allTables = getMapofTablesFromDataBase();
+			readyTables = new HashMap<Integer, Table>();
+			notReadyTables =  new HashMap<Integer, Table>();
+			Iterator it = allTables.keySet().iterator();
+			while( it.hasNext()){
+			        Map.Entry entry= it.next();
+			        Table table = entry.getValue();
+			        table.status='r';
+			        readyTables .put(entry.getKey(), table);
+	
+			}
+	}
+
+	
+	
+	
+}

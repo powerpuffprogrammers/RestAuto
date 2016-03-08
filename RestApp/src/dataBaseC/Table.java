@@ -7,15 +7,15 @@ import java.util.Date;
 public class Table {
 	
 	//time table was last sat
-	private Date timeLastSat;
+	Date timeLastSat;
 	//table number
-	private int tableNumber;
+	int tableNumber;
 	//status of table: r=ready, o=on check, s=seated
-	private char status;
+	char status;
 	//waiter who has this table
-	private String waiter;
+	String waiter;
 	//how many people can sit at this table
-	private int maxOccupancy;
+	int maxOccupancy;
 	
 	public Table(int tableNumber, int maxOccupancy){
 		this.tableNumber=tableNumber;
@@ -64,5 +64,11 @@ public class Table {
 	
 	public int getMaxOccupancy(){
 		return maxOccupancy;
+	}
+
+	public void setStatus(char c) {
+		this.status=c;
+		return;
+		
 	}
 }

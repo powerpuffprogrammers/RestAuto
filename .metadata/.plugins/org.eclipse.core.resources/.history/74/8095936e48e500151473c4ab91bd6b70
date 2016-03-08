@@ -1,0 +1,26 @@
+package interfaces;
+
+public class HostInterface {
+
+	HashMap<Integer, Table> allTables;
+    HashMap<Integer, Table> readyTables;
+    HashMap<Integer, Table> notReadyTables;
+    
+public hostInterface(){
+    //stuff about logging in….
+allTables = getMapofTablesFromDataBase();
+readyTables = new HashMap<Integer, Table>();
+notReadyTables =  new HashMap<Integer, Table>();
+Iterator it = allTables.getKeys();
+while( it.hasNext()){
+        Map.Entry entry= it.next();
+Table table = entry.getValue();
+table.status=ready;
+        readyTables .put(entry.getKey(), table);
+    }
+}
+
+	
+	
+	
+}

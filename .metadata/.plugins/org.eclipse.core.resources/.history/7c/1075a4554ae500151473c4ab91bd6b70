@@ -1,0 +1,5 @@
+package messageController;
+
+public class Message {
+
+}

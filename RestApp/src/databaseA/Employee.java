@@ -6,7 +6,7 @@ public class Employee {
 	//Name of employee
 	private String name;
 	//Unique ID of employee
-	private short id;
+	private Long id;
 	//Char to describe employees position: w=waiter, h=host, c=chef, m=manager, o=owner
 	private char position;
 	
