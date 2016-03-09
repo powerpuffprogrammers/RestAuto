@@ -31,9 +31,6 @@ public class Table {
 		timeLastSat= new Date();
 		this.status='s';
 		return true;
-		//interface must
-		//updateScreen()
-		//sendServerMessage
 	}
 
 	//returns false if invalid status
@@ -44,6 +41,7 @@ public class Table {
 		}
 		return false;
 	}
+	
 	
 	//GETTERS
 	public Date getTimeLastSeated(){

@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import dataBaseC.Table;
 import messageController.Message;
+import messageController.RecieverInfo;
+import messageController.SenderInfo;
 
 public class HostInterface {
 
@@ -37,35 +39,46 @@ public class HostInterface {
 	}
 	
 //handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
-	public void hostEventListenter(Event e){
-		//if event is a change status button
-		
-		//if event is closing a notification
-		
-		
-		
-		/*
-		currTable = allTable[e.tableNumber];     // edit this to HashMap
-		char oldStatus = currTable.status;
-	    if(oldStatus==e.newstatus){
-	        return;
-	    }
-	    if(oldStatus == ready){ //if the table was ready and is being changed
-		    readyTables.remove(currTable);
-		    notReadyTables.add(currTable);
-	    }
-		else{
-			readyTables.remove(currTable);
-		    notReadyTables.add(currTable);
+	public void hostEventListenter(HostEvent e){
+		//if event is a seating a table
+		if(e.type == 's'){
+			Table t = allTables.get(e.idOfTableNotification);
+			if(t==null){
+				return;
+			}
+			t.seat(e.waiterName);
+			readyTables.remove(e.idOfTableNotification);
+			notReadyTables.put(e.idOfTableNotification,t);
 		}
-	    currTable.status = e.newtablestaus;        
-	   //update the screen
+		//changing status to ready
+		else if(e.type == 'r'){
+			Table t = allTables.get(e.idOfTableNotification);
+			if(t==null){
+				return;
+			}
+			t.setStatus('r');
+			notReadyTables.remove(e.idOfTableNotification);
+			readyTables.put(e.idOfTableNotification,t);
+		}
+		else if(e.type == 'n'){//if event is closing a notification
+			pendingNotifications.remove(0);
+		}
+		//if event is sending a notification to manager
+		else if(e.type == 'm'){
+			hostMessageSender(new Message(new SenderInfo('h'), new RecieverInfo('m'), "Host Stand needs Assistance."));
+		}
+		
 		redrawHostScreen();
-		*/
+		
 	}        
 
+//sends message to message sender
+private void hostMessageSender(Message message) {
+		// TODO Auto-generated method stub
+		
+	}
 
-//handles messages that it gets from manager or waiter
+	//handles messages that it gets from manager or waiter
 	public void hostMessageListener(Message m){	
 		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
 			String content = m.getContent();
