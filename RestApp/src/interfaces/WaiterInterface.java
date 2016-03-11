@@ -7,7 +7,9 @@ import databaseB.Ticket;
 
 public class WaiterInterface {
 
-	//current ticket open, null if none is open
+	/**
+	 * current ticket open, null if none is open
+	 */
 	Ticket currTicket;
 	
 	//Appetizer, Drink, 

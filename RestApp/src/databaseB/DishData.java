@@ -1,5 +1,7 @@
 package databaseB;
 
+import java.util.ArrayList;
+
 //LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
 
 import java.util.HashMap;
@@ -33,11 +35,14 @@ public class DishData {
 		return false;
 	}
 	
-	public int decrementInventory(){
-		//call decrement on each ingredient in list of ingredinets
-		//check if threshold is reached
-		//if it is return -1
-		return 0;
+	public double getAmount(String ing){
+		return amtOfIngredient.get(ing);
 	}
+
+	public String[] getListOfIngredients() {
+		// TODO Auto-generated method stub
+		return listOfIngredients.keySet().toArray(null);
+	}
+	
 	
 }

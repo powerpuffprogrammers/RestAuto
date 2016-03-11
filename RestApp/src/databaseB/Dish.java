@@ -14,15 +14,12 @@ public class Dish {
 		this.dishData= dishData;
 	}
 	
-	//returns -2 if failed to change status, returns 0 on success, 1 if low inventory
+	//returns -2 if failed to change status, returns 0 on success,
 	//whoever calls me must update the head chefs screen after
 	public int changeStatus(char newStatus){
 		if(status == 'u' && newStatus=='s'){
 			status = newStatus;
-			int k=dishData.decrementInventory();
-			//decrement each ingredient
-			return k;
-			//whoever called me should check on the threshold next
+			return 0;
 		}
 		if(status == 's' && newStatus=='u'){
 			status = newStatus;
@@ -36,6 +33,12 @@ public class Dish {
 		
 		return -2;
 	}
+
+	public DishData getDishData() {
+		// TODO Auto-generated method stub
+		return dishData;
+	}
+	
 	
 	
 }

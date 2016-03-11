@@ -1,0 +1,12 @@
+package messageController;
+
+public class RecieverInfo {
+
+	public char recieverPosition;
+	
+	public RecieverInfo(char c) {
+		recieverPosition=c;
+	}
+
+
+}
