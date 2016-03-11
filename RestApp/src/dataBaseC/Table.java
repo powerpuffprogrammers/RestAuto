@@ -10,7 +10,7 @@ public class Table {
 	Date timeLastSat;
 	//table number
 	int tableNumber;
-	//status of table: r=ready, o=on check, s=seated
+	//status of table: r=ready, p=paid, s=seated
 	char status;
 	//waiter who has this table
 	String waiter;
@@ -35,7 +35,7 @@ public class Table {
 
 	//returns false if invalid status
 	public boolean changeStatus(char status){
-		if(status=='r'||status=='o'||status=='s'){
+		if(status=='r'||status=='p'||status=='s'){
 			this.status=status;
 			return true;
 		}

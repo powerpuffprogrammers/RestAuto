@@ -14,14 +14,27 @@ public class Ticket {
 	//List of dishes on the ticket
 	private ArrayList<Dish> listOfDishes;
 	
+	//unique id of ticket
+	public long ticketNumber;
+	
 	//total price of ticket
 	public double price;
+	
+	//Counters used to figure out the status of the ticket
+	public int amountOfDishesUnstarted;
+	public int amountOfDishesStarted;
+	public int amountOfDishesFinished;
+	public int amountOfDishes;
 	
 	public Ticket(int tableNum, String waiterName, ArrayList<Dish> listOfDishes){
 		this.tableNumber=tableNum;
 		this.waiter= waiterName;
 		this.status='u';
 		this.listOfDishes= listOfDishes;
+		amountOfDishes = listOfDishes.size();
+		amountOfDishesUnstarted = listOfDishes.size();
+		amountOfDishesStarted = 0;
+		amountOfDishesFinished = 0;
 		this.price=0;
 	}
 	

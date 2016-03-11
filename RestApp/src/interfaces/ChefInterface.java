@@ -16,16 +16,30 @@ import messageController.SenderInfo;
 //Starts the DB B
 public class ChefInterface {
 	
+	//gives you the currTicketNumber you should give the next ticket created
+	static long currTicketNumber =0;
+	
 	//Maps Ingredient Name to Ingredient
 	private HashMap<String, Ingredient> inventory;
 	
+	//Ticket number to ticket
+	HashMap<Long, Ticket>ticketLookup;
+	
 	//Ticket Queue = holds all ticket orders
-	private ArrayList<Ticket> ticketQueue;
+	private ArrayList<Long> ticketQueueUnstarted;
+	private ArrayList<Long> ticketQueuesemiStarted;
+	private ArrayList<Long> ticketQueueStarted;
+	private ArrayList<Long> ticketQueueFinished;
+	
 	
 	public ChefInterface(){
 		//Pull this from SQL
 		inventory = new HashMap<String, Ingredient>();
-		ticketQueue = new ArrayList<Ticket>();
+		ticketQueueUnstarted = new ArrayList<Long>();
+		ticketQueuesemiStarted = new ArrayList<Long>();
+		ticketQueueStarted = new ArrayList<Long>();
+		ticketQueueFinished = new ArrayList<Long>();
+		ticketLookup = new HashMap<Long, Ticket>();
 	}
 	
 	//adds ingredient to inventory returns false if ingredient already exists
@@ -37,19 +51,19 @@ public class ChefInterface {
 		return true;
 	}
 	
-	
+	//This listener will be used to read incoming tickets from servers and place them on the Q
 	public void chefTicketListener(Ticket ticket){
 		if(ticket!=null){
-			ticketQueue.add(ticket);
+			//set up the index for this ticket
+			ticket.ticketNumber = currTicketNumber;
+			//add the ticket to the end of the unstarted list since it is unstarted
+			ticketQueueUnstarted.add(currTicketNumber);
+			ticketLookup.put(currTicketNumber, ticket);
+			currTicketNumber++;
 		}
 	}
-
-	public void orderTicketQ(){
-		//put it in order
-		//updateScreen()
-	}
 	
-//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
+	//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
 	public void chefEventListenter(ChefEvent e){
 		//if event is changing status of dish
 		if(e.type == 's'){
@@ -61,7 +75,8 @@ public class ChefInterface {
 		}
 		//if event is opening a ticket
 		else if(e.type == 'o'){
-			
+			//change screen type to show current ticket
+			showTicketOnScreen(e.ticketNumber);
 		}
 		//if event is sending a notification to manager
 		else if(e.type == 'm'){

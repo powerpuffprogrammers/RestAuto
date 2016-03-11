@@ -1,11 +1,8 @@
 package interfaces;
 
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import dataBaseC.Table;
 import messageController.Message;
@@ -14,31 +11,39 @@ import messageController.SenderInfo;
 
 public class HostInterface {
 
-	//Hashmaps link integer (table #) to its table object
-	HashMap<Integer, Table> allTables;
-    HashMap<Integer, Table> readyTables;
-    HashMap<Integer, Table> notReadyTables;
-    
-    //Array list of notifications that the host screen still has to display
-    ArrayList<Notification> pendingNotifications;
+	//Hashmap links integer (table #) to its table object - holds all the tables in the restaurant
+	HashMap<Integer, Table> allTables; 
+	
+	//list of all the ready tables in order they will be displayed
+	ArrayList< Integer> readyTables; 
+	//list of tables that are either seated 
+	ArrayList< Integer> seatedTables;
+	//list of tables that need to be cleaned
+	ArrayList< Integer> paidTables;
+	
+	
+	//Array list of notifications that the host screen still has to display
+	 ArrayList<Notification> pendingNotifications;
+
     
 	public HostInterface(){
-			//Code about logging in….
-			pendingNotifications = new ArrayList<Notification>();
-			//allTables = getMapofTablesFromDataBase();
-			readyTables = new HashMap<Integer, Table>();
-			notReadyTables =  new HashMap<Integer, Table>();
-			Iterator<Integer> it = allTables.keySet().iterator();
-			while( it.hasNext()){
-			        Integer key= it.next();
-			        Table table = allTables.get(key);
-			        table.setStatus('r');
-			        readyTables .put(key, table);
-	
-			}
+		//Code about logging in….
+		pendingNotifications = new ArrayList<Notification>();
+		//allTables = getMapofTablesFromDataBase();
+		readyTables = new ArrayList<Integer>();
+		seatedTables = new ArrayList<Integer>();
+		paidTables = new ArrayList<Integer>();
+		
+		Iterator<Integer> it = allTables.keySet().iterator();
+		while( it.hasNext()){
+			Integer key= it.next();
+			Table table = allTables.get(key);
+			table.setStatus('r');
+			readyTables.add(key);
+		}
 	}
 	
-//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
+	//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
 	public void hostEventListenter(HostEvent e){
 		//if event is a seating a table
 		if(e.type == 's'){
@@ -47,8 +52,8 @@ public class HostInterface {
 				return;
 			}
 			t.seat(e.waiterName);
-			readyTables.remove(e.idOfTableNotification);
-			notReadyTables.put(e.idOfTableNotification,t);
+			readyTables.remove(readyTables.indexOf(e.idOfTableNotification));
+			seatedTables.add(e.idOfTableNotification);
 		}
 		//changing status to ready
 		else if(e.type == 'r'){
@@ -57,8 +62,8 @@ public class HostInterface {
 				return;
 			}
 			t.setStatus('r');
-			notReadyTables.remove(e.idOfTableNotification);
-			readyTables.put(e.idOfTableNotification,t);
+			paidTables.remove(paidTables.indexOf(e.idOfTableNotification));
+			readyTables.add(e.idOfTableNotification);
 		}
 		else if(e.type == 'n'){//if event is closing a notification
 			pendingNotifications.remove(0);
@@ -72,13 +77,13 @@ public class HostInterface {
 		
 	}        
 
-//sends message to message sender
-private void hostMessageSender(Message message) {
+	//sends message to message sender
+	private void hostMessageSender(Message message) {
 		// TODO Auto-generated method stub
 		
 	}
 
-//handles messages that it gets from manager or waiter
+	//handles messages that it gets from manager or waiter
 	public void hostMessageListener(Message m){	
 		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
 			String content = m.getContent();
@@ -89,14 +94,17 @@ private void hostMessageSender(Message message) {
 				if(currTab!=null){
 					//if that table is seated
 					if(currTab.getStatus() == 's'){
-						//change status to on check
-						currTab.setStatus('o');
+						//change status to paid
+						currTab.setStatus('p');
+						seatedTables.remove(seatedTables.indexOf(tableNum));
+						paidTables.add(tableNum);
+						
 					}
 				}		
 			}
 		}            
 		else if(m.getSenderPosition()== 'm'){//if manager sent the message = 
-			    makeNotification(m.getContent());
+		    makeNotification(m.getContent());
 		}
 		redrawHostScreen();
 	}

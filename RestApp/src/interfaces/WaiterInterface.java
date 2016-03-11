@@ -45,9 +45,9 @@ public class WaiterInterface {
 	    else if(e.type== 'r'){
 	        double p = getPriceOfDish(e.dishName, e.dishType);
 	        if(p>=0){
-            	 currTicket.price = currTicket.price -p;
-            	 removeDishFromTicket(e.dishName, e.dishType);
-            }
+	        	 currTicket.price = currTicket.price -p;
+	        	 removeDishFromTicket(e.dishName, e.dishType);
+	        }
 	    }
 		redrawScreen();
 	}
