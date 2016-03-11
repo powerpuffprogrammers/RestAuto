@@ -78,7 +78,7 @@ private void hostMessageSender(Message message) {
 		
 	}
 
-	//handles messages that it gets from manager or waiter
+//handles messages that it gets from manager or waiter
 	public void hostMessageListener(Message m){	
 		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
 			String content = m.getContent();

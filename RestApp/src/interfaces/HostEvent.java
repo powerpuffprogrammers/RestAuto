@@ -1,8 +1,6 @@
 package interfaces;
 
-import java.awt.Event;
-
-public class HostEvent extends Event {
+public class HostEvent {
 	
 	//Gives the type of event that host initiated
 	//Changing status of table to ready = r
@@ -17,10 +15,6 @@ public class HostEvent extends Event {
 	//Waiter name is optional and is used for seating table events
 	String waiterName;
 	
-	public HostEvent(Object target, int id, Object arg) {
-		super(target, id, arg);
-		// TODO Auto-generated constructor stub
-	}
 	
 	public HostEvent(char type, int id, String waiter) {
 		this.type=type;
