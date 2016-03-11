@@ -38,8 +38,22 @@ public class Ticket {
 		this.price=0;
 	}
 	
-	public void updateStatus(){
+	/**
+	 * Looks through the dishes of the ticket and updates the status of the ticket accordingly
+	 * @return old status of ticket
+	 */
+	public char updateStatus(){
 		//update the status of the ticket using the statuses of all the dishes
+		char oldstatus = status;
+		//change status here
+		
+		
+		return oldstatus;
+	}
+
+	public char getStatus() {
+		// TODO Auto-generated method stub
+		return status;
 	}
 	
 	//GETTERS
