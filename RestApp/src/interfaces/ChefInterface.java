@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import dataBaseC.Table;
 import databaseB.Dish;
+import databaseB.DishData;
 import databaseB.Ingredient;
 import databaseB.Ticket;
 import messageController.Message;
@@ -71,6 +72,10 @@ public class ChefInterface {
 		//if event is changing status of dish
 		if(e.type == 's'){
 			e.dish.changeStatus(e.newStatusOfDish);
+			if(e.newStatusOfDish == 's'){
+				decrementInventoryForDish(e.dish);
+			}
+			
 			Ticket t = ticketLookup.get(e.ticketNumber);
 			char oldstatus = t.updateStatus();
 			if( t.getStatus() != oldstatus ){//if the ticket changed its status
@@ -101,6 +106,21 @@ public class ChefInterface {
 		redrawChefScreen();
 		
 	}        
+
+	/**
+	 * decrements each item in the dish's inventory amount by the proper amount for this dish
+	 * @param dish
+	 */
+	private void decrementInventoryForDish(Dish dish) {
+			DishData d= dish.getDishData();
+			String[] ingredients= d.getListOfIngredients();
+			for(int i=0; i<ingredients.length; i++){
+				//decrement each ingredient of this dish in the inventory
+				inventory.get(ingredients[i]).decrementAmountBy(d.getAmount(ingredients[i]));
+			}
+			
+		}
+	
 
 	/**
 	 * Changes the list that the ticket is on. ie: takes ticket off of unstarted and adds it to semi started
