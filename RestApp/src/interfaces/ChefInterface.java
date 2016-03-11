@@ -63,32 +63,85 @@ public class ChefInterface {
 		}
 	}
 	
-	//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
+		/**
+	 * handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
+	 * @param e = chef event = holds all info for button pushed
+	 */
 	public void chefEventListenter(ChefEvent e){
 		//if event is changing status of dish
 		if(e.type == 's'){
+			e.dish.changeStatus(e.newStatusOfDish);
+			Ticket t = ticketLookup.get(e.ticketNumber);
+			char oldstatus = t.updateStatus();
+			if( t.getStatus() != oldstatus ){//if the ticket changed its status
+				if(t.getStatus() == 'f'){ //if the ticket is finished
+					//send a message to the server to let them know it is ready
+					chefMessageSender(new Message(new SenderInfo('c'), new RecieverInfo('s'), "Hot Food."));
+				}
+				changeTicketLocation(oldstatus, t);
+			}
 			
 		}
 		//if event is hitting back button
 		else if(e.type == 'b'){
-			
+			//move back a screen
 		}
 		//if event is opening a ticket
 		else if(e.type == 'o'){
 			//change screen type to show current ticket
-			showTicketOnScreen(e.ticketNumber);
+			//showTicketOnScreen(e.ticketNumber);
 		}
-		//if event is sending a notification to manager
+		//if event is pressing get manager button -> sending a notification to manager
 		else if(e.type == 'm'){
-			chefMessageListener(new Message(new SenderInfo('c'), new RecieverInfo('m'), "Chef needs Assistance."));
+			chefMessageSender(new Message(new SenderInfo('c'), new RecieverInfo('m'), "Chef needs Assistance."));
 		}
-		
+		else if(e.type == 'd'){ //delete a ticket because chef signifies that it was picked up
+			ticketQueueFinished.remove(ticketQueueFinished.indexOf(e.ticketNumber));
+		}
 		redrawChefScreen();
 		
 	}        
 
+	/**
+	 * Changes the list that the ticket is on. ie: takes ticket off of unstarted and adds it to semi started
+	 * @param oldstatus
+	 * @param t
+	 */
+	private void changeTicketLocation(char oldstatus, Ticket t) {
+		if(oldstatus == 'u'){
+			ticketQueueUnstarted.remove(ticketQueueUnstarted.indexOf(t.ticketNumber));
+		}
+		else if(oldstatus=='s'){
+			ticketQueuesemiStarted.remove(ticketQueuesemiStarted.indexOf(t.ticketNumber));
+		}
+		else if(oldstatus =='S'){
+			ticketQueueStarted.remove(ticketQueueStarted.indexOf(t.ticketNumber));
+		}
+		else{//finished
+			ticketQueueFinished.remove(ticketQueueFinished.indexOf(t.ticketNumber));
+		}
+		
+		char newStatus = t.getStatus();
+		if(newStatus == 'u'){
+			ticketQueueUnstarted.add(t.ticketNumber);
+		}
+		else if(newStatus=='s'){
+			ticketQueuesemiStarted.add(t.ticketNumber);
+		}
+		else if(newStatus =='S'){
+			ticketQueueStarted.add(t.ticketNumber);
+		}
+		else{//finished
+			ticketQueueFinished.add(t.ticketNumber);
+		}
+	}
 
-//handles messages that it gets from manager or waiter
+	private void chefMessageSender(Message message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//handles messages that it gets from manager or waiter
 	public void chefMessageListener(Message m){	
 		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
 			
