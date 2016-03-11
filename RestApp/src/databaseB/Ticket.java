@@ -14,11 +14,15 @@ public class Ticket {
 	//List of dishes on the ticket
 	private ArrayList<Dish> listOfDishes;
 	
+	//total price of ticket
+	public double price;
+	
 	public Ticket(int tableNum, String waiterName, ArrayList<Dish> listOfDishes){
 		this.tableNumber=tableNum;
 		this.waiter= waiterName;
 		this.status='u';
 		this.listOfDishes= listOfDishes;
+		this.price=0;
 	}
 	
 	public void updateStatus(){

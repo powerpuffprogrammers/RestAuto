@@ -17,6 +17,8 @@ public class DishData {
 	//amount of each Ingredient in the dish
 	private HashMap<String, Double> amtOfIngredient;
 	
+	public double price;
+	
 	public DishData(String dishName){
 		this.name = dishName;
 		this.listOfIngredients= new HashMap<String, Ingredient>();
