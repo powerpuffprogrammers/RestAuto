@@ -1,7 +1,0 @@
-package interfaces;
-
-import java.awt.Event;
-
-public class HostEvent extends Event {
-
-}

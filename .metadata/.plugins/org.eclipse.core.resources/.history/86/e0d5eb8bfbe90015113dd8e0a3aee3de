@@ -1,7 +1,0 @@
-package loggingIn;
-
-import javax.swing.JPanel;
-
-public class LogInScreen extends JPanel{
-
-}
