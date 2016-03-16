@@ -117,3 +117,31 @@ Caused by: java.io.IOException: The process cannot access the file because anoth
 	at org.eclipse.jgit.internal.storage.file.ObjectDirectoryInserter.insert(ObjectDirectoryInserter.java:103)
 	at org.eclipse.jgit.api.AddCommand.call(AddCommand.java:187)
 	... 7 more
+!SESSION 2016-03-16 18:34:51.837 -----------------------------------------------
+eclipse.buildId=4.5.1.M20150904-0015
+java.version=1.8.0_65
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.core.jobs 4 2 2016-03-16 18:38:53.992
+!MESSAGE An internal error occurred during: "Resetting to HEAD".
+!STACK 0
+org.eclipse.jgit.api.errors.JGitInternalException: Exception caught during execution of reset command. Could not rename file C:\Users\cms17\Desktop\RestAuto\.metadata\.plugins\org.eclipse.m2e.logback.configuration\._0.log8239990480122242935.tmp to C:\Users\cms17\Desktop\RestAuto\.metadata\.plugins\org.eclipse.m2e.logback.configuration\0.log
+	at org.eclipse.jgit.api.ResetCommand.call(ResetCommand.java:230)
+	at org.eclipse.egit.core.op.ResetOperation.reset(ResetOperation.java:100)
+	at org.eclipse.egit.core.op.ResetOperation.access$0(ResetOperation.java:86)
+	at org.eclipse.egit.core.op.ResetOperation$1.run(ResetOperation.java:75)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2241)
+	at org.eclipse.egit.core.op.ResetOperation.execute(ResetOperation.java:79)
+	at org.eclipse.egit.core.internal.job.JobUtil$2.runInWorkspace(JobUtil.java:105)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:39)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+Caused by: java.io.IOException: Could not rename file C:\Users\cms17\Desktop\RestAuto\.metadata\.plugins\org.eclipse.m2e.logback.configuration\._0.log8239990480122242935.tmp to C:\Users\cms17\Desktop\RestAuto\.metadata\.plugins\org.eclipse.m2e.logback.configuration\0.log
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkoutEntry(DirCacheCheckout.java:1188)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:450)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:396)
+	at org.eclipse.jgit.api.ResetCommand.checkoutIndex(ResetCommand.java:386)
+	at org.eclipse.jgit.api.ResetCommand.call(ResetCommand.java:203)
+	... 8 more

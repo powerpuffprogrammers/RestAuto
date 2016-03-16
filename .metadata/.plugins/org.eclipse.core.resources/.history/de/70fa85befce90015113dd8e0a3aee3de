@@ -1,0 +1,29 @@
+package loggingIn;
+
+import javax.swing.JFrame;
+
+public class TabletApp {
+	public static void main(String[] args) {
+		
+		//GUI stuff
+		JFrame frame= new JFrame("SWE");
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LogInScreen pan1= new LogInScreen();
+		frame.setContentPane(pan1);
+		frame.pack();
+		while(true){
+			while('0'==pan1.loggedIn){}
+			//show the appropriate screen - waiter,chef
+			
+			frame.setContentPane(pan2);
+			
+			while('0'!=pan2.loggedIn){}
+			//show screen 1 again
+			pan1.loggedIn='0';
+			frame.setContentPane(pan1);
+		}
+		
+		
+	}
+}

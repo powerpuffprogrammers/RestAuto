@@ -1,0 +1,57 @@
+package messageController;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import configuration.Configure;
+import databaseB.Dish;
+
+/**
+ * Starts the Message Controller - will handle ticket sends and message sends between tablets
+ * @author cms17
+ *
+ */
+public class MessageController {
+	
+	private final static int portNumber = Configure.getPortNumber("MessageController");
+	
+
+	//Message Controller fields:
+	//List of waiters logged in
+	ArrayList<Socket> waiters;
+	//List of Hosts logged in
+	ArrayList<Socket> hosts;
+	//List of chefs logged in
+	ArrayList<Socket> chefs;
+	//list of managers logged in
+	ArrayList<Socket> managers;
+	
+
+	
+	public static void main(String[] args){
+		
+		try {
+			ServerSocket server = new ServerSocket(portNumber);
+			
+			while(true){
+				Socket listener = server.accept();
+				Thread t= new MessageControllerHandler(listener);
+				t.start();
+			}
+		} catch (Exception e) {
+			System.out.println("ERROR: FAILED TO START SERVER.");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+}

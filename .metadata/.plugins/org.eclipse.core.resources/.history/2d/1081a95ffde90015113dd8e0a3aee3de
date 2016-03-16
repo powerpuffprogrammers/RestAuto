@@ -1,0 +1,41 @@
+package loggingIn;
+
+import javax.swing.JFrame;
+
+import interfaces.ChefInterface;
+import interfaces.HostInterface;
+import interfaces.WaiterInterface;
+
+public class TabletApp {
+	public static void main(String[] args) {
+		
+		//GUI stuff
+		JFrame frame= new JFrame("SWE");
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LogInScreen pan1= new LogInScreen();
+		frame.setContentPane(pan1);
+		frame.pack();
+		while(true){
+			while('0'==pan1.loggedIn){}
+			//calls the interface to set up the screen
+			if(pan1.loggedIn=='h'){
+				HostInterface h = new HostInterface(frame);
+			}
+			else if(pan1.loggedIn=='c'){
+				ChefInterface c = new ChefInterface(frame);
+			}
+			//else if(pan1.loggedIn=='m'){
+				//ManagerInterface h = new ManagerInterface(frame);
+			//}
+			else if(pan1.loggedIn=='w'){
+				WaiterInterface w = new WaiterInterface(frame);
+			}
+			//show screen 1 again
+			pan1.loggedIn='0';
+			frame.setContentPane(pan1);
+		}
+		
+		
+	}
+}

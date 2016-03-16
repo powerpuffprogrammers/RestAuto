@@ -1,0 +1,14 @@
+package interfaces;
+
+import javax.swing.JPanel;
+
+public class ChefPanel extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public ChefPanel() {
+
+	}
+
+}

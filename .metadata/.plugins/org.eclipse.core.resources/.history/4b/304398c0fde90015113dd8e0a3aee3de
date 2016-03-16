@@ -1,0 +1,23 @@
+package loggingIn;
+
+import javax.swing.JPanel;
+
+public class LogInScreen extends JPanel{
+
+	/**
+	 * loggedIn Tells you who you are logged in as.
+	 * '0' = no one
+	 * 'h' = host
+	 * 'm' = manager
+	 * 'w'= waiter
+	 * 'c' = chef
+	 */
+	public char loggedIn;
+
+	public LogInScreen(){
+		loggedIn='0';
+	}
+	
+	
+	
+}

@@ -1,0 +1,19 @@
+package loggingIn;
+
+import javax.swing.JFrame;
+
+public class TabletApp {
+	public static void main(String[] args) {
+		
+		//GUI stuff
+		JFrame frame= new JFrame("SWE");
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LogInScreen pan1= new LogInScreen();
+		frame.setContentPane(pan1);
+		frame.pack();
+		
+		
+		
+	}
+}

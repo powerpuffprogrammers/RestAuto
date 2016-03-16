@@ -1,0 +1,13 @@
+package loggingIn;
+
+import javax.swing.JPanel;
+
+public class LogInScreen extends JPanel{
+
+	public boolean loggedIn;
+
+	public LogInScreen(){
+		loggedIn=false;
+		
+	}
+}

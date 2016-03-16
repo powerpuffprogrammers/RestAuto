@@ -1,0 +1,3 @@
+#PortNumbers
+DatabaseAController.portNumber=8094;
+MessageController.portNumber=8095;

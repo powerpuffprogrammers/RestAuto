@@ -1,0 +1,78 @@
+package databaseB;
+
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 3/16
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import configuration.Configure;
+
+//Starts the DB A
+public class DatabaseBController extends Thread {
+	
+	private final static int portNumber = Configure.getPortNumber("DatabaseBController");
+	
+	private Socket currListener;
+	
+	
+
+	public DatabaseBController(Socket listener) {
+		currListener=listener;
+	}
+
+	
+	
+	public void run(){
+		try {
+			DataInputStream in = new DataInputStream(currListener.getInputStream());
+			DataOutputStream out = new DataOutputStream(currListener.getOutputStream());
+			while(true){
+				String mess =in.readUTF();
+				char first = mess.charAt(0);
+				if(first=='L'){ //logging in
+					String num = mess.substring(2);
+					int number = Integer.parseInt(num);
+					if(number>employeeList.size() || number<0){
+						out.writeChar('0');
+					}
+					else{
+						Employee curE = employeeList.get(number);
+						out.writeChar(curE.position);
+					}
+				}
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println("Disconnected from a client.");
+			e.printStackTrace();
+		} 
+	}
+	
+	public static void main(String[] args){
+		currentID=0;//or should we fetch this from the file?
+		employeeList = new ArrayList<Employee>();
+		menu = new HashMap<String, HashMap<String,Dish>>();
+		
+		
+		try {
+			ServerSocket server = new ServerSocket(portNumber);
+			
+			while(true){
+				Socket listener = server.accept();
+				Thread t= new DatabaseBController(listener);
+				t.start();
+			}
+		} catch (Exception e) {
+			System.out.println("ERROR: FAILED TO START SERVER.");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+}
