@@ -2,24 +2,39 @@ package interfaces;
 
 import java.util.HashMap;
 
+import javax.swing.JFrame;
+
 import databaseB.DishData;
 import databaseB.Ticket;
 
 public class WaiterInterface {
 
+	public boolean loggedOut;
 	/**
 	 * current ticket open, null if none is open
 	 */
 	Ticket currTicket;
 	
-	//Appetizer, Drink, 
+	//Appetizer, Drink, Entree, Desert
 	String currDishType;
 	
 	HashMap<Integer, Ticket> listOfTickets;
 	
 	HashMap<String,HashMap<String,DishData>>menu;
 	
-//An event should be generated each time the waiter clicks something on his screen
+	public WaiterInterface(JFrame frame) {
+		loggedOut=false;
+		
+		//create waiter panel
+		WaiterPanel waiterPanel = new WaiterPanel();
+		//set the screen to the waiter panel
+		frame.setContentPane(waiterPanel);
+		
+		//Don't return until i logged out
+		while(!loggedOut){}
+	}
+
+	//An event should be generated each time the waiter clicks something on his screen
 	public void waiterEventListener ( WaiterEvent e ){
 		
 		if(e.type =='m' ){

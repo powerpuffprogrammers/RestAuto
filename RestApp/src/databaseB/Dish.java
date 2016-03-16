@@ -4,18 +4,35 @@ package databaseB;
 
 //This guy will take care of calling decrementing
 public class Dish {
+	
+	//Name of the dish
+	public String name;
+	
+	//Name of the dish
+	public double price;
+	
 	//Status of dish = u=unstarted, s=started, f=finished
 	private char status;
-	//Points to the dish data object that holds the name of the object and ingredients of that dish
-	private DishData dishData;
 	
-	public Dish(DishData dishData){
+	public Dish(String name, double price){
 		status='u';
-		this.dishData= dishData;
+		this.name=name;
+		this.price = price;
 	}
 	
-	//returns -2 if failed to change status, returns 0 on success,
-	//whoever calls me must update the head chefs screen after
+	/**
+	 * Makes a copy of the dish given
+	 * @return a copy of the dish d
+	 */
+	public Dish makeCopyOfDish(Dish d){
+		return new Dish(d.name, d.price);
+	}
+	
+	/**
+	 * Changes the status of the dish
+	 * @param newStatus
+	 * @return 0 on success -2 on failure
+	 */
 	public int changeStatus(char newStatus){
 		if(status == 'u' && newStatus=='s'){
 			status = newStatus;
@@ -34,11 +51,8 @@ public class Dish {
 		return -2;
 	}
 
-	public DishData getDishData() {
-		// TODO Auto-generated method stub
-		return dishData;
+	
+	public char getStatus(){
+		return status;
 	}
-	
-	
-	
 }

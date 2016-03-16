@@ -4,11 +4,11 @@ package databaseA;
 public class Employee {
 	
 	//Name of employee
-	private String name;
+	public String name;
 	//Unique ID of employee
-	private Long id;
+	public Long id;
 	//Char to describe employees position: w=waiter, h=host, c=chef, m=manager, o=owner
-	private char position;
+	public char position;
 	
 	//Create a new employee
 	public Employee(String name, long id, char position){
@@ -16,7 +16,9 @@ public class Employee {
 		this.id=id;
 		this.position=position;
 	}
+
 	
+/*
 	//SETTERS- CHANGERS
 	public boolean changeName(String newName){
 		if(newName!=null){
@@ -37,8 +39,7 @@ public class Employee {
 		}
 		return false;
 	}
-
-	
+  
 	//GETTERS
 	public String getName(){
 		return this.name;
@@ -51,4 +52,5 @@ public class Employee {
 	public char getPosition(){
 		return this.position;
 	}
+*/
 }

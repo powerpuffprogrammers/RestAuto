@@ -5,6 +5,8 @@ package interfaces;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JFrame;
+
 import dataBaseC.Table;
 import databaseB.Dish;
 import databaseB.DishData;
@@ -20,9 +22,6 @@ public class ChefInterface {
 	//gives you the currTicketNumber you should give the next ticket created
 	static long currTicketNumber =0;
 	
-	//Maps Ingredient Name to Ingredient
-	private HashMap<String, Ingredient> inventory;
-	
 	//Ticket number to ticket
 	HashMap<Long, Ticket>ticketLookup;
 	
@@ -33,24 +32,15 @@ public class ChefInterface {
 	private ArrayList<Long> ticketQueueFinished;
 	
 	
-	public ChefInterface(){
+	public ChefInterface(JFrame frame){
 		//Pull this from SQL
-		inventory = new HashMap<String, Ingredient>();
 		ticketQueueUnstarted = new ArrayList<Long>();
 		ticketQueuesemiStarted = new ArrayList<Long>();
 		ticketQueueStarted = new ArrayList<Long>();
 		ticketQueueFinished = new ArrayList<Long>();
 		ticketLookup = new HashMap<Long, Ticket>();
 	}
-	
-	//adds ingredient to inventory returns false if ingredient already exists
-	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
-		if(inventory.containsKey(ingredientName)){
-			return false;
-		}
-		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
-		return true;
-	}
+
 	
 	//This listener will be used to read incoming tickets from servers and place them on the Q
 	public void chefTicketListener(Ticket ticket){
@@ -64,7 +54,7 @@ public class ChefInterface {
 		}
 	}
 	
-		/**
+	/**
 	 * handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
 	 * @param e = chef event = holds all info for button pushed
 	 */
@@ -78,8 +68,8 @@ public class ChefInterface {
 			
 			Ticket t = ticketLookup.get(e.ticketNumber);
 			char oldstatus = t.updateStatus();
-			if( t.getStatus() != oldstatus ){//if the ticket changed its status
-				if(t.getStatus() == 'f'){ //if the ticket is finished
+			if( t.status != oldstatus ){//if the ticket changed its status
+				if(t.status == 'f'){ //if the ticket is finished
 					//send a message to the server to let them know it is ready
 					chefMessageSender(new Message(new SenderInfo('c'), new RecieverInfo('s'), "Hot Food."));
 				}
@@ -112,13 +102,8 @@ public class ChefInterface {
 	 * @param dish
 	 */
 	private void decrementInventoryForDish(Dish dish) {
-			DishData d= dish.getDishData();
-			String[] ingredients= d.getListOfIngredients();
-			for(int i=0; i<ingredients.length; i++){
-				//decrement each ingredient of this dish in the inventory
-				inventory.get(ingredients[i]).decrementAmountBy(d.getAmount(ingredients[i]));
-			}
-			
+			//Send message to DB B to decrement this dish
+			//message should start with a D and end with the name of the dish (and thats it)
 		}
 	
 
@@ -141,7 +126,7 @@ public class ChefInterface {
 			ticketQueueFinished.remove(ticketQueueFinished.indexOf(t.ticketNumber));
 		}
 		
-		char newStatus = t.getStatus();
+		char newStatus = t.status;
 		if(newStatus == 'u'){
 			ticketQueueUnstarted.add(t.ticketNumber);
 		}
@@ -157,7 +142,7 @@ public class ChefInterface {
 	}
 
 	private void chefMessageSender(Message message) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -180,7 +165,12 @@ public class ChefInterface {
 
 	
 	//To implement:
-//	public void changeDish(Dish d, char dishStatus);
-	
+/*
+	//adds ingredient to inventory returns false if ingredient already exists
+	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
+		//send message to DBBcontroller
+		return true;
+	}
 //	public void removeIngredientToInventory(String ingredientName);
+*/
 }

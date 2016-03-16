@@ -1,8 +1,6 @@
 package databaseB;
 
-import java.util.ArrayList;
-
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
+//LAST CODED BY: CHRISTINA SEGERHOLM ON 3/16
 
 import java.util.HashMap;
 
@@ -24,6 +22,7 @@ public class DishData {
 	public DishData(String dishName){
 		this.name = dishName;
 		this.listOfIngredients= new HashMap<String, Ingredient>();
+		this.amtOfIngredient = new HashMap<String, Double>();
 	}
 	
 	//returns false if that ingredient was already added

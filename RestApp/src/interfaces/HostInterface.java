@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JFrame;
+
 import dataBaseC.Table;
 import messageController.Message;
 import messageController.RecieverInfo;
@@ -26,7 +28,7 @@ public class HostInterface {
 	 ArrayList<Notification> pendingNotifications;
 
     
-	public HostInterface(){
+	public HostInterface(JFrame frame){
 		//Code about logging in….
 		pendingNotifications = new ArrayList<Notification>();
 		//allTables = getMapofTablesFromDataBase();
@@ -38,7 +40,7 @@ public class HostInterface {
 		while( it.hasNext()){
 			Integer key= it.next();
 			Table table = allTables.get(key);
-			table.setStatus('r');
+			table.changeStatus('r');
 			readyTables.add(key);
 		}
 	}
@@ -61,7 +63,7 @@ public class HostInterface {
 			if(t==null){
 				return;
 			}
-			t.setStatus('r');
+			t.changeStatus('r');
 			paidTables.remove(paidTables.indexOf(e.idOfTableNotification));
 			readyTables.add(e.idOfTableNotification);
 		}
@@ -93,9 +95,9 @@ public class HostInterface {
 				Table currTab =allTables.get(tableNum);
 				if(currTab!=null){
 					//if that table is seated
-					if(currTab.getStatus() == 's'){
+					if(currTab.status == 's'){
 						//change status to paid
-						currTab.setStatus('p');
+						currTab.changeStatus('p');
 						seatedTables.remove(seatedTables.indexOf(tableNum));
 						paidTables.add(tableNum);
 						
