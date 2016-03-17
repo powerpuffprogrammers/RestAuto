@@ -2,7 +2,8 @@ package messageController;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
+
 import configuration.Configure;
 
 /**
@@ -16,22 +17,48 @@ public class MessageController {
 	
 
 	//Message Controller fields:
-	//List of waiters logged in
-	static ArrayList<Socket> waiters; //should this be done by id?!?!?!
+	//List of waiters logged in with employee id as key
+	static HashMap<Long,Socket> waiters; 
 	//List of Hosts logged in
-	static ArrayList<Socket> hosts;
+	static HashMap<Long,Socket> hosts;
 	//List of chefs logged in
-	static ArrayList<Socket> chefs;
+	static HashMap<Long,Socket> chefs;
 	//list of managers logged in
-	static ArrayList<Socket> managers;
+	static HashMap<Long,Socket> managers;
 	
 
-	public static void addWaiterSocket(Socket listener){
-		waiters.add(listener);
+	public static void addWaiterSocket(long id,Socket listener){
+		waiters.put(id,listener);
+	}
+	public static void addHostSocket(long id,Socket listener){
+		hosts.put(id,listener);
+	}
+	public static void addChefSocket(long id,Socket listener){
+		chefs.put(id,listener);
+	}
+	public static void addManagerSocket(long id,Socket listener){
+		managers.put(id,listener);
+	}
+	public static void removeWaiterSocket(long id){
+		waiters.remove(id);
+	}
+	public static void removeHostSocket(long id){
+		hosts.remove(id);
+	}
+	public static void removeChefSocket(long id){
+		chefs.remove(id);
+	}
+	public static void removeManagerSocket(long id){
+		managers.remove(id);
 	}
 	
+	
+	
 	public static void main(String[] args){
-		
+		waiters= new HashMap<Long,Socket>();
+		hosts= new HashMap<Long,Socket>();
+		chefs=new HashMap<Long,Socket>();
+		managers= new HashMap<Long,Socket>();
 		try {
 			ServerSocket server = new ServerSocket(portNumber);
 			

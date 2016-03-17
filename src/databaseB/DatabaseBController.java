@@ -7,6 +7,9 @@ import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+
+import com.google.gson.Gson;
+
 import configuration.Configure;
 
 /**
@@ -19,12 +22,20 @@ public class DatabaseBController extends Thread {
 	
 	private final static int portNumber = Configure.getPortNumber("DatabaseBController");
 	
+	public static Gson jsonConverter = new Gson();
+	
+	
 	private Socket currListener;
 	
 	//Maps Ingredient Name to Ingredient
 	private HashMap<String, Ingredient> inventory;
 	
-	private HashMap<String, DishData> menu;
+	/**
+	 * Links name of dish to its dish data
+	 */
+	private HashMap<String, DishData> dishData;
+	
+	private static Menu menu;
 	
 
 	public DatabaseBController(Socket listener) {
@@ -39,7 +50,6 @@ public class DatabaseBController extends Thread {
 		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
 		return true;
 	}
-
 	
 	public void run(){
 		try {
@@ -56,6 +66,10 @@ public class DatabaseBController extends Thread {
 				}
 				else if(first =='d'){//decrement the ingredients for this dish
 					
+				}
+				else if(first=='M'){//Waiter needs menu when loggin in
+					String jmenu = jsonConverter.toJson(menu);
+					out.writeUTF(jmenu);
 				}
 			}
 			

@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 import interfaces.ChefInterface;
 import interfaces.HostInterface;
-import interfaces.WaiterInterface;
+import waiter.WaiterInterface;
 
 public class TabletApp {
 	public static void main(String[] args) {
@@ -24,16 +24,16 @@ public class TabletApp {
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out
 			if(logInPanel.loggedIn=='h'){
-				new HostInterface(frame);
+				new HostInterface(frame, logInPanel.currIDEntry);
 			}
 			else if(logInPanel.loggedIn=='c'){
-				new ChefInterface(frame);
+				new ChefInterface(frame,logInPanel.currIDEntry);
 			}
 			//else if(pan1.loggedIn=='m'){
-				//ManagerInterface h = new ManagerInterface(frame);
+				//ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry);
 			//}
 			else if(logInPanel.loggedIn=='w'){
-				new WaiterInterface(frame);
+				new WaiterInterface(frame,logInPanel.currIDEntry);
 			}
 			//show log in screen again
 			logInPanel.loggedIn='0';

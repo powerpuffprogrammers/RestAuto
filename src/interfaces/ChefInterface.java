@@ -19,6 +19,8 @@ import messageController.SenderInfo;
 //Starts the DB B
 public class ChefInterface {
 	
+	long empID;
+	
 	//gives you the currTicketNumber you should give the next ticket created
 	static long currTicketNumber =0;
 	
@@ -32,7 +34,8 @@ public class ChefInterface {
 	private ArrayList<Long> ticketQueueFinished;
 	
 	
-	public ChefInterface(JFrame frame){
+	public ChefInterface(JFrame frame, long eID){
+		empID = eID;
 		//Pull this from SQL
 		ticketQueueUnstarted = new ArrayList<Long>();
 		ticketQueuesemiStarted = new ArrayList<Long>();

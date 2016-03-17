@@ -15,10 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import configuration.Configure;
+
 public class LogInScreen extends JPanel{
 
-	public final String dataBaseAServerName = "localHost";
-	public final int dataBaseAPortNumber = 8094;
+	public final String dataBaseAServerName = Configure.getDomainName("databaseacontroller");
+	public final int dataBaseAPortNumber = Configure.getPortNumber("databaseacontroller");
 	
 	/**
 	 * Disables the keypad when log in has been pressed
@@ -42,6 +44,7 @@ public class LogInScreen extends JPanel{
 	
 	private JTextField textField;
 	private JTextField txtPleaseEnterEmployee;
+	
 	/**
 	 * Creates the log in screen panel
 	 */
@@ -176,7 +179,6 @@ public class LogInScreen extends JPanel{
 		});
 		add(keypad[0]);
 	}
-	
 	
 	/**
 	 * Sets up the Header Text "Please Enter Employee ID:" As a JTextField that is non editable

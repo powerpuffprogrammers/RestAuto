@@ -1,4 +1,4 @@
-package interfaces;
+package waiter;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.Action;
 
 public class WaiterPanel extends JPanel {
-	private final Action action = new SwingAction();
 
 	/**
 	 * Create the panel.
@@ -26,7 +25,6 @@ public class WaiterPanel extends JPanel {
 		setLayout(gridBagLayout);
 		
 		JButton btnTable = new JButton("Table #5");
-		btnTable.setAction(action);
 		btnTable.setBackground(Color.BLUE);
 		GridBagConstraints gbc_btnTable = new GridBagConstraints();
 		gbc_btnTable.insets = new Insets(0, 0, 0, 5);
@@ -37,13 +35,4 @@ public class WaiterPanel extends JPanel {
 
 	}
 
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			//OPEN TABLE 5
-		}
-	}
 }

@@ -4,14 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import configuration.Configure;
-import databaseB.Dish;
 
 /**
  * Starts the DB A - will handle requests for log in- holds employee info
@@ -31,9 +25,6 @@ public class DatabaseAController extends Thread {
 	//Matches Employee ID with employee
 	private static ArrayList<Employee> employeeList;
 	
-	//First String maps category (Drink, App, Entree, Dessert) to a map
-	//Inner map maps dish name to dish
-	private static HashMap<String, HashMap<String,Dish>> menu;
 
 	public DatabaseAController(Socket listener) {
 		currListener=listener;
@@ -52,10 +43,6 @@ public class DatabaseAController extends Thread {
 		return false;
 	}
 	
-
-	public HashMap<String, HashMap<String,Dish>> logInAsWaiter(){
-		return menu;
-	}
 	
 	public void run(){
 		try {
@@ -87,7 +74,6 @@ public class DatabaseAController extends Thread {
 	public static void main(String[] args){
 		currentID=0;//or should we fetch this from the file?
 		employeeList = new ArrayList<Employee>();
-		menu = new HashMap<String, HashMap<String,Dish>>();
 		
 		
 		try {
