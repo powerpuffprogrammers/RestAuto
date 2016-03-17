@@ -1,15 +1,34 @@
-package interfaces;
+package waiter;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
 
-import databaseB.DishData;
+import configuration.Configure;
+import databaseB.Dish;
 import databaseB.Ticket;
+import messageController.MessageControllerHandler;
 
 public class WaiterInterface {
-
+	
+	private final static String MCdomainName = Configure.getDomainName("MessageController");
+	private final static int MCportNumber = Configure.getPortNumber("MessageController");
+	
+	/**
+	 * Employee ID - this will be used to ID the tablet for the Message Controller
+	 */
+	long empID;
+	
+	/**
+	 * When this is true I return from constructor back to log in page
+	 */
 	public boolean loggedOut;
+	
 	/**
 	 * current ticket open, null if none is open
 	 */
@@ -20,10 +39,17 @@ public class WaiterInterface {
 	
 	HashMap<Integer, Ticket> listOfTickets;
 	
-	HashMap<String,HashMap<String,DishData>>menu;
+	HashMap<String,HashMap<String,Dish>>menu;
 	
-	public WaiterInterface(JFrame frame) {
+	public WaiterInterface(JFrame frame, long eID) {
+		empID=eID;
 		loggedOut=false;
+		
+		//load the menu
+		loadMenu();
+		
+		//set up MC
+		setUpMessageController();
 		
 		//create waiter panel
 		WaiterPanel waiterPanel = new WaiterPanel();
@@ -32,6 +58,43 @@ public class WaiterInterface {
 		
 		//Don't return until i logged out
 		while(!loggedOut){}
+	}
+
+	private void loadMenu() {
+		String DBBhost = Configure.getDomainName("DatabaseBController");
+		int DBBPortNum = Configure.getPortNumber("DatabaseBController");
+		Socket sock;
+		try {
+			sock = new Socket(DBBhost, DBBPortNum);
+			DataInputStream in = new DataInputStream(sock.getInputStream());
+			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+			//send a message wempID to MC so they sign you in
+			String logInToMC = "M";
+			out.writeUTF(logInToMC);
+			String jmenu = in.readUTF();
+			menu = JSON.toObject(jmenu);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+		
+	}
+
+	private void setUpMessageController() {
+		Socket listener;
+		try {
+			listener = new Socket(MCdomainName, MCportNumber);
+			Thread t= new WaiterMessageHandler(listener,empID, this);
+			t.start();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	//An event should be generated each time the waiter clicks something on his screen
@@ -85,8 +148,7 @@ public class WaiterInterface {
 	}
 
 	private double getPriceOfDish(String dish, String dishType) {
-		DishData d =menu.get(dishType).get(dish);
-		
+		Dish d =menu.get(dishType).get(dish);
 		return d.price;
 	}
 

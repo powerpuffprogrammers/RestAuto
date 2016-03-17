@@ -24,7 +24,14 @@ public class DatabaseBController extends Thread {
 	//Maps Ingredient Name to Ingredient
 	private HashMap<String, Ingredient> inventory;
 	
-	private HashMap<String, DishData> menu;
+	/**
+	 * Links name of dish to its dish data
+	 */
+	private HashMap<String, DishData> dishData;
+	
+	//First String maps category (Drink, App, Entree, Dessert) to a map
+	//Inner map maps dish name to dish
+	private static HashMap<String, HashMap<String,Dish>> menu;
 	
 
 	public DatabaseBController(Socket listener) {
@@ -39,7 +46,6 @@ public class DatabaseBController extends Thread {
 		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
 		return true;
 	}
-
 	
 	public void run(){
 		try {
@@ -56,6 +62,10 @@ public class DatabaseBController extends Thread {
 				}
 				else if(first =='d'){//decrement the ingredients for this dish
 					
+				}
+				else if(first=='M'){//Waiter needs menu when loggin in
+					String jmenu = JSON.toJson(menu);
+					out.writeUTF(jmenu);
 				}
 			}
 			

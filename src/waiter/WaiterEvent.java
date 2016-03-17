@@ -1,4 +1,4 @@
-package interfaces;
+package waiter;
 
 
 public class WaiterEvent {

@@ -8,7 +8,7 @@ public class Ticket {
 	//table number this order belongs to
 	public int tableNumber;
 	//name of waiter this ticket is under
-	public String waiter;
+	public long waiterID;
 	//status of ticket: u=unstarted, s=semi started, S=started, f=finished
 	public char status;
 	//List of dishes on the ticket
@@ -26,9 +26,9 @@ public class Ticket {
 	public int amountOfDishesFinished;
 	public int amountOfDishes;
 	
-	public Ticket(int tableNum, String waiterName, ArrayList<Dish> listOfDishes){
+	public Ticket(int tableNum, long waiterID, ArrayList<Dish> listOfDishes){
 		this.tableNumber=tableNum;
-		this.waiter= waiterName;
+		this.waiterID= waiterID;
 		this.status='u';
 		this.listOfDishes= listOfDishes;
 		amountOfDishes = listOfDishes.size();
