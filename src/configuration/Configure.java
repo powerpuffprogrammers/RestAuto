@@ -40,7 +40,7 @@ public static String getDomainName(String serverName){
 			while ((currLine = br.readLine()) != null) {
 				
 				String[] arr = currLine.split("=");
-				if(arr[0]==serverName.toLowerCase()){
+				if(arr[0].equals(serverName.toLowerCase())){
 					return arr[1];
 				}
 			}
