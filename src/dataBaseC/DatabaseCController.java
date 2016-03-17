@@ -28,7 +28,7 @@ public class DatabaseCController extends Thread {
 		currListener=listener;
 	}
 
-	public boolean addTable(int tabNum, int maxOccupancy){
+	public static boolean addTable(int tabNum, int maxOccupancy){
 		if(listOfTables.containsKey(tabNum)){
 			return false;
 		}
@@ -36,6 +36,24 @@ public class DatabaseCController extends Thread {
 		return true;
 	}
 	
+	public static void generateTables(){
+		addTable(1,4);
+		addTable(2,4);
+		addTable(3,4);
+		addTable(4,6);
+		addTable(5,6);
+		addTable(6,2);
+		addTable(7,2);
+		addTable(8,4);
+		addTable(9,4);
+		addTable(10,4);
+		addTable(11,6);
+		addTable(12,6);
+		addTable(13,6);
+		addTable(14,2);
+		addTable(15,2);
+		addTable(16,2);
+	}
 	
 	public void run(){
 		try {
@@ -57,7 +75,8 @@ public class DatabaseCController extends Thread {
 	}
 	
 	public static void main(String[] args){
-		
+		listOfTables = new HashMap<Integer,Table>();
+		generateTables();
 		try {
 			ServerSocket server = new ServerSocket(portNumber);
 			

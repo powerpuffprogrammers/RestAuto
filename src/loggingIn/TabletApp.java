@@ -1,9 +1,7 @@
 package loggingIn;
 
 import java.awt.Dimension;
-
 import javax.swing.JFrame;
-
 import interfaces.ChefInterface;
 import interfaces.HostInterface;
 import waiter.WaiterInterface;
@@ -20,7 +18,6 @@ public class TabletApp {
 		frame.pack();
 		frame.setSize(new Dimension(1200,600));
 		while(true){
-			while('0'==logInPanel.loggedIn){}
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out
 			if(logInPanel.loggedIn=='h'){
@@ -33,7 +30,11 @@ public class TabletApp {
 				//ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry);
 			//}
 			else if(logInPanel.loggedIn=='w'){
-				new WaiterInterface(frame,logInPanel.currIDEntry);
+				WaiterInterface w = new WaiterInterface(frame,logInPanel.currIDEntry);
+				w.runUntilLogOut();
+			}else{
+				System.out.print(logInPanel.loggedIn);
+				continue;
 			}
 			//show log in screen again
 			logInPanel.loggedIn='0';

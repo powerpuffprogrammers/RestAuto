@@ -83,6 +83,7 @@ public class DatabaseBController extends Thread {
 	public static void main(String[] args){
 		//set up the inventory
 		//set up dishdata converter aka menu
+		generateDishes();
 		
 		try {
 			ServerSocket server = new ServerSocket(portNumber);
@@ -99,6 +100,35 @@ public class DatabaseBController extends Thread {
 		
 		
 	}
+	//returns 0 on success and -1 on failure/duplicate dish 
+	public static int addDishtoMenu(String type, String dishname, double price){
+		Dish newdish = new Dish(dishname,price,type);
+		if(menu.menu.containsKey(type)){
+			HashMap<String,Dish> tem = menu.menu.get(type);
+			if(tem.containsKey(dishname)){
+				return -1;
+			}else{
+				tem.put(dishname, newdish);     //add new dish to the hashmap of the hashmap
+                return 0;			
+			}
+		}else{//type does not exist
+			HashMap<String,Dish> temp= new HashMap<String,Dish>();
+			temp.put(dishname, newdish);
+			menu.menu.put(type,temp);               // places the type in the hashmap
+			return 0;
+		}
+	}
 	
+	public static void generateDishes(){
+		addDishtoMenu("appetizer","buffalo wings",7.99);
+		addDishtoMenu("appetizer","bread sticks",4.99);
+		addDishtoMenu("entree","pasta",12.99);
+		addDishtoMenu("entree","steak",18.99);
+		addDishtoMenu("dessert","cheesecake",8.99);
+		addDishtoMenu("dessert","creme brulee",10.99);
+		addDishtoMenu("drinks","water",0.00);
+		addDishtoMenu("drinks","coke",1.99);
+		
+	}
 	
 }

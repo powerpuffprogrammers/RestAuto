@@ -77,10 +77,8 @@ public class LogInScreen extends JPanel{
 			
 			//send request 
 			String message = "L:"+empID;
-			System.out.println("Writing to server:"+message);
 			out.writeUTF(message);
-			
-			loggedIn =in.readChar();
+			loggedIn =in.readUTF().charAt(0);
 			client.close();
 			
 		} catch (Exception e) {
@@ -113,7 +111,6 @@ public class LogInScreen extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				while(keypadLock){}
 				keypadLock=true;
-				System.out.println("CALLING LOG IN");
 				logInToDBA(currIDEntry);
 				if(loggedIn=='0'){
 					textField.setText("");

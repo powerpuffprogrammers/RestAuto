@@ -1,7 +1,5 @@
 package databaseB;
 
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
-
 //This guy will take care of calling decrementing
 public class Dish {
 	
@@ -14,18 +12,21 @@ public class Dish {
 	//Status of dish = u=unstarted, s=started, f=finished
 	private char status;
 	
-	public Dish(String name, double price){
+	public String typeOfDish;
+	
+	public Dish(String name, double price, String typeOfDish){
 		status='u';
 		this.name=name;
 		this.price = price;
+		this.typeOfDish=typeOfDish;
 	}
 	
 	/**
 	 * Makes a copy of the dish given
 	 * @return a copy of the dish d
 	 */
-	public Dish makeCopyOfDish(Dish d){
-		return new Dish(d.name, d.price);
+	public Dish makeCopyOfDish(){
+		return new Dish(this.name, this.price, this.typeOfDish);
 	}
 	
 	/**

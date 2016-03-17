@@ -40,6 +40,9 @@ public class WaiterInterface {
 	
 	Menu menu;
 	
+	WaiterTickListScreen ticketListScreen;
+	WaiterOneTicketScreen oneTickScreen;
+	
 	public WaiterInterface(JFrame frame, long eID) {
 		listOfTickets = new HashMap<Integer, Ticket>();
 		empID=eID;
@@ -51,13 +54,19 @@ public class WaiterInterface {
 		//set up MC
 		setUpMessageController();
 		
-		//create waiter panel
-		WaiterPanel waiterPanel = new WaiterPanel();
+		//create waiter screen for list of tickets
+		ticketListScreen = new WaiterTickListScreen(this);
 		//set the screen to the waiter panel
-		frame.setContentPane(waiterPanel);
+		frame.setContentPane(ticketListScreen);
 		
+		oneTickScreen = new WaiterOneTicketScreen(this);
+	}
+	
+	public void runUntilLogOut(){
 		//Don't return until i logged out
-		while(!loggedOut){}
+		while(!loggedOut){
+			
+		}
 	}
 
 	private void loadMenu() {
@@ -80,7 +89,6 @@ public class WaiterInterface {
 		
 	}
 		
-
 	private void setUpMessageController() {
 		Socket listener;
 		try {
@@ -95,54 +103,15 @@ public class WaiterInterface {
 		
 	}
 
-	//An event should be generated each time the waiter clicks something on his screen
-	public void waiterEventListener ( WaiterEvent e ){
-		
-		if(e.type =='m' ){
-			//notify manager problem with table
-		}
-		else if(e.type=='b'){
-			//go back to previous screen
-		}
-		else if(e.type=='p'){
-			//send ticket to printer
-		}
-		else if(e.type=='s'){
-			//send ticket to chef
-		}
-		else if(e.type=='c'){
-			//send message to host that you are paid
-		}
-		else if(e.type =='a' ){ //if you are adding a dish
-	            double p = getPriceOfDish(e.dishName, currDishType);
-	            if(p>=0){
-	            	 currTicket.price = currTicket.price + p;
-	            	 addDishToTicket(e.dishName, currDishType);
-	            }
-	    }
-	    else if(e.type== 'r'){
-	        double p = getPriceOfDish(e.dishName, e.dishType);
-	        if(p>=0){
-	        	 currTicket.price = currTicket.price -p;
-	        	 removeDishFromTicket(e.dishName, e.dishType);
-	        }
-	    }
-		redrawScreen();
+	public void addDishToTicket(Dish dish) {
+		currTicket.addDishToTicket(dish.makeCopyOfDish());
 	}
 
-	private void redrawScreen() {
-		
+	public void removeDishFromTicket(int indexInTicket) {
+		currTicket.removeDishFromTicket(indexInTicket);
 	}
 
-	private void addDishToTicket(String dishName, String currDishType2) {
-		
-	}
-
-	private void removeDishFromTicket(String dishName, String dishType) {
-		
-	}
-
-	private double getPriceOfDish(String dish, String dishType) {
+	public double getPriceOfDish(String dish, String dishType) {
 		Dish d =menu.menu.get(dishType).get(dish);
 		return d.price;
 	}

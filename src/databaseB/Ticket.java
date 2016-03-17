@@ -70,8 +70,6 @@ public class Ticket {
 		return true;
 	}
 	
-	
-	
 	/**
 	 * Looks through the dishes of the ticket and updates the status of the ticket accordingly
 	 * @return old status of ticket

@@ -30,7 +30,7 @@ public class DatabaseAController extends Thread {
 		currListener=listener;
 	}
 
-	public boolean addEmployee(String name, char position){
+	public static boolean addEmployee(String name, char position){
 		char[] possiblePositions = {'w','h','c','m','o'};
 		for(int i =0;i<possiblePositions.length;i++){
 			if(position == possiblePositions[i]){
@@ -55,11 +55,11 @@ public class DatabaseAController extends Thread {
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
 					if(number>employeeList.size() || number<0){
-						out.writeChar('0');
+						out.writeUTF("0");
 					}
 					else{
 						Employee curE = employeeList.get(number);
-						out.writeChar(curE.position);
+						out.writeUTF(""+curE.position);
 					}
 				}
 			}
@@ -74,6 +74,7 @@ public class DatabaseAController extends Thread {
 	public static void main(String[] args){
 		currentID=0;//or should we fetch this from the file?
 		employeeList = new ArrayList<Employee>();
+		generateRandomEmployeeList();
 		
 		
 		try {
@@ -88,6 +89,17 @@ public class DatabaseAController extends Thread {
 			System.out.println("ERROR: FAILED TO START SERVER.");
 			e.printStackTrace();
 		}
+		
+		
+	}
+	
+	public static void generateRandomEmployeeList(){
+		addEmployee("Christina Segerholm", 'w');
+		//addEmployee("Athira Haridas",'m');
+		addEmployee("Annie Antony",'c');
+		//addEmployee("Nishtha Sharma",'o');
+		addEmployee("Emma Roussos",'w');
+		addEmployee("Christina Parry",'h');
 		
 		
 	}
