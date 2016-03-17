@@ -36,6 +36,8 @@ public class LogInScreen extends JPanel{
 	 * 'c' = chef
 	 */
 	public char loggedIn;
+	
+	public String empName;
 
 	/**
 	 * Holds what user is currently typing
@@ -78,7 +80,11 @@ public class LogInScreen extends JPanel{
 			//send request 
 			String message = "L:"+empID;
 			out.writeUTF(message);
-			loggedIn =in.readUTF().charAt(0);
+			String ans =in.readUTF();
+			loggedIn=ans.charAt(0);
+			if(loggedIn!=0){
+				empName=ans.substring(1);
+			}
 			client.close();
 			
 		} catch (Exception e) {
@@ -112,8 +118,8 @@ public class LogInScreen extends JPanel{
 				while(keypadLock){}
 				keypadLock=true;
 				logInToDBA(currIDEntry);
+				textField.setText("");
 				if(loggedIn=='0'){
-					textField.setText("");
 					currIDEntry=0;
 				}
 				keypadLock=false;

@@ -2,7 +2,8 @@ package loggingIn;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
-import interfaces.ChefInterface;
+
+import chef.ChefInterface;
 import interfaces.HostInterface;
 import waiter.WaiterInterface;
 
@@ -21,24 +22,29 @@ public class TabletApp {
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out
 			if(logInPanel.loggedIn=='h'){
-				new HostInterface(frame, logInPanel.currIDEntry);
+				new HostInterface(frame, logInPanel.currIDEntry, logInPanel.empName);
 			}
 			else if(logInPanel.loggedIn=='c'){
-				new ChefInterface(frame,logInPanel.currIDEntry);
+				ChefInterface c = new ChefInterface(frame,logInPanel.currIDEntry,logInPanel.empName);
+				c.runUntilLogOut();
 			}
 			//else if(pan1.loggedIn=='m'){
-				//ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry);
+				//ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry, logInPanel.empName);
 			//}
 			else if(logInPanel.loggedIn=='w'){
-				WaiterInterface w = new WaiterInterface(frame,logInPanel.currIDEntry);
+				WaiterInterface w = new WaiterInterface(frame,logInPanel.currIDEntry,logInPanel.empName);
+				System.out.println("After waiter constructor");
 				w.runUntilLogOut();
 			}else{
 				System.out.print(logInPanel.loggedIn);
 				continue;
 			}
 			//show log in screen again
+			System.out.println("Going Back to log in");
 			logInPanel.loggedIn='0';
+			logInPanel.currIDEntry=0;
 			frame.setContentPane(logInPanel);
+			frame.revalidate();
 		}
 		
 		

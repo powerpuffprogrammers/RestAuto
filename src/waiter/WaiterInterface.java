@@ -24,6 +24,11 @@ public class WaiterInterface {
 	long empID;
 	
 	/**
+	 * Employee Name- this will be displayed on the screen
+	 */
+	String name;
+	
+	/**
 	 * When this is true I return from constructor back to log in page
 	 */
 	public boolean loggedOut;
@@ -43,7 +48,8 @@ public class WaiterInterface {
 	WaiterTickListScreen ticketListScreen;
 	WaiterOneTicketScreen oneTickScreen;
 	
-	public WaiterInterface(JFrame frame, long eID) {
+	public WaiterInterface(JFrame frame, long eID, String empName) {
+		name=empName;
 		listOfTickets = new HashMap<Integer, Ticket>();
 		empID=eID;
 		loggedOut=false;
@@ -58,14 +64,15 @@ public class WaiterInterface {
 		ticketListScreen = new WaiterTickListScreen(this);
 		//set the screen to the waiter panel
 		frame.setContentPane(ticketListScreen);
+		frame.revalidate();
 		
-		oneTickScreen = new WaiterOneTicketScreen(this);
+		//oneTickScreen = new WaiterOneTicketScreen(this);
 	}
 	
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
-			
+			System.out.println(loggedOut);
 		}
 	}
 

@@ -59,7 +59,8 @@ public class DatabaseAController extends Thread {
 					}
 					else{
 						Employee curE = employeeList.get(number);
-						out.writeUTF(""+curE.position);
+						String ans = curE.position + curE.name;
+						out.writeUTF(ans);
 					}
 				}
 			}

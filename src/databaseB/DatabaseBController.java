@@ -81,6 +81,7 @@ public class DatabaseBController extends Thread {
 	}
 	
 	public static void main(String[] args){
+		menu = new Menu();
 		//set up the inventory
 		//set up dishdata converter aka menu
 		generateDishes();

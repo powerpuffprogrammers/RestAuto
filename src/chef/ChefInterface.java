@@ -1,12 +1,14 @@
-package interfaces;
+package chef;
 
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 2/24
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.swing.JFrame;
 
+import com.google.gson.Gson;
+
+import configuration.Configure;
 import dataBaseC.Table;
 import databaseB.Dish;
 import databaseB.DishData;
@@ -15,26 +17,38 @@ import databaseB.Ticket;
 import messageController.Message;
 import messageController.RecieverInfo;
 import messageController.SenderInfo;
+import waiter.WaiterMessageHandler;
 
 //Starts the DB B
 public class ChefInterface {
+	private final static String MCdomainName = Configure.getDomainName("MessageController");
+	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
+	public static Gson jsonConverter = new Gson();
 	long empID;
+	String name;
+	
+	public boolean loggedOut;
+	
+	
 	
 	//gives you the currTicketNumber you should give the next ticket created
 	static long currTicketNumber =0;
+	
 	
 	//Ticket number to ticket
 	HashMap<Long, Ticket>ticketLookup;
 	
 	//Ticket Queue = holds all ticket orders
-	private ArrayList<Long> ticketQueueUnstarted;
-	private ArrayList<Long> ticketQueuesemiStarted;
-	private ArrayList<Long> ticketQueueStarted;
-	private ArrayList<Long> ticketQueueFinished;
+	public ArrayList<Long> ticketQueueUnstarted;
+	public ArrayList<Long> ticketQueuesemiStarted;
+	public ArrayList<Long> ticketQueueStarted;
+	public ArrayList<Long> ticketQueueFinished;
 	
+	private ChefPanel chefPanel;
 	
-	public ChefInterface(JFrame frame, long eID){
+	public ChefInterface(JFrame frame, long eID, String empName){
+		name= empName;
 		empID = eID;
 		//Pull this from SQL
 		ticketQueueUnstarted = new ArrayList<Long>();
@@ -42,6 +56,13 @@ public class ChefInterface {
 		ticketQueueStarted = new ArrayList<Long>();
 		ticketQueueFinished = new ArrayList<Long>();
 		ticketLookup = new HashMap<Long, Ticket>();
+		
+		setUpMessageController();
+		
+		chefPanel = new ChefPanel(this);
+		frame.setContentPane(chefPanel);
+		
+		
 	}
 
 	
@@ -56,49 +77,7 @@ public class ChefInterface {
 			currTicketNumber++;
 		}
 	}
-	
-	/**
-	 * handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
-	 * @param e = chef event = holds all info for button pushed
-	 */
-	public void chefEventListenter(ChefEvent e){
-		//if event is changing status of dish
-		if(e.type == 's'){
-			e.dish.changeStatus(e.newStatusOfDish);
-			if(e.newStatusOfDish == 's'){
-				decrementInventoryForDish(e.dish);
-			}
-			
-			Ticket t = ticketLookup.get(e.ticketNumber);
-			char oldstatus = t.updateStatus();
-			if( t.status != oldstatus ){//if the ticket changed its status
-				if(t.status == 'f'){ //if the ticket is finished
-					//send a message to the server to let them know it is ready
-					chefMessageSender(new Message(new SenderInfo('c'), new RecieverInfo('s'), "Hot Food."));
-				}
-				changeTicketLocation(oldstatus, t);
-			}
-			
-		}
-		//if event is hitting back button
-		else if(e.type == 'b'){
-			//move back a screen
-		}
-		//if event is opening a ticket
-		else if(e.type == 'o'){
-			//change screen type to show current ticket
-			//showTicketOnScreen(e.ticketNumber);
-		}
-		//if event is pressing get manager button -> sending a notification to manager
-		else if(e.type == 'm'){
-			chefMessageSender(new Message(new SenderInfo('c'), new RecieverInfo('m'), "Chef needs Assistance."));
-		}
-		else if(e.type == 'd'){ //delete a ticket because chef signifies that it was picked up
-			ticketQueueFinished.remove(ticketQueueFinished.indexOf(e.ticketNumber));
-		}
-		redrawChefScreen();
-		
-	}        
+	    
 
 	/**
 	 * decrements each item in the dish's inventory amount by the proper amount for this dish
@@ -144,24 +123,31 @@ public class ChefInterface {
 		}
 	}
 
-	private void chefMessageSender(Message message) {
-		
-		
-	}
-
-	//handles messages that it gets from manager or waiter
-	public void chefMessageListener(Message m){	
-		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
+	private void setUpMessageController() {
+		Socket listener;
+		try {
+			listener = new Socket(MCdomainName, MCportNumber);
+			Thread t= new ChefMessageHandler(listener,empID, this);
+			t.start();
 			
-		}            
-		else if(m.getSenderPosition()== 'm'){//if manager sent the message = 
-			    
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		redrawChefScreen();
+		
+	}
+	
+	
+	public static void generateTickets(){
+		
 	}
 
-	private void redrawChefScreen() {
-		// TODO Auto-generated method stub
+
+	public void runUntilLogOut() {
+		//Don't return until i logged out
+		while(!loggedOut){
+			
+		}
 		
 	}
 

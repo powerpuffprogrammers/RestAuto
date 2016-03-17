@@ -14,6 +14,7 @@ import messageController.SenderInfo;
 public class HostInterface {
 
 	long empID;
+	String name;
 	
 	//Hashmap links integer (table #) to its table object - holds all the tables in the restaurant
 	HashMap<Integer, Table> allTables; 
@@ -30,7 +31,8 @@ public class HostInterface {
 	 ArrayList<Notification> pendingNotifications;
 
     
-	public HostInterface(JFrame frame, long eID){
+	public HostInterface(JFrame frame, long eID, String empName){
+		name=empName;
 		empID = eID;
 		//Code about logging in….
 		pendingNotifications = new ArrayList<Notification>();
