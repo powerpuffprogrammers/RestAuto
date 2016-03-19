@@ -46,6 +46,7 @@ public class LogInScreen extends JPanel{
 	
 	private JTextField textField;
 	private JTextField txtPleaseEnterEmployee;
+	private JTextField failedAttempt;
 	
 	/**
 	 * Creates the log in screen panel
@@ -110,17 +111,31 @@ public class LogInScreen extends JPanel{
 	
 	private void makeKeypad(){
 		
+		failedAttempt = new JTextField();
+		failedAttempt.setText("Employee ID not recognized.");
+		failedAttempt.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		failedAttempt.setEditable(false);
+		failedAttempt.setHorizontalAlignment(SwingConstants.CENTER);
+		failedAttempt.setBounds(550, 520, 100, 25);
+		failedAttempt.setForeground(Color.RED);
+		add(failedAttempt);
+		failedAttempt.setColumns(10);
+		failedAttempt.setVisible(false);
+		
+		
 		JButton logInButton = new JButton("Log In");
 		logInButton.setForeground(Color.WHITE);
 		logInButton.setBackground(new Color(0, 128, 0));
 		logInButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				failedAttempt.setVisible(false);
 				while(keypadLock){}
 				keypadLock=true;
 				logInToDBA(currIDEntry);
 				textField.setText("");
 				if(loggedIn=='0'){
 					currIDEntry=0;
+					failedAttempt.setVisible(true);
 				}
 				keypadLock=false;
 			}
@@ -133,6 +148,7 @@ public class LogInScreen extends JPanel{
 		deleteButton.setBackground(new Color(255, 0, 0));
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				failedAttempt.setVisible(false);
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText("");

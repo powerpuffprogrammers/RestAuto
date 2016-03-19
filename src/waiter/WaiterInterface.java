@@ -3,6 +3,7 @@ package waiter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JFrame;
 import com.google.gson.Gson;
@@ -10,13 +11,18 @@ import configuration.Configure;
 import databaseB.Dish;
 import databaseB.Menu;
 import databaseB.Ticket;
+import messageController.Message;
+import messageController.SenderInfo;
 
 public class WaiterInterface {
 	
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
-	public static Gson jsonConverter = new Gson();
+	private Gson jsonConverter;
+	public WaiterMessageSender sender;
+	
+	private JFrame frame;
 	
 	/**
 	 * Employee ID - this will be used to ID the tablet for the Message Controller
@@ -38,9 +44,6 @@ public class WaiterInterface {
 	 */
 	Ticket currTicket;
 	
-	//Appetizer, Drink, Entree, Desert
-	String currDishType;
-	
 	HashMap<Integer, Ticket> listOfTickets;
 	
 	Menu menu;
@@ -49,6 +52,8 @@ public class WaiterInterface {
 	WaiterOneTicketScreen oneTickScreen;
 	
 	public WaiterInterface(JFrame frame, long eID, String empName) {
+		jsonConverter = new Gson();
+		this.frame=frame;
 		name=empName;
 		listOfTickets = new HashMap<Integer, Ticket>();
 		empID=eID;
@@ -60,14 +65,17 @@ public class WaiterInterface {
 		//set up MC
 		setUpMessageController();
 		
+		generateTickets();
+		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
 		//set the screen to the waiter panel
 		frame.setContentPane(ticketListScreen);
 		frame.revalidate();
 		
-		//oneTickScreen = new WaiterOneTicketScreen(this);
+		oneTickScreen = new WaiterOneTicketScreen(this);
 	}
+	
 	
 	public void runUntilLogOut(){
 		//Don't return until i logged out
@@ -100,11 +108,12 @@ public class WaiterInterface {
 		Socket listener;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new WaiterMessageHandler(listener,empID, this);
+			Thread t= new WaiterMessageListener(listener,empID, this);
 			t.start();
+			sender = new WaiterMessageSender(listener,empID);
+			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -118,9 +127,101 @@ public class WaiterInterface {
 		currTicket.removeDishFromTicket(indexInTicket);
 	}
 
-	public double getPriceOfDish(String dish, String dishType) {
-		Dish d =menu.menu.get(dishType).get(dish);
-		return d.price;
+	
+	public void openTicketScreens(int ticketNumber) {
+		currTicket = listOfTickets.get(ticketNumber);
+		oneTickScreen.setTicket(currTicket);
+		frame.setContentPane(oneTickScreen);
+		frame.revalidate();
+		
+	}
+	
+	public void backToMainScreen(){
+		currTicket = null;
+		frame.setContentPane(ticketListScreen);
+		frame.revalidate();
 	}
 
+	public void notifyManager(Ticket currTicket2) {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+	}
+
+	public void sendTicket(Ticket t){
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
+	}
+	//By Athira
+	public void generateTickets(){
+				Dish a0 =  new Dish("Breadsticks",5.99, "Appetizer");
+				Dish a1 =  new Dish("Buffalo Wings",6.99, "Appetizer");
+				Dish a2 =  new Dish("Spiced Olives",5.99, "Appetizer");
+				Dish a3 =  new Dish("Chips and Guacamole",7.99, "Appetizer");
+				
+				Dish e0 =  new Dish("Eggplant Parmesan",11.99, "Entree");
+				Dish e1 =  new Dish("Pasta",8.99, "Entree");
+				Dish e2 =  new Dish("Pizza",7.99, "Entree");
+				Dish e3 =  new Dish("Chicken Salad",12.99, "Entree");
+				
+				Dish de0 =  new Dish("Tiramasu",13.99, "Dessert");
+				Dish de1 =  new Dish("Ice Cream",2.99, "Dessert");
+				Dish de2 =  new Dish("Chocolate Cake",6.99, "Dessert");
+				Dish de3 =  new Dish("Pecan Tart",4.99, "Dessert");
+				
+				Dish dr0=new Dish("Water", 0.00, "Drink");
+				Dish dr1=new Dish("Coke", 1.99, "Drink");
+				Dish dr2=new Dish("Pepsi", 1.99, "Drink");
+				Dish dr3=new Dish("Milk", 1.49, "Drink");//for chrissy :)
+				
+				ArrayList<Dish> appetizers= new ArrayList<Dish>();
+				ArrayList<Dish> entree=new ArrayList<Dish>();
+				ArrayList<Dish> dessert=new ArrayList<Dish>();
+				ArrayList<Dish> drinks=new ArrayList<Dish>();
+				
+				appetizers.add(a0);appetizers.add(a1);appetizers.add(a2);appetizers.add(a3);
+				
+				entree.add(e0);entree.add(e1);entree.add(e2);entree.add(e3);
+				
+				dessert.add(de0);dessert.add(de1);dessert.add(de2);dessert.add(de3);
+				
+				drinks.add(dr0);drinks.add(dr1);drinks.add(dr2);drinks.add(dr3);
+				
+				//now we can make so many combinations!! 
+				
+				ArrayList<Dish> dishlistT1= new ArrayList<Dish>();
+				dishlistT1.add(appetizers.get(0));
+				dishlistT1.add(appetizers.get(2));
+				dishlistT1.add(entree.get(1));
+				dishlistT1.add(entree.get(0));
+				dishlistT1.add(dessert.get(0));
+				dishlistT1.add(drinks.get(2));
+				dishlistT1.add(drinks.get(0));
+				
+				ArrayList<Dish> dishlistT2= new ArrayList<Dish>();
+				dishlistT2.add(appetizers.get(0));
+				dishlistT2.add(appetizers.get(0));
+				dishlistT2.add(entree.get(2));
+				dishlistT2.add(entree.get(3));
+				dishlistT2.add(dessert.get(2));
+				dishlistT2.add(drinks.get(1));
+				dishlistT2.add(drinks.get(3));
+				
+				ArrayList<Dish> dishlistT3= new ArrayList<Dish>();
+				dishlistT3.add(appetizers.get(3));
+				dishlistT3.add(appetizers.get(2));
+				dishlistT3.add(entree.get(0));
+				dishlistT3.add(entree.get(2));
+				dishlistT3.add(dessert.get(3));
+				dishlistT3.add(drinks.get(0));
+				dishlistT3.add(drinks.get(2));
+				
+				Ticket T1=new Ticket("Christina Segerholm",2,1,dishlistT1);//table 2, waiter id=1
+				Ticket T2=new Ticket("Christina Segerholm",14,1,dishlistT1);//table 14, waiter id=1
+				Ticket T3=new Ticket("Christina Segerholm",18,1,dishlistT1);//table 18, waiter id=1
+				
+				listOfTickets.put(2,T1);
+				listOfTickets.put(14,T2);
+				listOfTickets.put(18,T3);
+				
+			}
+
+	
 }

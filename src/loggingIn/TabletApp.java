@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 
 import chef.ChefInterface;
 import interfaces.HostInterface;
+import manager.ManagerInterface;
 import waiter.WaiterInterface;
 
 public class TabletApp {
@@ -28,9 +29,9 @@ public class TabletApp {
 				ChefInterface c = new ChefInterface(frame,logInPanel.currIDEntry,logInPanel.empName);
 				c.runUntilLogOut();
 			}
-			//else if(pan1.loggedIn=='m'){
-				//ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry, logInPanel.empName);
-			//}
+			else if(logInPanel.loggedIn=='m'){
+				ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry, logInPanel.empName);
+			}
 			else if(logInPanel.loggedIn=='w'){
 				WaiterInterface w = new WaiterInterface(frame,logInPanel.currIDEntry,logInPanel.empName);
 				System.out.println("After waiter constructor");

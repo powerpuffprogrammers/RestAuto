@@ -29,7 +29,7 @@ public class ChefPanel extends JPanel {
 		makeLogOutButton();	
 		makeNotifyManagerButton();
 		makeNameText();
-		displayTickets();
+		//displayTickets();
 	}
 
 	private void displayTickets() {

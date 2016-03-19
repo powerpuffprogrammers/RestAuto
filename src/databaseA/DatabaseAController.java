@@ -96,11 +96,11 @@ public class DatabaseAController extends Thread {
 	
 	public static void generateRandomEmployeeList(){
 		addEmployee("Christina Segerholm", 'w');
-		//addEmployee("Athira Haridas",'m');
+		addEmployee("Athira Haridas",'m');
 		addEmployee("Annie Antony",'c');
 		//addEmployee("Nishtha Sharma",'o');
 		addEmployee("Emma Roussos",'w');
-		addEmployee("Christina Parry",'h');
+		//addEmployee("Christina Parry",'h');
 		
 		
 	}

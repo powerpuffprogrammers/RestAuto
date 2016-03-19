@@ -3,6 +3,9 @@ package waiter;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import databaseB.Ticket;
+
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,21 +31,6 @@ public class WaiterTickListScreen extends JPanel {
 		makeNameText();
 		makeLogOutButton();	
 		makeTicketButtons();
-		System.out.println("Exiting waiterTickListScreen constructor");
-	}
-	
-	/**
-	 * THIS IS ONLY FOR A TEST
-	 */
-	public WaiterTickListScreen() {
-		//Set color to blue
-				setBackground(new Color(51, 153, 255));
-				//Array layout where you pick coordinates of each component
-				setLayout(null);
-				
-				makeNameText();
-				makeLogOutButton();	
-				makeTicketButtons();
 	}
 
 	private void makeNameText() {
@@ -66,12 +54,12 @@ public class WaiterTickListScreen extends JPanel {
 		Iterator<Integer> keyset = wi.listOfTickets.keySet().iterator();
 		while(keyset.hasNext() && index<4){
 			int key = keyset.next();
-			makeTicketButton(key,index);
+			makeTicketButton(wi.listOfTickets.get(key),index);
 			index++;
 		}
 	}
 
-	private void makeTicketButton(int key, int index) {
+	private void makeTicketButton(Ticket t, int index) {
 		int xbut=0, ybut=0;
 		if(index ==0){
 			xbut = 100;
@@ -91,16 +79,42 @@ public class WaiterTickListScreen extends JPanel {
 		}
 		
 		//draw the button
-		JButton ticketButton = new JButton("#"+key);
+		JButton ticketButton = new JButton("#"+t.tableNumber);
 		ticketButton.setForeground(Color.BLACK);
 		ticketButton.setBackground(Color.WHITE);
 		ticketButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//open that ticket
+				wi.openTicketScreens(t.tableNumber);
 			}
 		});
 		ticketButton.setBounds(xbut, ybut, 400, 150);
 		add(ticketButton);
+		
+		if(t.hotFood){
+			JTextField nameHeader;
+			nameHeader = new JTextField();
+			nameHeader.setEditable(false);
+			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			nameHeader.setText("HOT FOOD");
+			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
+			add(nameHeader);
+			nameHeader.setColumns(10);	
+		}
+		else if (t.recentlySat){
+			JTextField nameHeader;
+			nameHeader = new JTextField();
+			nameHeader.setEditable(false);
+			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			nameHeader.setText("HOT FOOD");
+			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
+			add(nameHeader);
+			nameHeader.setColumns(10);	
+		}
+		
+		
 	}
 
 	/**

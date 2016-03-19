@@ -9,15 +9,8 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import dataBaseC.Table;
 import databaseB.Dish;
-import databaseB.DishData;
-import databaseB.Ingredient;
 import databaseB.Ticket;
-import messageController.Message;
-import messageController.RecieverInfo;
-import messageController.SenderInfo;
-import waiter.WaiterMessageHandler;
 
 //Starts the DB B
 public class ChefInterface {
@@ -59,6 +52,7 @@ public class ChefInterface {
 		
 		setUpMessageController();
 		
+		generateTickets();
 		chefPanel = new ChefPanel(this);
 		frame.setContentPane(chefPanel);
 		
@@ -83,7 +77,7 @@ public class ChefInterface {
 	 * decrements each item in the dish's inventory amount by the proper amount for this dish
 	 * @param dish
 	 */
-	private void decrementInventoryForDish(Dish dish) {
+	public void decrementInventoryForDish(Dish dish) {
 			//Send message to DB B to decrement this dish
 			//message should start with a D and end with the name of the dish (and thats it)
 		}
@@ -94,7 +88,7 @@ public class ChefInterface {
 	 * @param oldstatus
 	 * @param t
 	 */
-	private void changeTicketLocation(char oldstatus, Ticket t) {
+	public void changeTicketLocation(char oldstatus, Ticket t) {
 		if(oldstatus == 'u'){
 			ticketQueueUnstarted.remove(ticketQueueUnstarted.indexOf(t.ticketNumber));
 		}
@@ -131,16 +125,60 @@ public class ChefInterface {
 			t.start();
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
 	}
 	
 	
-	public static void generateTickets(){
-		
-	}
+	public void generateTickets(){
+        Dish newdish =  new Dish("Chicken Marsala",8.99, "Entree");
+        Dish newdish1 =  new Dish("Cheesecake",12.99, "Dessert");
+        Dish newdish2 =  new Dish("Steak",18.99, "Entree");
+        Dish newdish3 =  new Dish("Buffalo Chicken",6.99, "Appetizer");
+        ArrayList<Dish> dishlist = new ArrayList<Dish>();
+        dishlist.add(newdish);
+        dishlist.add(newdish1);
+        dishlist.add(newdish2);
+        dishlist.add(newdish3);
+        Ticket ticket = new Ticket("Christina Segerholm",2,1,dishlist);
+        chefTicketListener(ticket);
+        newdish =  new Dish("Jalapeno Fries",3.99, "Appetizer");
+        newdish1 =  new Dish("Creme Bulee",5.99, "Dessert");
+        newdish2 =  new Dish("Mango Chile Chicken",18.99, "Entree");
+        newdish3 =  new Dish("Pasta",6.99, "Entree");
+        ArrayList<Dish> dishlist1 = new ArrayList<Dish>();
+        dishlist1.add(newdish);
+        dishlist1.add(newdish1);
+        dishlist1.add(newdish2);
+        dishlist1.add(newdish3);
+        Ticket ticket1 = new Ticket("Christina Segerholm",14,1,dishlist1);
+        chefTicketListener(ticket1);
+        newdish =  new Dish("Cheese Pops",3.99, "Appetizer");
+        newdish1 =  new Dish("Ice cream",4.99, "Dessert");
+        newdish2 =  new Dish("Shrimp Scampi",10.99, "Entree");
+        newdish3 =  new Dish("Pasta",6.99, "Entree");
+        ArrayList<Dish> dishlist2 = new ArrayList<Dish>();
+        dishlist2.add(newdish);
+        dishlist2.add(newdish1);
+        dishlist2.add(newdish2);
+        dishlist2.add(newdish3);
+        Ticket ticket2 = new Ticket("Christina Segerholm",18,1,dishlist2);
+        chefTicketListener(ticket2);
+        newdish =  new Dish("Texas Cheese Fries",3.99, "Appetizer");
+        newdish1 =  new Dish("Cake",5.99, "Dessert");
+        newdish2 =  new Dish("Fried Rice",7.99, "Entree");
+        newdish3 =  new Dish("Noodles",8.99, "Entree");
+        ArrayList<Dish> dishlist3 = new ArrayList<Dish>();
+        dishlist3.add(newdish);
+        dishlist3.add(newdish1);
+        dishlist3.add(newdish2);
+        dishlist3.add(newdish3);
+        Ticket ticket3 = new Ticket("Christina Segerholm",24,1,dishlist3);
+        chefTicketListener(ticket3);
+    }
+
 
 
 	public void runUntilLogOut() {

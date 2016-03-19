@@ -8,6 +8,8 @@ public class Ticket {
 	//table number this order belongs to
 	public int tableNumber;
 	//name of waiter this ticket is under
+	public String waiterName;
+	//id of waiter this ticket belongs to
 	public long waiterID;
 	//status of ticket: u=unstarted, s=semi started, S=started, f=finished
 	public char status;
@@ -25,8 +27,12 @@ public class Ticket {
 	public int amountOfDishesStarted;
 	public int amountOfDishesFinished;
 	public int amountOfDishes;
+	public boolean recentlySat;
+	public boolean hotFood;
 	
-	public Ticket(int tableNum, long waiterID, ArrayList<Dish> listOfDishes){
+	
+	public Ticket(String waiterName,int tableNum, long waiterID, ArrayList<Dish> listOfDishes){
+		this.waiterName = waiterName;
 		this.tableNumber=tableNum;
 		this.waiterID= waiterID;
 		this.status='u';
@@ -38,13 +44,24 @@ public class Ticket {
 		this.price=0;
 	}
 	
+	/**
+	 * Adds dish to ticket and also updates price and status of ticket
+	 * @param d
+	 */
 	public void addDishToTicket(Dish d){
+		listOfDishes.add(d);
 		amountOfDishesUnstarted= amountOfDishesUnstarted+1;
 		amountOfDishes=amountOfDishes+1;
 		this.price=this.price + d.price;
+		updateStatusOfTicket();
 		
 	}
 	
+	/**
+	 * Removes the dish at index i from the ticket and decrements the price
+	 * @param indexOfDishInTickList
+	 * @return
+	 */
 	public boolean removeDishFromTicket(int indexOfDishInTickList){
 		if(indexOfDishInTickList<0 || indexOfDishInTickList>amountOfDishes){
 			return false;
@@ -67,6 +84,7 @@ public class Ticket {
 			amountOfDishesFinished=amountOfDishesFinished-1;
 		}
 		listOfDishes.remove(indexOfDishInTickList);
+		updateStatusOfTicket();
 		return true;
 	}
 	
@@ -74,7 +92,7 @@ public class Ticket {
 	 * Looks through the dishes of the ticket and updates the status of the ticket accordingly
 	 * @return old status of ticket
 	 */
-	public char updateStatus(){
+	public char updateStatusOfTicket(){
 		//update the status of the ticket using the statuses of all the dishes
 		char oldstatus = status;
 		//change status here

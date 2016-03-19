@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 
 import dataBaseC.Table;
 import messageController.Message;
-import messageController.RecieverInfo;
 import messageController.SenderInfo;
 
 public class HostInterface {
@@ -27,15 +26,12 @@ public class HostInterface {
 	ArrayList< Integer> paidTables;
 	
 	
-	//Array list of notifications that the host screen still has to display
-	 ArrayList<Notification> pendingNotifications;
+
 
     
 	public HostInterface(JFrame frame, long eID, String empName){
 		name=empName;
 		empID = eID;
-		//Code about logging in….
-		pendingNotifications = new ArrayList<Notification>();
 		//allTables = getMapofTablesFromDataBase();
 		readyTables = new ArrayList<Integer>();
 		seatedTables = new ArrayList<Integer>();
@@ -49,7 +45,8 @@ public class HostInterface {
 			readyTables.add(key);
 		}
 	}
-	
+
+	/*
 	//handles all the host actions (like pushing buttons) and updates the screen and list of tables correctly
 	public void hostEventListenter(HostEvent e){
 		//if event is a seating a table
@@ -73,27 +70,21 @@ public class HostInterface {
 			readyTables.add(e.idOfTableNotification);
 		}
 		else if(e.type == 'n'){//if event is closing a notification
-			pendingNotifications.remove(0);
+			//pendingNotifications.remove(0);
 		}
 		//if event is sending a notification to manager
 		else if(e.type == 'm'){
-			hostMessageSender(new Message(new SenderInfo('h'), new RecieverInfo('m'), "Host Stand needs Assistance."));
+			hostMessageSender(new Message(new SenderInfo('h'), new SenderInfo('m'), "Host Stand needs Assistance."));
 		}
 		
-		redrawHostScreen();
-		
 	}        
+*/
 
-	//sends message to message sender
-	private void hostMessageSender(Message message) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	//handles messages that it gets from manager or waiter
 	public void hostMessageListener(Message m){	
-		if(m.getSenderPosition() == 'w'){ //if waiter sent a message
-			String content = m.getContent();
+		if(m.senderInfo.position == 'w'){ //if waiter sent a message
+			String content = m.content;
 			//looks through the content of the message to get the table number
 			Integer tableNum = getTableNumberFromMessage(content);
 			if(tableNum!=null){
@@ -110,10 +101,9 @@ public class HostInterface {
 				}		
 			}
 		}            
-		else if(m.getSenderPosition()== 'm'){//if manager sent the message = 
-		    makeNotification(m.getContent());
+		else if(m.senderInfo.position== 'm'){//if manager sent the message = 
+		    //makeNotification(m.content);
 		}
-		redrawHostScreen();
 	}
 
 
@@ -122,17 +112,7 @@ public class HostInterface {
 		return null;
 	}
 
-	//create a notification on the hosts screen with this content
-	private void makeNotification(String content) {
-		pendingNotifications.add(new Notification(content));
-	}
-	
 
-	//Draws the screen using current lists and notifications
-	private void redrawHostScreen() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 }
