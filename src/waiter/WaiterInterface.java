@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
 import javax.swing.JFrame;
 import com.google.gson.Gson;
 import configuration.Configure;
@@ -121,10 +123,12 @@ public class WaiterInterface {
 
 	public void addDishToTicket(Dish dish) {
 		currTicket.addDishToTicket(dish.makeCopyOfDish());
+		updateScreen();
 	}
 
 	public void removeDishFromTicket(int indexInTicket) {
 		currTicket.removeDishFromTicket(indexInTicket);
+		updateScreen();
 	}
 
 	
@@ -222,6 +226,68 @@ public class WaiterInterface {
 				listOfTickets.put(18,T3);
 				
 			}
+
+	
+	/**
+	 * Adds a notification on current screen by calling another method in panel
+	 * @param content
+	 */
+	public void addNotification(String content) {
+		if(currTicket==null){
+			ticketListScreen.makeNotification(content);
+		}
+		else{
+			oneTickScreen.makeNotification(content);
+		}
+	}
+
+
+	/**
+	 * Updates the current panel - makes them redraw all the buttons
+	 */
+	public void updateScreen() {
+		if(currTicket==null){
+			ticketListScreen.updateScreen();
+		}
+		else{
+			oneTickScreen.updateScreen();
+		}
+		frame.revalidate();
+	}
+
+	/**
+	 * Alert host and take this ticket off the list
+	 * @param tableNumber
+	 */
+	public void paid(int tableNumber) {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), ""+tableNumber));
+		listOfTickets.remove(tableNumber);
+		updateScreen();
+		
+	}
+
+/**
+ * Removes the array of dish names from the menu
+ * @param dishes
+ */
+	public void removeLowInventoryDishes(String[] dishes) {
+		//for each dish that we need to mark as low inventory
+		for(int i =0; i<dishes.length;i++){
+			String dishName = dishes[i];
+			Iterator<String> it = menu.menu.keySet().iterator();
+			//check each sub category for that dish
+			while(it.hasNext()){
+				String category = it.next();
+				HashMap<String, Dish> hm = menu.menu.get(category);
+				if(hm.containsKey(dishName)){
+					hm.remove(dishName);
+					break;
+				}
+			}
+		}
+		updateScreen();
+		
+	}
 
 	
 }

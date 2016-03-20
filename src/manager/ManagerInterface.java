@@ -2,6 +2,7 @@ package manager;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import configuration.Configure;
@@ -12,8 +13,10 @@ public class ManagerInterface {
 	
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
-	
-	public ArrayList<Message> listOfMessages;
+	/**
+	 * End of list is most recent
+	 */
+	public LinkedList<Message> listOfMessages;
 	
 	public ManagerMessageSender sender;
 	
@@ -37,7 +40,7 @@ public class ManagerInterface {
 	ManagerScreen manScreen;
 	
 	public ManagerInterface(JFrame frame, long eID, String empName) {
-		listOfMessages = new ArrayList<Message>();
+		listOfMessages = new LinkedList<Message>();
 		this.frame=frame;
 		name=empName;
 		empID=eID;
@@ -62,7 +65,14 @@ public class ManagerInterface {
 		}
 	}
 
-		
+	/**
+	* Updates the current panel - makes them redraw all the buttons
+	 */
+	public void updateScreen() {
+		manScreen.updateScreen();
+		frame.revalidate();
+	}
+	
 	private void setUpMessageController() {
 		Socket listener;
 		try {
@@ -78,9 +88,21 @@ public class ManagerInterface {
 		
 	}
 	
+	public void deleteMessage(int index){
+		listOfMessages.remove(index);
+		updateScreen();
+	}
+	
 	public void sendMassNotification(String content){
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), content));
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'), content));
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('s'), content));
+	}
+
+
+	public void addMessageToList(Message m) {
+		listOfMessages.add(m);
+		updateScreen();
+		
 	}
 }

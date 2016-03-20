@@ -116,7 +116,7 @@ public class LogInScreen extends JPanel{
 		failedAttempt.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		failedAttempt.setEditable(false);
 		failedAttempt.setHorizontalAlignment(SwingConstants.CENTER);
-		failedAttempt.setBounds(550, 520, 100, 25);
+		failedAttempt.setBounds(450, 520, 300, 25);
 		failedAttempt.setForeground(Color.RED);
 		add(failedAttempt);
 		failedAttempt.setColumns(10);

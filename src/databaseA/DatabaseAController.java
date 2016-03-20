@@ -54,7 +54,7 @@ public class DatabaseAController extends Thread {
 				if(first=='L'){ //logging in
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
-					if(number>employeeList.size() || number<0){
+					if(number>=employeeList.size() || number<0){
 						out.writeUTF("0");
 					}
 					else{
@@ -97,7 +97,7 @@ public class DatabaseAController extends Thread {
 	public static void generateRandomEmployeeList(){
 		addEmployee("Christina Segerholm", 'w');
 		addEmployee("Athira Haridas",'m');
-		addEmployee("Annie Antony",'c');
+		//addEmployee("Annie Antony",'c');
 		//addEmployee("Nishtha Sharma",'o');
 		addEmployee("Emma Roussos",'w');
 		//addEmployee("Christina Parry",'h');

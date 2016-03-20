@@ -57,8 +57,12 @@ public class ManagerMessageListener extends Thread {
 		
 	}
 
+	/**
+	 * Add any messages to the list
+	 * @param m
+	 */
 	private void decodeMessage(Message m) {
-		//add messages to mi's message list
+		mi.addMessageToList(m);
 		
 	}
 	

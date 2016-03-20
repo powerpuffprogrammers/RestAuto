@@ -18,7 +18,7 @@ public class TabletApp {
 		LogInScreen logInPanel= new LogInScreen();
 		frame.setContentPane(logInPanel);
 		frame.pack();
-		frame.setSize(new Dimension(1200,600));
+		frame.setSize(new Dimension(1240,650));
 		while(true){
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out
@@ -30,7 +30,8 @@ public class TabletApp {
 				c.runUntilLogOut();
 			}
 			else if(logInPanel.loggedIn=='m'){
-				ManagerInterface h = new ManagerInterface(frame,logInPanel.currIDEntry, logInPanel.empName);
+				ManagerInterface m = new ManagerInterface(frame,logInPanel.currIDEntry, logInPanel.empName);
+				m.runUntilLogOut();
 			}
 			else if(logInPanel.loggedIn=='w'){
 				WaiterInterface w = new WaiterInterface(frame,logInPanel.currIDEntry,logInPanel.empName);

@@ -28,9 +28,15 @@ public class WaiterTickListScreen extends JPanel {
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
 		
+		updateScreen();
+	}
+
+	public void updateScreen() {
+		removeAll();
 		makeNameText();
 		makeLogOutButton();	
 		makeTicketButtons();
+		repaint();
 	}
 
 	private void makeNameText() {
@@ -40,7 +46,7 @@ public class WaiterTickListScreen extends JPanel {
 		nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		nameHeader.setText("Logged In As: "+ wi.name);
-		nameHeader.setBounds(0, 0, 200, 30);
+		nameHeader.setBounds(0, 0, 300, 30);
 		add(nameHeader);
 		nameHeader.setColumns(10);
 		
@@ -80,6 +86,7 @@ public class WaiterTickListScreen extends JPanel {
 		
 		//draw the button
 		JButton ticketButton = new JButton("#"+t.tableNumber);
+		ticketButton.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		ticketButton.setForeground(Color.BLACK);
 		ticketButton.setBackground(Color.WHITE);
 		ticketButton.addActionListener(new ActionListener() {
@@ -132,6 +139,25 @@ public class WaiterTickListScreen extends JPanel {
 		});
 		logOutButton.setBounds(1000, 0, 200, 30);
 		add(logOutButton);
+		
+	}
+
+	/**
+	 * makes a notification button on top of screen like banner
+	 * once it is clicked it closes it
+	 * @param content
+	 */
+	public void makeNotification(String content) {
+		JButton notificationButton = new JButton(content);
+		notificationButton.setForeground(Color.BLACK);
+		notificationButton.setBackground(Color.WHITE);
+		notificationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				remove(notificationButton);
+			}
+		});
+		notificationButton.setBounds(0, 0, 1200, 30);
+		add(notificationButton);
 		
 	}
 	
