@@ -56,7 +56,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			oneCategoryButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					currTabOpen = cat;
-					wi.updateScreen();
+					updateScreen();
 				}
 			});
 			oneCategoryButton.setBounds(350+i*150, 10, 150, 20);
@@ -76,7 +76,7 @@ public class WaiterOneTicketScreen extends JPanel {
 				oneDishButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						wi.addDishToTicket(menu.get(dish));
-						wi.updateScreen();
+						updateScreen();
 					}
 				});
 				oneDishButton.setBounds(350+i%4*200, 50+(i/4)*25, 200, 25);
@@ -89,14 +89,12 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makeTicketOnLeft() {
 		//Write Table Number
 		JTextField tableNum;
-		tableNum = new JTextField();
+		tableNum = new JTextField("Table #: "+ currTicket.tableNumber);
 		tableNum.setEditable(false);
 		tableNum.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNum.setHorizontalAlignment(SwingConstants.CENTER);
-		tableNum.setText("Table #: "+ currTicket.tableNumber);
 		tableNum.setBounds(0, 30, 300, 30);
 		add(tableNum);
-		tableNum.setColumns(10);
 		
 		//make a row for each item on the ticket (or up to 
 		ArrayList<Dish> listOfDishes = currTicket.listOfDishes;
@@ -117,7 +115,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			});
 			oneDishButton.setBounds(0, 30*row, 300, 30);
 			add(oneDishButton);
-			
+			//setComponentZOrder(oneDishButton);
 			i++;
 			row++;
 		}
@@ -125,27 +123,27 @@ public class WaiterOneTicketScreen extends JPanel {
 		
 		//last row is total
 		JTextField total;
-		total = new JTextField();
+		String price = ""+currTicket.price;
+		if(currTicket.price!=0){
+			price=price.substring(0,price.indexOf('.')+3);
+		}
+		total = new JTextField("Total: $"+ price);
 		total.setEditable(false);
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
-		total.setText("Total: "+ currTicket.price);
 		total.setBounds(0, 540, 300, 30);
 		add(total);
-		total.setColumns(10);
 		
 	}
 
 	private void makeNameText() {
 		JTextField nameHeader;
-		nameHeader = new JTextField();
+		nameHeader = new JTextField("Logged In As: "+ wi.name);
 		nameHeader.setEditable(false);
 		nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		nameHeader.setText("Logged In As: "+ wi.name);
 		nameHeader.setBounds(0, 0, 300, 30);
-		add(nameHeader);
-		nameHeader.setColumns(10);
+		add(nameHeader, getComponentCount());
 		
 	}
 	
@@ -163,7 +161,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			}
 		});
 		logOutButton.setBounds(1000, 0, 200, 30);
-		add(logOutButton);
+		add(logOutButton, getComponentCount());
 		
 	}
 	
@@ -181,7 +179,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			}
 		});
 		notifyManager.setBounds(600,570, 300, 30);
-		add(notifyManager);
+		add(notifyManager, getComponentCount());
 		
 	}
 	
@@ -199,7 +197,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			}
 		});
 		sendButton.setBounds(0,570, 300, 30);
-		add(sendButton);
+		add(sendButton, getComponentCount());
 		
 	}
 	
@@ -213,12 +211,57 @@ public class WaiterOneTicketScreen extends JPanel {
 		paidButton.setBackground(Color.RED);
 		paidButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.paid(currTicket.tableNumber);
+				//are you sure?
+				makeAreYouSure();
 			}
 		});
 		paidButton.setBounds(900,570, 300, 30);
-		add(paidButton);
+		add(paidButton, getComponentCount());
 		
+	}
+	
+	/**
+	 * Creates an are you sure message box
+	 */
+	private void makeAreYouSure() {
+		//Make a White box with "Are you sure"
+		JTextField areYouSure;
+		areYouSure = new JTextField("Are you sure table "+ currTicket.tableNumber +" paid?");
+		areYouSure.setEditable(false);
+		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
+		areYouSure.setBackground(Color.ORANGE);
+		areYouSure.setBounds(200, 100, 800, 300);
+		add(areYouSure);
+		setComponentZOrder(areYouSure, 2);
+		
+		
+		//Make yes button
+		JButton yes = new JButton("YES");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				wi.paid(currTicket.tableNumber);
+			}
+		});
+		yes.setBounds(300,300, 200, 30);
+		add(yes);
+		setComponentZOrder(yes, 1);
+		
+		//Make no button
+		JButton no = new JButton("NO");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(650,300, 200, 30);
+		add(no);
+		setComponentZOrder(no, 0);
+		repaint();
 	}
 	
 	/**
@@ -238,7 +281,7 @@ public class WaiterOneTicketScreen extends JPanel {
 			}
 		});
 		removeButton.setBounds(300,570, 300, 30);
-		add(removeButton);
+		add(removeButton, getComponentCount());
 		
 	}
 	
@@ -253,16 +296,28 @@ public class WaiterOneTicketScreen extends JPanel {
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
+		makeTicketOnLeft();
 		makeBackButton();
 		makeNotifyManagerButton();
 		makeSendTicketButton();
 		makePaidButton();
 		makeRemoveButton();
-		makeTicketOnLeft();
 		makeMenuChoices();
+		makeWhiteBackForTicket();
 		repaint();
+		validate();
 	}
 	
+	private void makeWhiteBackForTicket() {
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setBounds(0, 60, 300, 480);
+		add(whiteBox);
+		setComponentZOrder(whiteBox, getComponentCount()-1);
+		
+	}
+
 	/** makes a notification button on top of screen like banner
 	 * once it is clicked it closes it
 	 * @param content
@@ -274,10 +329,12 @@ public class WaiterOneTicketScreen extends JPanel {
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
+				updateScreen();
 			}
 		});
 		notificationButton.setBounds(0, 0, 1200, 30);
-		add(notificationButton);
+		add(notificationButton,0);
+		repaint();
 		
 	}
 	

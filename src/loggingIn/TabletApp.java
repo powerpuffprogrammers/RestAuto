@@ -18,7 +18,7 @@ public class TabletApp {
 		LogInScreen logInPanel= new LogInScreen();
 		frame.setContentPane(logInPanel);
 		frame.pack();
-		frame.setSize(new Dimension(1240,650));
+		frame.setSize(new Dimension(1200,640));
 		while(true){
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out

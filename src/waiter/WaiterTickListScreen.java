@@ -142,8 +142,7 @@ public class WaiterTickListScreen extends JPanel {
 		
 	}
 
-	/**
-	 * makes a notification button on top of screen like banner
+	/** makes a notification button on top of screen like banner
 	 * once it is clicked it closes it
 	 * @param content
 	 */
@@ -154,10 +153,12 @@ public class WaiterTickListScreen extends JPanel {
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
+				updateScreen();
 			}
 		});
 		notificationButton.setBounds(0, 0, 1200, 30);
-		add(notificationButton);
+		add(notificationButton,0);
+		repaint();
 		
 	}
 	

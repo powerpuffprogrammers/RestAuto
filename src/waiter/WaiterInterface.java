@@ -24,7 +24,7 @@ public class WaiterInterface {
 	private Gson jsonConverter;
 	public WaiterMessageSender sender;
 	
-	private JFrame frame;
+	JFrame frame;
 	
 	/**
 	 * Employee ID - this will be used to ID the tablet for the Message Controller
@@ -67,7 +67,7 @@ public class WaiterInterface {
 		//set up MC
 		setUpMessageController();
 		
-		generateTickets();
+		generateTickets(true);
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -143,6 +143,7 @@ public class WaiterInterface {
 	public void backToMainScreen(){
 		currTicket = null;
 		frame.setContentPane(ticketListScreen);
+		ticketListScreen.updateScreen();
 		frame.revalidate();
 	}
 
@@ -154,8 +155,19 @@ public class WaiterInterface {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
 	}
 	//By Athira
-	public void generateTickets(){
-				Dish a0 =  new Dish("Breadsticks",5.99, "Appetizer");
+	public void generateTickets(boolean emptyTickets){
+		if(emptyTickets){
+			Ticket T1=new Ticket(name,2,1,new ArrayList<Dish>());//table 2, waiter id=1
+			Ticket T2=new Ticket( name ,14,1,new ArrayList<Dish>());//table 14, waiter id=1
+			Ticket T3=new Ticket(name ,18,1,new ArrayList<Dish>());//table 18, waiter id=1
+			
+			listOfTickets.put(2,T1);
+			listOfTickets.put(14,T2);
+			listOfTickets.put(18,T3);
+			return;
+		}
+		
+			Dish a0 =  new Dish("Breadsticks",5.99, "Appetizer");
 				Dish a1 =  new Dish("Buffalo Wings",6.99, "Appetizer");
 				Dish a2 =  new Dish("Spiced Olives",5.99, "Appetizer");
 				Dish a3 =  new Dish("Chips and Guacamole",7.99, "Appetizer");
@@ -217,9 +229,9 @@ public class WaiterInterface {
 				dishlistT3.add(drinks.get(0));
 				dishlistT3.add(drinks.get(2));
 				
-				Ticket T1=new Ticket("Christina Segerholm",2,1,dishlistT1);//table 2, waiter id=1
-				Ticket T2=new Ticket("Christina Segerholm",14,1,dishlistT1);//table 14, waiter id=1
-				Ticket T3=new Ticket("Christina Segerholm",18,1,dishlistT1);//table 18, waiter id=1
+				Ticket T1=new Ticket(name,2,1,dishlistT1);//table 2, waiter id=1
+				Ticket T2=new Ticket(name,14,1,dishlistT1);//table 14, waiter id=1
+				Ticket T3=new Ticket(name,18,1,dishlistT1);//table 18, waiter id=1
 				
 				listOfTickets.put(2,T1);
 				listOfTickets.put(14,T2);
@@ -262,8 +274,7 @@ public class WaiterInterface {
 	public void paid(int tableNumber) {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), ""+tableNumber));
 		listOfTickets.remove(tableNumber);
-		updateScreen();
-		
+		backToMainScreen();
 	}
 
 /**
