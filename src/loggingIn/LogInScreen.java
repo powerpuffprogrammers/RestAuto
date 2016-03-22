@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 import javax.swing.JButton;
@@ -17,13 +15,19 @@ import javax.swing.SwingConstants;
 
 import configuration.Configure;
 
+/**
+ * Log in screen Panel.
+ * @author cms549
+ *
+ */
 public class LogInScreen extends JPanel{
 
 	public final String dataBaseAServerName = Configure.getDomainName("databaseacontroller");
 	public final int dataBaseAPortNumber = Configure.getPortNumber("databaseacontroller");
 	
 	/**
-	 * Disables the keypad when log in has been pressed
+	 * Disables the keypad when log in has been pressed.
+	 * Acts as a mutex.
 	 */
 	public boolean keypadLock;
 	
@@ -36,14 +40,21 @@ public class LogInScreen extends JPanel{
 	 * 'c' = chef
 	 */
 	public char loggedIn;
+	
+	/**
+	 * Name of employee you are logged in as.
+	 */
+	public String empName;
 
 	/**
 	 * Holds what user is currently typing
 	 */
 	public long currIDEntry;
 	
+	//JTextFields to draw out the screen
 	private JTextField textField;
 	private JTextField txtPleaseEnterEmployee;
+	private JTextField failedAttempt;
 	
 	/**
 	 * Creates the log in screen panel
@@ -62,25 +73,25 @@ public class LogInScreen extends JPanel{
 	}
 	
 	/**
-	 * When logged in button is pressed, this should be called
-	 * @param empID
+	 * When logged in button is pressed, this should be called to communicate with DB A.
+	 * @param empID - employee id you wish to log in with
 	 */
 	private void logInToDBA(long empID){
 		//set up socket (as client)
 		Socket client;
 		try {
 			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
-			OutputStream outStream = client.getOutputStream();
-			DataOutputStream out = new DataOutputStream(outStream);
-			InputStream inStream = client.getInputStream();
-			DataInputStream in = new DataInputStream(inStream);
+			DataOutputStream out = new DataOutputStream(client.getOutputStream());
+			DataInputStream in = new DataInputStream(client.getInputStream());
 			
 			//send request 
 			String message = "L:"+empID;
-			System.out.println("Writing to server:"+message);
 			out.writeUTF(message);
-			
-			loggedIn =in.readChar();
+			String ans =in.readUTF();
+			loggedIn=ans.charAt(0);
+			if(loggedIn!='0'&& loggedIn!='L'){
+				empName=ans.substring(1);
+			}
 			client.close();
 			
 		} catch (Exception e) {
@@ -91,7 +102,8 @@ public class LogInScreen extends JPanel{
 	}
 	
 	/**
-	 * Sets up the ID Text- display the current number as a JTextField that is non editable
+	 * Sets up the employee ID Text.
+	 *  Display the current input number as a JTextField.
 	 */
 	private void makeIDTextField(){
 		textField = new JTextField();
@@ -106,18 +118,35 @@ public class LogInScreen extends JPanel{
 	
 	private void makeKeypad(){
 		
+		failedAttempt = new JTextField("Employee ID not recognized.");
+		failedAttempt.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		failedAttempt.setEditable(false);
+		failedAttempt.setHorizontalAlignment(SwingConstants.CENTER);
+		failedAttempt.setBounds(450, 520, 300, 25);
+		failedAttempt.setForeground(Color.RED);
+		add(failedAttempt);
+		failedAttempt.setVisible(false);
+		
+		
 		JButton logInButton = new JButton("Log In");
 		logInButton.setForeground(Color.WHITE);
 		logInButton.setBackground(new Color(0, 128, 0));
 		logInButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				failedAttempt.setVisible(false);
 				while(keypadLock){}
 				keypadLock=true;
-				System.out.println("CALLING LOG IN");
 				logInToDBA(currIDEntry);
+				textField.setText("");
 				if(loggedIn=='0'){
-					textField.setText("");
 					currIDEntry=0;
+					failedAttempt.setText("Employee ID not recognized.");
+					failedAttempt.setVisible(true);
+				}
+				else if(loggedIn=='L'){
+					currIDEntry=0;
+					failedAttempt.setText("Employee already logged in.");
+					failedAttempt.setVisible(true);
 				}
 				keypadLock=false;
 			}
@@ -130,6 +159,7 @@ public class LogInScreen extends JPanel{
 		deleteButton.setBackground(new Color(255, 0, 0));
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				failedAttempt.setVisible(false);
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText("");
@@ -184,14 +214,36 @@ public class LogInScreen extends JPanel{
 	 * Sets up the Header Text "Please Enter Employee ID:" As a JTextField that is non editable
 	 */
 	private void makeHeaderText(){
-		txtPleaseEnterEmployee = new JTextField();
+		txtPleaseEnterEmployee = new JTextField("Please Enter Employee ID:");
 		txtPleaseEnterEmployee.setEditable(false);
 		txtPleaseEnterEmployee.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtPleaseEnterEmployee.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPleaseEnterEmployee.setText("Please Enter Employee ID:");
 		txtPleaseEnterEmployee.setBounds(500, 20, 200, 30);
 		add(txtPleaseEnterEmployee);
-		txtPleaseEnterEmployee.setColumns(10);
+
+	}
+
+	/**
+	 * Tell DB A that employee with ID id is logging out
+	 * @param empID - employee id
+	 */
+	public void logOut(long empID) {
+		//set up socket (as client)
+		Socket client;
+		try {
+			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
+			DataOutputStream out = new DataOutputStream(client.getOutputStream());
+			
+			//send log out
+			String message = "O:"+empID;
+			out.writeUTF(message);
+			client.close();
+			
+		} catch (Exception e) {
+			System.out.println("ERROR:");
+			loggedIn='0';
+			return;
+		}
 	}
 	
 }

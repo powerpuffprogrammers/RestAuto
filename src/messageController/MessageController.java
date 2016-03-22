@@ -3,7 +3,6 @@ package messageController;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-
 import configuration.Configure;
 
 /**
@@ -53,18 +52,19 @@ public class MessageController {
 	}
 	
 	
-	
 	public static void main(String[] args){
 		waiters= new HashMap<Long,Socket>();
 		hosts= new HashMap<Long,Socket>();
 		chefs=new HashMap<Long,Socket>();
 		managers= new HashMap<Long,Socket>();
+		Thread sender= new MessageControllerSender();
+		sender.start();
 		try {
 			ServerSocket server = new ServerSocket(portNumber);
 			
 			while(true){
 				Socket listener = server.accept();
-				Thread t= new MessageControllerHandler(listener);
+				Thread t= new MessageControllerListener(listener,(MessageControllerSender)sender);
 				t.start();
 			}
 		} catch (Exception e) {

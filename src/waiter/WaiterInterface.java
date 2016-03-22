@@ -4,25 +4,37 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.JFrame;
-
+import com.google.gson.Gson;
 import configuration.Configure;
 import databaseB.Dish;
+import databaseB.Menu;
 import databaseB.Ticket;
-import messageController.MessageControllerHandler;
+import messageController.Message;
+import messageController.SenderInfo;
 
 public class WaiterInterface {
 	
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
+	private Gson jsonConverter;
+	public WaiterMessageSender sender;
+	
+	JFrame frame;
+	
 	/**
 	 * Employee ID - this will be used to ID the tablet for the Message Controller
 	 */
 	long empID;
+	
+	/**
+	 * Employee Name- this will be displayed on the screen
+	 */
+	String name;
 	
 	/**
 	 * When this is true I return from constructor back to log in page
@@ -34,122 +46,196 @@ public class WaiterInterface {
 	 */
 	Ticket currTicket;
 	
-	//Appetizer, Drink, Entree, Desert
-	String currDishType;
-	
 	HashMap<Integer, Ticket> listOfTickets;
 	
-	HashMap<String,HashMap<String,Dish>>menu;
+	Menu menu;
 	
-	public WaiterInterface(JFrame frame, long eID) {
+	WaiterTickListScreen ticketListScreen;
+	WaiterOneTicketScreen oneTickScreen;
+	
+	public WaiterInterface(JFrame frame, long eID, String empName) {
+		jsonConverter = new Gson();
+		this.frame=frame;
+		name=empName;
+		listOfTickets = new HashMap<Integer, Ticket>();
 		empID=eID;
 		loggedOut=false;
 		
-		//load the menu
-		loadMenu();
+		//if problem loading menu return right away
+		if (!loadMenu()){
+			loggedOut=true;
+			return;
+		}
 		
 		//set up MC
 		setUpMessageController();
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "L"+name));
 		
-		//create waiter panel
-		WaiterPanel waiterPanel = new WaiterPanel();
+		generateTickets();
+		
+		//create waiter screen for list of tickets
+		ticketListScreen = new WaiterTickListScreen(this);
 		//set the screen to the waiter panel
-		frame.setContentPane(waiterPanel);
+		frame.setContentPane(ticketListScreen);
+		frame.revalidate();
 		
+		oneTickScreen = new WaiterOneTicketScreen(this);
+	}
+	
+	
+	public void runUntilLogOut(){
 		//Don't return until i logged out
-		while(!loggedOut){}
+		while(!loggedOut){
+			System.out.println(loggedOut);
+		}
+		//let the host know you are logging out
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "O"+name));
 	}
 
-	private void loadMenu() {
+	private boolean loadMenu() {
 		String DBBhost = Configure.getDomainName("DatabaseBController");
 		int DBBPortNum = Configure.getPortNumber("DatabaseBController");
-		Socket sock;
+		Socket sock=null;
 		try {
 			sock = new Socket(DBBhost, DBBPortNum);
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			//send a message wempID to MC so they sign you in
 			String logInToMC = "M";
 			out.writeUTF(logInToMC);
 			String jmenu = in.readUTF();
-			menu = JSON.toObject(jmenu);
+			menu = jsonConverter.fromJson(jmenu, Menu.class);
+			sock.close();
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("ERROR: can't load menu");
+			return false;
 		}
+		return true;
 		
 	}
 		
-	}
-
 	private void setUpMessageController() {
-		Socket listener;
+		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new WaiterMessageHandler(listener,empID, this);
+			Thread t= new WaiterMessageListener(listener,empID, this);
 			t.start();
+			sender = new WaiterMessageSender(listener,empID);
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Server: Disconnected from MC.");
+			try {
+				listener.close();
+			} catch (IOException e1) {}
 		}
 		
 	}
 
-	//An event should be generated each time the waiter clicks something on his screen
-	public void waiterEventListener ( WaiterEvent e ){
-		
-		if(e.type =='m' ){
-			//notify manager problem with table
-		}
-		else if(e.type=='b'){
-			//go back to previous screen
-		}
-		else if(e.type=='p'){
-			//send ticket to printer
-		}
-		else if(e.type=='s'){
-			//send ticket to chef
-		}
-		else if(e.type=='c'){
-			//send message to host that you are paid
-		}
-		else if(e.type =='a' ){ //if you are adding a dish
-	            double p = getPriceOfDish(e.dishName, currDishType);
-	            if(p>=0){
-	            	 currTicket.price = currTicket.price + p;
-	            	 addDishToTicket(e.dishName, currDishType);
-	            }
-	    }
-	    else if(e.type== 'r'){
-	        double p = getPriceOfDish(e.dishName, e.dishType);
-	        if(p>=0){
-	        	 currTicket.price = currTicket.price -p;
-	        	 removeDishFromTicket(e.dishName, e.dishType);
-	        }
-	    }
-		redrawScreen();
+	public void addDishToTicket(Dish dish) {
+		currTicket.addDishToTicket(dish.makeCopyOfDish());
+		updateScreen();
 	}
 
-	private void redrawScreen() {
-		// TODO Auto-generated method stub
+	public void removeDishFromTicket(int indexInTicket) {
+		currTicket.removeDishFromTicket(indexInTicket);
+		updateScreen();
+	}
+
+	
+	public void openTicketScreens(int ticketNumber) {
+		currTicket = listOfTickets.get(ticketNumber);
+		oneTickScreen.setTicket(currTicket);
+		frame.setContentPane(oneTickScreen);
+		frame.revalidate();
 		
 	}
+	
+	public void backToMainScreen(){
+		currTicket = null;
+		frame.setContentPane(ticketListScreen);
+		ticketListScreen.updateScreen();
+		frame.revalidate();
+	}
 
-	private void addDishToTicket(String dishName, String currDishType2) {
-		// TODO Auto-generated method stub
+	public void notifyManager(Ticket currTicket2) {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+	}
+
+	public void sendTicket(Ticket t){
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
+	}
+	
+	//By Athira
+	public void generateTickets(){
+			Ticket T1=new Ticket(name,2,empID);//table 2, waiter id=1
+			Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
+			Ticket T3=new Ticket(name ,18,empID);//table 18, waiter id=1
+			
+			listOfTickets.put(2,T1);
+			listOfTickets.put(14,T2);
+			listOfTickets.put(18,T3);
+	}
+
+	
+	/**
+	 * Adds a notification on current screen by calling another method in panel
+	 * @param content
+	 */
+	public void addNotification(String content) {
+		if(currTicket==null){
+			ticketListScreen.makeNotification(content);
+		}
+		else{
+			oneTickScreen.makeNotification(content);
+		}
+	}
+
+
+	/**
+	 * Updates the current panel - makes them redraw all the buttons
+	 */
+	public void updateScreen() {
+		if(currTicket==null){
+			ticketListScreen.updateScreen();
+		}
+		else{
+			oneTickScreen.updateScreen();
+		}
+		frame.revalidate();
+	}
+
+	/**
+	 * Alert host and take this ticket off the list
+	 * @param tableNumber
+	 */
+	public void paid(int tableNumber) {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), ""+tableNumber));
+		listOfTickets.remove(tableNumber);
+		backToMainScreen();
+	}
+
+/**
+ * Removes the array of dish names from the menu
+ * @param dishes
+ */
+	public void removeLowInventoryDishes(String[] dishes) {
+		//for each dish that we need to mark as low inventory
+		for(int i =0; i<dishes.length;i++){
+			String dishName = dishes[i];
+			Iterator<String> it = menu.menu.keySet().iterator();
+			//check each sub category for that dish
+			while(it.hasNext()){
+				String category = it.next();
+				HashMap<String, Dish> hm = menu.menu.get(category);
+				if(hm.containsKey(dishName)){
+					hm.remove(dishName);
+					break;
+				}
+			}
+		}
+		updateScreen();
 		
 	}
 
-	private void removeDishFromTicket(String dishName, String dishType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private double getPriceOfDish(String dish, String dishType) {
-		Dish d =menu.get(dishType).get(dish);
-		return d.price;
-	}
-
+	
 }

@@ -3,12 +3,18 @@ package configuration;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+/**
+ * This class will be used to get the port numbers and domain names of the different databases and message controller.
+ * @author cms549
+ * It gets the information from domainNames.txt and portNumbers.txt.
+ */
 public class Configure {
 
-	private static final String portNumFile = "../configuration/portNumbers.txt";
-	private static final String domainNameFile = "../configuration/domainNames.txt";
+	private static final String portNumFile = "src/configuration/portNumbers.txt";
+	private static final String domainNameFile = "src/configuration/domainNames.txt";
+	
 	/**
-	 * Reads the port number for the given server in the config file
+	 * Reads the port number for the given server in the configuration file
 	 * @param serverName = name of server (databaseacontroller) this is not case sensitive
 	 * @returns the port number or -1 on error
 	 */
@@ -21,7 +27,7 @@ public class Configure {
 			while ((currLine = br.readLine()) != null) {
 				
 				String[] arr = currLine.split("=");
-				if(arr[0]==serverName.toLowerCase()){
+				if(arr[0].equals(serverName.toLowerCase())){
 					return Integer.parseInt(arr[1]);
 				}
 			}
@@ -31,7 +37,12 @@ public class Configure {
 		return -1;
 	}
 		
-public static String getDomainName(String serverName){
+	/**
+	 * Reads the domain name for the given server in the configuration file
+	 * @param serverName = name of server (databaseacontroller) this is not case sensitive
+	 * @returns the domain name or null on error
+	 */
+	public static String getDomainName(String serverName){
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(domainNameFile))){
 
@@ -40,7 +51,7 @@ public static String getDomainName(String serverName){
 			while ((currLine = br.readLine()) != null) {
 				
 				String[] arr = currLine.split("=");
-				if(arr[0]==serverName.toLowerCase()){
+				if(arr[0].equals(serverName.toLowerCase())){
 					return arr[1];
 				}
 			}

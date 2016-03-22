@@ -1,17 +1,22 @@
 package messageController;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-public class MessageControllerHandler  extends Thread{
+import com.google.gson.Gson;
 
+public class MessageControllerListener  extends Thread{
+
+	private Gson gson;
 	private Socket currListener;
+	private MessageControllerSender sender;
 	
-	public MessageControllerHandler(Socket listener) {
+	public MessageControllerListener(Socket listener, MessageControllerSender sender) {
+		gson = new Gson();
 		currListener=listener;
+		this.sender=sender;
 	}
 	
 	public void run(){
@@ -19,7 +24,6 @@ public class MessageControllerHandler  extends Thread{
 		Integer empID=0;
 		try {
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			DataOutputStream out = new DataOutputStream(currListener.getOutputStream());
 			//Add this guy to the list of listeners
 			String logIn =in.readUTF();
 			pos = logIn.charAt(0);
@@ -41,8 +45,10 @@ public class MessageControllerHandler  extends Thread{
 				return;
 			}
 			while(true){
-				//DECODE THE MESSAGE
-				//CREATE A NEW ONE TO SEND
+				String message =in.readUTF();
+				Message m = gson.fromJson(message, Message.class);
+				//Add the forwarded message to message controller
+				sender.pendingMessages.offer(m);
 			}
 			
 			

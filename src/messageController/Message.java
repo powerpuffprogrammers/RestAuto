@@ -4,33 +4,24 @@ public class Message {
 	
 	
 	//Info about sender
-	char senderPosition;
+	public SenderInfo senderInfo;
 	
-	//Info about reciever
-	char recieverPosition;
+	//Info about receiver
+	public SenderInfo receiverInfo;
 	
 	
 	//Actual message
-	String content;
+	public String content;
 	
-	public Message(SenderInfo s, RecieverInfo r, String mess){
+	public Message(SenderInfo s, SenderInfo r, String mess){
 		//Load in sender info
-		senderPosition =s.senderPosition;
+		senderInfo =s;
 		
-		//Load in reciever info
-		recieverPosition = r.recieverPosition;
+		//Load in receiver info
+		receiverInfo = r;
 		
 		//Load in actual message
 		content = mess;
 	}
 
-	public char getSenderPosition() {
-		
-		return senderPosition;
-	}
-
-	public String getContent() {
-		// TODO Auto-generated method stub
-		return content;
-	}
 }
