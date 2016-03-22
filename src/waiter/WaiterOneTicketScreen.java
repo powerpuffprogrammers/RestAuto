@@ -87,6 +87,12 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 
 	private void makeTicketOnLeft() {
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setBounds(0, 60, 300, 500);
+		add(whiteBox);
+		
 		//Write Table Number
 		JTextField tableNum;
 		tableNum = new JTextField("Table #: "+ currTicket.tableNumber);
@@ -94,7 +100,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		tableNum.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNum.setHorizontalAlignment(SwingConstants.CENTER);
 		tableNum.setBounds(0, 30, 300, 30);
-		add(tableNum);
+		whiteBox.add(tableNum);
 		
 		//make a row for each item on the ticket (or up to 
 		ArrayList<Dish> listOfDishes = currTicket.listOfDishes;
@@ -114,7 +120,7 @@ public class WaiterOneTicketScreen extends JPanel {
 				}
 			});
 			oneDishButton.setBounds(0, 30*row, 300, 30);
-			add(oneDishButton);
+			whiteBox.add(oneDishButton);
 			//setComponentZOrder(oneDishButton);
 			i++;
 			row++;
@@ -132,10 +138,13 @@ public class WaiterOneTicketScreen extends JPanel {
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
 		total.setBounds(0, 540, 300, 30);
-		add(total);
+		whiteBox.add(total);
 		
 	}
 
+	/**
+	 * writes the waiter's name at the top left
+	 */
 	private void makeNameText() {
 		JTextField nameHeader;
 		nameHeader = new JTextField("Logged In As: "+ wi.name);
@@ -175,7 +184,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		notifyManager.setBackground(Color.ORANGE);
 		notifyManager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.notifyManager(currTicket);
+				makeAreYouSure("you want to notify the manager?",2);
 			}
 		});
 		notifyManager.setBounds(600,570, 300, 30);
@@ -212,7 +221,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		paidButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//are you sure?
-				makeAreYouSure();
+				makeAreYouSure("table "+ currTicket.tableNumber +" paid?",0);
 			}
 		});
 		paidButton.setBounds(900,570, 300, 30);
@@ -223,10 +232,10 @@ public class WaiterOneTicketScreen extends JPanel {
 	/**
 	 * Creates an are you sure message box
 	 */
-	private void makeAreYouSure() {
+	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
 		JTextField areYouSure;
-		areYouSure = new JTextField("Are you sure table "+ currTicket.tableNumber +" paid?");
+		areYouSure = new JTextField("Are you sure "+m);
 		areYouSure.setEditable(false);
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
@@ -242,7 +251,12 @@ public class WaiterOneTicketScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.paid(currTicket.tableNumber);
+				if (i ==0){
+					wi.paid(currTicket.tableNumber);
+				}
+				else if(i==2){
+					wi.notifyManager(currTicket);
+				}
 			}
 		});
 		yes.setBounds(300,300, 200, 30);

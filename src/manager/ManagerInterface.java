@@ -1,7 +1,6 @@
 package manager;
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;

@@ -142,7 +142,7 @@ public class ChefInterface {
         dishlist.add(newdish1);
         dishlist.add(newdish2);
         dishlist.add(newdish3);
-        Ticket ticket = new Ticket("Christina Segerholm",2,1,dishlist);
+        Ticket ticket = new Ticket("Christina Segerholm",2,1);
         chefTicketListener(ticket);
         newdish =  new Dish("Jalapeno Fries",3.99, "Appetizer");
         newdish1 =  new Dish("Creme Bulee",5.99, "Dessert");
@@ -153,7 +153,7 @@ public class ChefInterface {
         dishlist1.add(newdish1);
         dishlist1.add(newdish2);
         dishlist1.add(newdish3);
-        Ticket ticket1 = new Ticket("Christina Segerholm",14,1,dishlist1);
+        Ticket ticket1 = new Ticket("Christina Segerholm",14,1);
         chefTicketListener(ticket1);
         newdish =  new Dish("Cheese Pops",3.99, "Appetizer");
         newdish1 =  new Dish("Ice cream",4.99, "Dessert");
@@ -164,7 +164,7 @@ public class ChefInterface {
         dishlist2.add(newdish1);
         dishlist2.add(newdish2);
         dishlist2.add(newdish3);
-        Ticket ticket2 = new Ticket("Christina Segerholm",18,1,dishlist2);
+        Ticket ticket2 = new Ticket("Christina Segerholm",18,1);
         chefTicketListener(ticket2);
         newdish =  new Dish("Texas Cheese Fries",3.99, "Appetizer");
         newdish1 =  new Dish("Cake",5.99, "Dessert");
@@ -175,7 +175,7 @@ public class ChefInterface {
         dishlist3.add(newdish1);
         dishlist3.add(newdish2);
         dishlist3.add(newdish3);
-        Ticket ticket3 = new Ticket("Christina Segerholm",24,1,dishlist3);
+        Ticket ticket3 = new Ticket("Christina Segerholm",24,1);
         chefTicketListener(ticket3);
     }
 

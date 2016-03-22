@@ -1,25 +1,43 @@
 package databaseB;
 
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 3/16
-
 import java.util.ArrayList;
 
+/**
+ * Data structure to hold the ticket.
+ * Used by waiter and chef.
+ * @author cms549
+ *
+ */
 public class Ticket {
-	//table number this order belongs to
+	/**
+	 * table number this order belongs to
+	 */
 	public int tableNumber;
-	//name of waiter this ticket is under
+	/**
+	 * name of waiter this ticket is under
+	 */
 	public String waiterName;
-	//id of waiter this ticket belongs to
+	/**
+	 * id of waiter this ticket belongs to
+	 */
 	public long waiterID;
-	//status of ticket: u=unstarted, s=semi started, S=started, f=finished
+	/**
+	 * status of ticket: u=unstarted, s=semi started, S=started, f=finished
+	 */
 	public char status;
-	//List of dishes on the ticket
+	/**
+	 * List of dishes on the ticket
+	 */
 	public ArrayList<Dish> listOfDishes;
 	
-	//unique id of ticket
+	/**
+	 * unique id of ticket
+	 */
 	public long ticketNumber;
 	
-	//total price of ticket
+	/**
+	 * total price of ticket
+	 */
 	public double price;
 	
 	//Counters used to figure out the status of the ticket
@@ -27,21 +45,28 @@ public class Ticket {
 	public int amountOfDishesStarted;
 	public int amountOfDishesFinished;
 	public int amountOfDishes;
+	
+	//Used to keep track of recently sat tables and hot food for waiters
 	public boolean recentlySat;
 	public boolean hotFood;
 	
-	
-	public Ticket(String waiterName,int tableNum, long waiterID, ArrayList<Dish> listOfDishes){
+	/**
+	 * Creates a new empty ticket with the following
+	 * @param waiterName - name of waiter for this ticket
+	 * @param tableNum - table number the ticket is under
+	 * @param waiterID - id of the waiter
+	 */
+	public Ticket(String waiterName,int tableNum, long waiterID){
 		this.waiterName = waiterName;
 		this.tableNumber=tableNum;
 		this.waiterID= waiterID;
 		this.status='u';
-		this.listOfDishes= listOfDishes;
-		amountOfDishes = listOfDishes.size();
-		amountOfDishesUnstarted = listOfDishes.size();
+		this.listOfDishes= new ArrayList<Dish>();
+		amountOfDishes = 0;
+		amountOfDishesUnstarted = 0;
+		this.price=0;
 		amountOfDishesStarted = 0;
 		amountOfDishesFinished = 0;
-		this.price=0;
 	}
 	
 	/**

@@ -2,8 +2,8 @@ package waiter;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -61,13 +61,17 @@ public class WaiterInterface {
 		empID=eID;
 		loggedOut=false;
 		
-		//load the menu
-		loadMenu();
+		//if problem loading menu return right away
+		if (!loadMenu()){
+			loggedOut=true;
+			return;
+		}
 		
 		//set up MC
 		setUpMessageController();
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "L"+name));
 		
-		generateTickets(true);
+		generateTickets();
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -84,39 +88,45 @@ public class WaiterInterface {
 		while(!loggedOut){
 			System.out.println(loggedOut);
 		}
+		//let the host know you are logging out
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "O"+name));
 	}
 
-	private void loadMenu() {
+	private boolean loadMenu() {
 		String DBBhost = Configure.getDomainName("DatabaseBController");
 		int DBBPortNum = Configure.getPortNumber("DatabaseBController");
-		Socket sock;
+		Socket sock=null;
 		try {
 			sock = new Socket(DBBhost, DBBPortNum);
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			//send a message wempID to MC so they sign you in
 			String logInToMC = "M";
 			out.writeUTF(logInToMC);
 			String jmenu = in.readUTF();
 			menu = jsonConverter.fromJson(jmenu, Menu.class);
+			sock.close();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("ERROR: can't load menu");
+			return false;
 		}
+		return true;
 		
 	}
 		
 	private void setUpMessageController() {
-		Socket listener;
+		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
 			Thread t= new WaiterMessageListener(listener,empID, this);
 			t.start();
 			sender = new WaiterMessageSender(listener,empID);
 			
-			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Server: Disconnected from MC.");
+			try {
+				listener.close();
+			} catch (IOException e1) {}
 		}
 		
 	}
@@ -154,90 +164,17 @@ public class WaiterInterface {
 	public void sendTicket(Ticket t){
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
 	}
+	
 	//By Athira
-	public void generateTickets(boolean emptyTickets){
-		if(emptyTickets){
-			Ticket T1=new Ticket(name,2,1,new ArrayList<Dish>());//table 2, waiter id=1
-			Ticket T2=new Ticket( name ,14,1,new ArrayList<Dish>());//table 14, waiter id=1
-			Ticket T3=new Ticket(name ,18,1,new ArrayList<Dish>());//table 18, waiter id=1
+	public void generateTickets(){
+			Ticket T1=new Ticket(name,2,empID);//table 2, waiter id=1
+			Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
+			Ticket T3=new Ticket(name ,18,empID);//table 18, waiter id=1
 			
 			listOfTickets.put(2,T1);
 			listOfTickets.put(14,T2);
 			listOfTickets.put(18,T3);
-			return;
-		}
-		
-			Dish a0 =  new Dish("Breadsticks",5.99, "Appetizer");
-				Dish a1 =  new Dish("Buffalo Wings",6.99, "Appetizer");
-				Dish a2 =  new Dish("Spiced Olives",5.99, "Appetizer");
-				Dish a3 =  new Dish("Chips and Guacamole",7.99, "Appetizer");
-				
-				Dish e0 =  new Dish("Eggplant Parmesan",11.99, "Entree");
-				Dish e1 =  new Dish("Pasta",8.99, "Entree");
-				Dish e2 =  new Dish("Pizza",7.99, "Entree");
-				Dish e3 =  new Dish("Chicken Salad",12.99, "Entree");
-				
-				Dish de0 =  new Dish("Tiramasu",13.99, "Dessert");
-				Dish de1 =  new Dish("Ice Cream",2.99, "Dessert");
-				Dish de2 =  new Dish("Chocolate Cake",6.99, "Dessert");
-				Dish de3 =  new Dish("Pecan Tart",4.99, "Dessert");
-				
-				Dish dr0=new Dish("Water", 0.00, "Drink");
-				Dish dr1=new Dish("Coke", 1.99, "Drink");
-				Dish dr2=new Dish("Pepsi", 1.99, "Drink");
-				Dish dr3=new Dish("Milk", 1.49, "Drink");//for chrissy :)
-				
-				ArrayList<Dish> appetizers= new ArrayList<Dish>();
-				ArrayList<Dish> entree=new ArrayList<Dish>();
-				ArrayList<Dish> dessert=new ArrayList<Dish>();
-				ArrayList<Dish> drinks=new ArrayList<Dish>();
-				
-				appetizers.add(a0);appetizers.add(a1);appetizers.add(a2);appetizers.add(a3);
-				
-				entree.add(e0);entree.add(e1);entree.add(e2);entree.add(e3);
-				
-				dessert.add(de0);dessert.add(de1);dessert.add(de2);dessert.add(de3);
-				
-				drinks.add(dr0);drinks.add(dr1);drinks.add(dr2);drinks.add(dr3);
-				
-				//now we can make so many combinations!! 
-				
-				ArrayList<Dish> dishlistT1= new ArrayList<Dish>();
-				dishlistT1.add(appetizers.get(0));
-				dishlistT1.add(appetizers.get(2));
-				dishlistT1.add(entree.get(1));
-				dishlistT1.add(entree.get(0));
-				dishlistT1.add(dessert.get(0));
-				dishlistT1.add(drinks.get(2));
-				dishlistT1.add(drinks.get(0));
-				
-				ArrayList<Dish> dishlistT2= new ArrayList<Dish>();
-				dishlistT2.add(appetizers.get(0));
-				dishlistT2.add(appetizers.get(0));
-				dishlistT2.add(entree.get(2));
-				dishlistT2.add(entree.get(3));
-				dishlistT2.add(dessert.get(2));
-				dishlistT2.add(drinks.get(1));
-				dishlistT2.add(drinks.get(3));
-				
-				ArrayList<Dish> dishlistT3= new ArrayList<Dish>();
-				dishlistT3.add(appetizers.get(3));
-				dishlistT3.add(appetizers.get(2));
-				dishlistT3.add(entree.get(0));
-				dishlistT3.add(entree.get(2));
-				dishlistT3.add(dessert.get(3));
-				dishlistT3.add(drinks.get(0));
-				dishlistT3.add(drinks.get(2));
-				
-				Ticket T1=new Ticket(name,2,1,dishlistT1);//table 2, waiter id=1
-				Ticket T2=new Ticket(name,14,1,dishlistT1);//table 14, waiter id=1
-				Ticket T3=new Ticket(name,18,1,dishlistT1);//table 18, waiter id=1
-				
-				listOfTickets.put(2,T1);
-				listOfTickets.put(14,T2);
-				listOfTickets.put(18,T3);
-				
-			}
+	}
 
 	
 	/**

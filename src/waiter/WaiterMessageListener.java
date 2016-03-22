@@ -18,14 +18,21 @@ public class WaiterMessageListener extends Thread {
 	private Socket sock;
 	private WaiterInterface wi;
 	private Gson gson;
-	
+	/**
+	 * Constructor
+	 * @param listener
+	 * @param empID
+	 * @param wI
+	 */
 	public WaiterMessageListener(Socket listener, long empID, WaiterInterface wI) {
 		sock=listener;
 		this.empID=empID;
 		wi=wI;
 		gson= new Gson();
 	}
-	
+	/**
+	 * Listens for messages sent from the MC
+	 */
 	public void run(){
 		DataInputStream in = null;
 		try {
@@ -45,17 +52,11 @@ public class WaiterMessageListener extends Thread {
 			
 		}catch (EOFException e) { 
 			try {
-				if(in!=null){
-					in.close();
-				}
 				sock.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
 			}
-			
 		}catch (Exception e) {
 			System.out.println("Waiter Listener disconnected from MC.");
-			e.printStackTrace();
 		} 
 		
 		
