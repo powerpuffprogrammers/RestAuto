@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import databaseB.Ticket;
+import dataBaseC.Ticket;
 
 import javax.swing.JButton;
 import java.awt.Color;
@@ -157,7 +157,7 @@ public class WaiterTickListScreen extends JPanel {
 		areYouSure.setBackground(Color.ORANGE);
 		areYouSure.setBounds(200, 100, 800, 300);
 		add(areYouSure);
-		setComponentZOrder(areYouSure, 2);
+		setComponentZOrder(areYouSure, 0);
 		
 		
 		//Make yes button
@@ -169,9 +169,8 @@ public class WaiterTickListScreen extends JPanel {
 				wi.loggedOut=true;
 			}
 		});
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
+		yes.setBounds(100,100, 200, 30);
+		areYouSure.add(yes);
 		
 		//Make no button
 		JButton no = new JButton("NO");
@@ -182,9 +181,8 @@ public class WaiterTickListScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
+		no.setBounds(450,100, 200, 30);
+		areYouSure.add(no);
 		repaint();
 	}
 	

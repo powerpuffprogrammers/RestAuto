@@ -5,7 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import chef.ChefInterface;
-import databaseB.Ticket;
+import dataBaseC.Ticket;
 import waiter.WaiterInterface;
 
 import java.awt.Color;

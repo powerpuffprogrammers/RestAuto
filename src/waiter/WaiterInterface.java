@@ -10,9 +10,9 @@ import java.util.Iterator;
 import javax.swing.JFrame;
 import com.google.gson.Gson;
 import configuration.Configure;
-import databaseB.Dish;
-import databaseB.Menu;
-import databaseB.Ticket;
+import dataBaseC.Dish;
+import dataBaseC.Menu;
+import dataBaseC.Ticket;
 import messageController.Message;
 import messageController.SenderInfo;
 
@@ -86,18 +86,18 @@ public class WaiterInterface {
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
-			System.out.println(loggedOut);
+			System.out.print(loggedOut);
 		}
 		//let the host know you are logging out
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "O"+name));
 	}
 
 	private boolean loadMenu() {
-		String DBBhost = Configure.getDomainName("DatabaseBController");
-		int DBBPortNum = Configure.getPortNumber("DatabaseBController");
+		String DBhost = Configure.getDomainName("DatabaseCController");
+		int DBPortNum = Configure.getPortNumber("DatabaseCController");
 		Socket sock=null;
 		try {
-			sock = new Socket(DBBhost, DBBPortNum);
+			sock = new Socket(DBhost, DBPortNum);
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String logInToMC = "M";

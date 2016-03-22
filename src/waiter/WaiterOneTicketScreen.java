@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import databaseB.Dish;
-import databaseB.Ticket;
+import dataBaseC.Dish;
+import dataBaseC.Ticket;
 
 public class WaiterOneTicketScreen extends JPanel {
 
@@ -90,7 +90,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		JTextField whiteBox;
 		whiteBox = new JTextField();
 		whiteBox.setEditable(false);
-		whiteBox.setBounds(0, 60, 300, 500);
+		whiteBox.setBounds(0, 30, 300, 500);
 		add(whiteBox);
 		
 		//Write Table Number
@@ -99,7 +99,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		tableNum.setEditable(false);
 		tableNum.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNum.setHorizontalAlignment(SwingConstants.CENTER);
-		tableNum.setBounds(0, 30, 300, 30);
+		tableNum.setBounds(0, 0, 300, 30);
 		whiteBox.add(tableNum);
 		
 		//make a row for each item on the ticket (or up to 
@@ -119,9 +119,8 @@ public class WaiterOneTicketScreen extends JPanel {
 					lastDishSelected = index;
 				}
 			});
-			oneDishButton.setBounds(0, 30*row, 300, 30);
+			oneDishButton.setBounds(0, 60+30*i, 300, 30);
 			whiteBox.add(oneDishButton);
-			//setComponentZOrder(oneDishButton);
 			i++;
 			row++;
 		}
@@ -137,7 +136,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		total.setEditable(false);
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
-		total.setBounds(0, 540, 300, 30);
+		total.setBounds(0, 510, 300, 30);
 		whiteBox.add(total);
 		
 	}
@@ -317,19 +316,8 @@ public class WaiterOneTicketScreen extends JPanel {
 		makePaidButton();
 		makeRemoveButton();
 		makeMenuChoices();
-		makeWhiteBackForTicket();
 		repaint();
 		validate();
-	}
-	
-	private void makeWhiteBackForTicket() {
-		JTextField whiteBox;
-		whiteBox = new JTextField();
-		whiteBox.setEditable(false);
-		whiteBox.setBounds(0, 60, 300, 480);
-		add(whiteBox);
-		setComponentZOrder(whiteBox, getComponentCount()-1);
-		
 	}
 
 	/** makes a notification button on top of screen like banner

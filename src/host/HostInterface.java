@@ -13,8 +13,8 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import dataBaseC.Table;
-import dataBaseC.TableList;
+import databaseB.Table;
+import databaseB.TableList;
 import messageController.Message;
 import messageController.SenderInfo;
 
@@ -111,11 +111,11 @@ public class HostInterface {
 	 * @return true on success, false on failure
 	 */
 	private boolean loadTables() {
-		String DBChost = Configure.getDomainName("DatabaseCController");
-		int DBCPortNum = Configure.getPortNumber("DatabaseCController");
+		String DBhost = Configure.getDomainName("DatabaseBController");
+		int DBPortNum = Configure.getPortNumber("DatabaseBController");
 		Socket sock=null;
 		try {
-			sock = new Socket(DBChost, DBCPortNum);
+			sock = new Socket(DBhost, DBPortNum);
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String logInToMC = "T";

@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import databaseB.Dish;
-import databaseB.Ticket;
+import dataBaseC.Dish;
+import dataBaseC.Ticket;
 
 //Starts the DB B
 public class ChefInterface {

@@ -1,4 +1,4 @@
-package databaseB;
+package dataBaseC;
 
 /**
  * Hold each ingredient's data

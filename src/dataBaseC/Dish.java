@@ -1,8 +1,8 @@
-package databaseB;
+package dataBaseC;
 
 /**
  * Data structure to hold dish name, price, and status.
- * Used by waiter, chef, and Database B
+ * Used by waiter, chef, and Database C
  * @author cms549
  */
 public class Dish {

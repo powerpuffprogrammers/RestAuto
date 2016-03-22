@@ -76,7 +76,7 @@ public class ManagerScreen extends JPanel {
 		areYouSure.setBackground(Color.ORANGE);
 		areYouSure.setBounds(200, 100, 800, 300);
 		add(areYouSure);
-		setComponentZOrder(areYouSure, 2);
+		setComponentZOrder(areYouSure, 0);
 		
 		
 		//Make yes button
@@ -88,10 +88,9 @@ public class ManagerScreen extends JPanel {
 				mi.loggedOut=true;
 			}
 		});
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
-		
+		yes.setBounds(100,100, 200, 30);
+		areYouSure.add(yes);
+				
 		//Make no button
 		JButton no = new JButton("NO");
 		no.setForeground(Color.BLACK);
@@ -101,9 +100,8 @@ public class ManagerScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
+		no.setBounds(450,100, 200, 30);
+		areYouSure.add(no);
 		repaint();
 	}
 	
@@ -141,10 +139,48 @@ public class ManagerScreen extends JPanel {
 		newMess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: bring up new screen for compose message
+				newMessageScreen();
 			}
 		});
 		newMess.setBounds(0, 570, 200, 30);
 		add(newMess);
+		
+	}
+
+	private void newMessageScreen() {
+		// Draw the box
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setBounds(100, 100, 800, 400);
+		add(whiteBox);
+		
+		
+		//Make send button
+		JButton yes = new JButton("SEND");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mi.sendMassNotification("CONTENT");
+			}
+		});
+		yes.setBounds(100,100, 200, 30);
+		whiteBox.add(yes);
+				
+		//Make close button
+		JButton no = new JButton("CLOSE");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(450,100, 200, 30);
+		whiteBox.add(no);
+		repaint();
+		
 		
 	}
 
