@@ -1,6 +1,7 @@
 package chef;
 
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +10,12 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import databaseB.Dish;
-import databaseB.Ticket;
+import dataBaseC.Dish;
+import dataBaseC.Ticket;
+import host.HostMessageListener;
+import host.HostMessageSender;
+import messageController.Message;
+import messageController.SenderInfo;
 
 //Starts the DB B
 public class ChefInterface {
@@ -23,14 +28,13 @@ public class ChefInterface {
 	
 	public boolean loggedOut;
 	
-	
-	
 	//gives you the currTicketNumber you should give the next ticket created
 	static long currTicketNumber =0;
 	
-	
 	//Ticket number to ticket
 	HashMap<Long, Ticket>ticketLookup;
+	
+	public ChefMessageSender sender;
 	
 	//Ticket Queue = holds all ticket orders
 	public ArrayList<Long> ticketQueueUnstarted;
@@ -118,16 +122,21 @@ public class ChefInterface {
 	}
 
 	private void setUpMessageController() {
-		Socket listener;
+		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new ChefMessageHandler(listener,empID, this);
+			Thread t= new ChefMessageListener(listener,empID, this);
 			t.start();
+			sender = new ChefMessageSender(listener,empID);
+			
 			
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			System.out.println("Host: Disconnected from MC.");
+			try {
+				listener.close();
+			} catch (IOException e1) {}
 		}
+		
 		
 	}
 	
@@ -142,7 +151,7 @@ public class ChefInterface {
         dishlist.add(newdish1);
         dishlist.add(newdish2);
         dishlist.add(newdish3);
-        Ticket ticket = new Ticket("Christina Segerholm",2,1,dishlist);
+        Ticket ticket = new Ticket("Christina Segerholm",2,1);
         chefTicketListener(ticket);
         newdish =  new Dish("Jalapeno Fries",3.99, "Appetizer");
         newdish1 =  new Dish("Creme Bulee",5.99, "Dessert");
@@ -153,7 +162,7 @@ public class ChefInterface {
         dishlist1.add(newdish1);
         dishlist1.add(newdish2);
         dishlist1.add(newdish3);
-        Ticket ticket1 = new Ticket("Christina Segerholm",14,1,dishlist1);
+        Ticket ticket1 = new Ticket("Christina Segerholm",14,1);
         chefTicketListener(ticket1);
         newdish =  new Dish("Cheese Pops",3.99, "Appetizer");
         newdish1 =  new Dish("Ice cream",4.99, "Dessert");
@@ -164,7 +173,7 @@ public class ChefInterface {
         dishlist2.add(newdish1);
         dishlist2.add(newdish2);
         dishlist2.add(newdish3);
-        Ticket ticket2 = new Ticket("Christina Segerholm",18,1,dishlist2);
+        Ticket ticket2 = new Ticket("Christina Segerholm",18,1);
         chefTicketListener(ticket2);
         newdish =  new Dish("Texas Cheese Fries",3.99, "Appetizer");
         newdish1 =  new Dish("Cake",5.99, "Dessert");
@@ -175,7 +184,7 @@ public class ChefInterface {
         dishlist3.add(newdish1);
         dishlist3.add(newdish2);
         dishlist3.add(newdish3);
-        Ticket ticket3 = new Ticket("Christina Segerholm",24,1,dishlist3);
+        Ticket ticket3 = new Ticket("Christina Segerholm",24,1);
         chefTicketListener(ticket3);
     }
 
@@ -189,15 +198,18 @@ public class ChefInterface {
 		
 	}
 
-
-	
-	//To implement:
-/*
-	//adds ingredient to inventory returns false if ingredient already exists
-	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
-		//send message to DBBcontroller
-		return true;
+	/**
+	 * Sends a notification to the manager
+	 */
+	public void notifyManager() {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help in the kitchen."));
+		updateScreen();
 	}
-//	public void removeIngredientToInventory(String ingredientName);
-*/
+
+
+	private void updateScreen() {
+		chefPanel.updateScreen();
+		
+	}
+	
 }

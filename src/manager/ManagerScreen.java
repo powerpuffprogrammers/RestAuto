@@ -54,7 +54,7 @@ public class ManagerScreen extends JPanel {
 		logOutButton.setBackground(Color.RED);
 		logOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mi.loggedOut=true;
+				makeAreYouSure();
 			}
 		});
 		logOutButton.setBounds(1000, 0, 200, 30);
@@ -62,6 +62,51 @@ public class ManagerScreen extends JPanel {
 		
 	}
 
+
+	/**
+	 * Creates an are you sure message box
+	 */
+	private void makeAreYouSure() {
+		//Make a White box with "Are you sure"
+		JTextField areYouSure;
+		areYouSure = new JTextField("Are you sure you want to log out?");
+		areYouSure.setEditable(false);
+		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
+		areYouSure.setBackground(Color.ORANGE);
+		areYouSure.setBounds(250, 150, 700, 300);
+		add(areYouSure);
+		setComponentZOrder(areYouSure, 0);
+		
+		
+		//Make yes button
+		JButton yes = new JButton("YES");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mi.loggedOut=true;
+			}
+		});
+		yes.setBounds(50,200, 200, 30);
+		areYouSure.add(yes);
+				
+		//Make no button
+		JButton no = new JButton("NO");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(450,200, 200, 30);
+		areYouSure.add(no);
+		repaint();
+	}
+	
+
+	
 	/** 
 	* Sets up the Delete Message Button
 	 */
@@ -94,10 +139,48 @@ public class ManagerScreen extends JPanel {
 		newMess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: bring up new screen for compose message
+				newMessageScreen();
 			}
 		});
 		newMess.setBounds(0, 570, 200, 30);
 		add(newMess);
+		
+	}
+
+	private void newMessageScreen() {
+		// Draw the box
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setBounds(100, 100, 800, 400);
+		add(whiteBox);
+		
+		
+		//Make send button
+		JButton yes = new JButton("SEND");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mi.sendMassNotification("CONTENT");
+			}
+		});
+		yes.setBounds(100,100, 200, 30);
+		whiteBox.add(yes);
+				
+		//Make close button
+		JButton no = new JButton("CLOSE");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(450,100, 200, 30);
+		whiteBox.add(no);
+		repaint();
+		
 		
 	}
 

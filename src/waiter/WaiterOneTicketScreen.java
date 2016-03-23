@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import databaseB.Dish;
-import databaseB.Ticket;
+import dataBaseC.Dish;
+import dataBaseC.Ticket;
 
 public class WaiterOneTicketScreen extends JPanel {
 
@@ -87,14 +87,20 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 
 	private void makeTicketOnLeft() {
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setBounds(0, 30, 300, 500);
+		add(whiteBox);
+		
 		//Write Table Number
 		JTextField tableNum;
 		tableNum = new JTextField("Table #: "+ currTicket.tableNumber);
 		tableNum.setEditable(false);
 		tableNum.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNum.setHorizontalAlignment(SwingConstants.CENTER);
-		tableNum.setBounds(0, 30, 300, 30);
-		add(tableNum);
+		tableNum.setBounds(0, 0, 300, 30);
+		whiteBox.add(tableNum);
 		
 		//make a row for each item on the ticket (or up to 
 		ArrayList<Dish> listOfDishes = currTicket.listOfDishes;
@@ -113,9 +119,8 @@ public class WaiterOneTicketScreen extends JPanel {
 					lastDishSelected = index;
 				}
 			});
-			oneDishButton.setBounds(0, 30*row, 300, 30);
-			add(oneDishButton);
-			//setComponentZOrder(oneDishButton);
+			oneDishButton.setBounds(0, 60+30*i, 300, 30);
+			whiteBox.add(oneDishButton);
 			i++;
 			row++;
 		}
@@ -131,11 +136,14 @@ public class WaiterOneTicketScreen extends JPanel {
 		total.setEditable(false);
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
-		total.setBounds(0, 540, 300, 30);
-		add(total);
+		total.setBounds(0, 470, 300, 30);
+		whiteBox.add(total);
 		
 	}
 
+	/**
+	 * writes the waiter's name at the top left
+	 */
 	private void makeNameText() {
 		JTextField nameHeader;
 		nameHeader = new JTextField("Logged In As: "+ wi.name);
@@ -175,7 +183,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		notifyManager.setBackground(Color.ORANGE);
 		notifyManager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.notifyManager(currTicket);
+				makeAreYouSure("you want to notify the manager?",2);
 			}
 		});
 		notifyManager.setBounds(600,570, 300, 30);
@@ -212,7 +220,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		paidButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//are you sure?
-				makeAreYouSure();
+				makeAreYouSure("table "+ currTicket.tableNumber +" paid?",0);
 			}
 		});
 		paidButton.setBounds(900,570, 300, 30);
@@ -223,15 +231,15 @@ public class WaiterOneTicketScreen extends JPanel {
 	/**
 	 * Creates an are you sure message box
 	 */
-	private void makeAreYouSure() {
+	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
 		JTextField areYouSure;
-		areYouSure = new JTextField("Are you sure table "+ currTicket.tableNumber +" paid?");
+		areYouSure = new JTextField("Are you sure "+m);
 		areYouSure.setEditable(false);
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
-		areYouSure.setBounds(200, 100, 800, 300);
+		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 2);
 		
@@ -242,12 +250,16 @@ public class WaiterOneTicketScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.paid(currTicket.tableNumber);
+				if (i ==0){
+					wi.paid(currTicket.tableNumber);
+				}
+				else if(i==2){
+					wi.notifyManager(currTicket);
+				}
 			}
 		});
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
+		yes.setBounds(50,200, 200, 30);
+		areYouSure.add(yes);
 		
 		//Make no button
 		JButton no = new JButton("NO");
@@ -258,9 +270,8 @@ public class WaiterOneTicketScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
+		no.setBounds(450,200, 200, 30);
+		areYouSure.add(no);
 		repaint();
 	}
 	
@@ -303,19 +314,8 @@ public class WaiterOneTicketScreen extends JPanel {
 		makePaidButton();
 		makeRemoveButton();
 		makeMenuChoices();
-		makeWhiteBackForTicket();
 		repaint();
 		validate();
-	}
-	
-	private void makeWhiteBackForTicket() {
-		JTextField whiteBox;
-		whiteBox = new JTextField();
-		whiteBox.setEditable(false);
-		whiteBox.setBounds(0, 60, 300, 480);
-		add(whiteBox);
-		setComponentZOrder(whiteBox, getComponentCount()-1);
-		
 	}
 
 	/** makes a notification button on top of screen like banner

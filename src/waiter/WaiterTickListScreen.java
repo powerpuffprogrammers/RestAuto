@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import databaseB.Ticket;
+import dataBaseC.Ticket;
 
 import javax.swing.JButton;
 import java.awt.Color;
@@ -39,16 +39,17 @@ public class WaiterTickListScreen extends JPanel {
 		repaint();
 	}
 
+	/**
+	 * writes the waiter's name at the top left
+	 */
 	private void makeNameText() {
 		JTextField nameHeader;
-		nameHeader = new JTextField();
+		nameHeader = new JTextField("Logged In As: "+ wi.name);
 		nameHeader.setEditable(false);
 		nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		nameHeader.setText("Logged In As: "+ wi.name);
 		nameHeader.setBounds(0, 0, 300, 30);
 		add(nameHeader);
-		nameHeader.setColumns(10);
 		
 	}
 
@@ -134,13 +135,58 @@ public class WaiterTickListScreen extends JPanel {
 		logOutButton.setBackground(Color.RED);
 		logOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.loggedOut=true;
+				makeAreYouSure();
 			}
 		});
 		logOutButton.setBounds(1000, 0, 200, 30);
-		add(logOutButton);
+		add(logOutButton,0);
 		
 	}
+	
+
+	/**
+	 * Creates an are you sure message box
+	 */
+	private void makeAreYouSure() {
+		//Make a orange box with "Are you sure"
+		JTextField areYouSure;
+		areYouSure = new JTextField("Are you sure you want to log out?");
+		areYouSure.setEditable(false);
+		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
+		areYouSure.setBackground(Color.ORANGE);
+		areYouSure.setBounds(250, 150, 700, 300);
+		add(areYouSure);
+		setComponentZOrder(areYouSure, 0);
+		
+		
+		//Make yes button
+		JButton yes = new JButton("YES");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				wi.loggedOut=true;
+			}
+		});
+		yes.setBounds(50,200, 200, 30);
+		areYouSure.add(yes);
+		
+		//Make no button
+		JButton no = new JButton("NO");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(450,200, 200, 30);
+		areYouSure.add(no);
+		repaint();
+	}
+	
+	
 
 	/** makes a notification button on top of screen like banner
 	 * once it is clicked it closes it

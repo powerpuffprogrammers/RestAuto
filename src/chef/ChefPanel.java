@@ -5,7 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import chef.ChefInterface;
-import databaseB.Ticket;
+import dataBaseC.Ticket;
 import waiter.WaiterInterface;
 
 import java.awt.Color;
@@ -18,6 +18,8 @@ public class ChefPanel extends JPanel {
 
 	public ChefInterface ci;
 	
+	private Ticket currTicket;
+	
 	/**
 	 * Create the panel.
 	 * @param chefInterface 
@@ -26,10 +28,15 @@ public class ChefPanel extends JPanel {
 		ci = chefInterface;
 		setBackground(SystemColor.textHighlight);
 		
+		updateScreen();
+	}
+
+	public void updateScreen() {
 		makeLogOutButton();	
 		makeNotifyManagerButton();
 		makeNameText();
-		//displayTickets();
+		displayTickets();
+		
 	}
 
 	private void displayTickets() {
@@ -71,6 +78,24 @@ public class ChefPanel extends JPanel {
 		
 	}
 
+	/**
+	 * Sets up the Log Out Button
+	 */
+	private void makeLogOutButton(){
+		
+		JButton logOutButton = new JButton("Log Out");
+		logOutButton.setForeground(Color.WHITE);
+		logOutButton.setBackground(Color.RED);
+		logOutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				makeAreYouSure("you want to Log Out", 1);
+			}
+		});
+		logOutButton.setBounds(1000, 0, 200, 30);
+		add(logOutButton);
+		
+	}
+	
 	
 	/**
 	 * displays the ticket on the screen in index index
@@ -147,42 +172,6 @@ public class ChefPanel extends JPanel {
 		return null;
 	}
 
-	/**
-	 * Sets up the Notify Manager Button
-	 */
-	private void makeNotifyManagerButton() {
-		JButton makeNotifyManager = new JButton("Notify Manager");
-		makeNotifyManager.setForeground(Color.BLACK);
-		makeNotifyManager.setBackground(Color.ORANGE);
-		makeNotifyManager.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//ci.sendManagerMessage();
-			}
-		});
-		makeNotifyManager.setBounds(1000, 0, 200, 30);
-		add(makeNotifyManager);
-		
-		
-	}
-
-
-	/**
-	 * Sets up the Log Out Button
-	 */
-	private void makeLogOutButton(){
-		
-		JButton logOutButton = new JButton("Log Out");
-		logOutButton.setForeground(Color.WHITE);
-		logOutButton.setBackground(Color.RED);
-		logOutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ci.loggedOut=true;
-			}
-		});
-		logOutButton.setBounds(1000, 0, 200, 30);
-		add(logOutButton);
-		
-	}
 	
 	/**
 	 * Makes the name header at the top left 
@@ -199,5 +188,94 @@ public class ChefPanel extends JPanel {
 		nameHeader.setColumns(10);
 		
 	}
+	
+	/**
+	 * Sets up the notifyManager Button
+	 */
+	private void makeNotifyManagerButton(){
+		
+		JButton notifyManager = new JButton("Notify Manager");
+		notifyManager.setForeground(Color.BLACK);
+		notifyManager.setBackground(Color.ORANGE);
+		notifyManager.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				makeAreYouSure("you want to notify the manager?",2);
+			}
+		});
+		notifyManager.setBounds(600,570, 300, 30);
+		add(notifyManager, getComponentCount());
+		
+	}
+	
+	
+	
+	/**
+	 * Creates an are you sure message box
+	 */
+	private void makeAreYouSure(String m, int i) {
+		//Make a White box with "Are you sure"
+		JTextField areYouSure;
+		areYouSure = new JTextField("Are you sure "+m);
+		areYouSure.setEditable(false);
+		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
+		areYouSure.setBackground(Color.ORANGE);
+		areYouSure.setBounds(250, 150, 700, 300);
+		add(areYouSure);
+		setComponentZOrder(areYouSure, 2);
+		
+		
+		//Make yes button
+		JButton yes = new JButton("YES");
+		yes.setForeground(Color.BLACK);
+		yes.setBackground(Color.GREEN);
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (i ==1){
+					ci.loggedOut=true;
+				}
+				else if(i==2){
+					ci.notifyManager();
+				}
+			}
+		});
+		yes.setBounds(50,200, 200, 30);
+		areYouSure.add(yes);
+		
+		//Make no button
+		JButton no = new JButton("NO");
+		no.setForeground(Color.BLACK);
+		no.setBackground(Color.RED);
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		no.setBounds(450,200, 200, 30);
+		areYouSure.add(no);
+		repaint();
+	}
+	
+	/** makes a notification button on top of screen like banner
+	 * once it is clicked it closes it
+	 * @param content
+	 */
+	public void makeNotification(String content) {
+		JButton notificationButton = new JButton(content);
+		notificationButton.setForeground(Color.BLACK);
+		notificationButton.setBackground(Color.WHITE);
+		notificationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				remove(notificationButton);
+				updateScreen();
+			}
+		});
+		notificationButton.setBounds(0, 0, 1200, 30);
+		add(notificationButton,0);
+		repaint();
+		
+	}
+	
+	
 	
 }

@@ -1,4 +1,4 @@
-package waiter;
+package chef;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,22 +8,21 @@ import com.google.gson.Gson;
 
 import messageController.Message;
 
-public class WaiterMessageSender extends Thread {
+public class ChefMessageSender {
 
 	private long empID;
 	private Socket sock;
 	private Gson gson;
 	
-	public WaiterMessageSender(Socket listener, long empID) {
+	public ChefMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
 		gson= new Gson();
 	}
 
-	public void sendMessage(Message m){
-		
+	public void sendMessage(Message m) {
 		try {
-			m.senderInfo.position='w';
+			m.senderInfo.position='c';
 			m.senderInfo.empID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String mess = gson.toJson(m);
@@ -34,5 +33,5 @@ public class WaiterMessageSender extends Thread {
 		}
 		
 	}
-	
+
 }

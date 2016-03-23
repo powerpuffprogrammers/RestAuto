@@ -1,19 +1,39 @@
-package databaseB;
+package dataBaseC;
 
-//This guy will take care of calling decrementing
+/**
+ * Data structure to hold dish name, price, and status.
+ * Used by waiter, chef, and Database C
+ * @author cms549
+ */
 public class Dish {
 	
-	//Name of the dish
+	/**
+	 * Name of the dish
+	 */
 	public String name;
 	
-	//Name of the dish
+	/**
+	 * price of the dish
+	 */
 	public double price;
 	
-	//Status of dish = u=unstarted, s=started, f=finished
+	/**
+	 * Status of dish = u=unstarted, s=started, f=finished
+	 */
 	private char status;
 	
+	/**
+	 * Type of dish 
+	 * Example: Appetizer, Entree, Dessert, Drink
+	 */
 	public String typeOfDish;
 	
+	/**
+	 * Constructor
+	 * @param name - name of dish
+	 * @param price - price of dish
+	 * @param typeOfDish - Type of dish  Example: Appetizer, Entree, Dessert, Drink
+	 */
 	public Dish(String name, double price, String typeOfDish){
 		status='u';
 		this.name=name;
@@ -22,7 +42,7 @@ public class Dish {
 	}
 	
 	/**
-	 * Makes a copy of the dish given
+	 * Makes a copy of the dish that called it
 	 * @return a copy of the dish d
 	 */
 	public Dish makeCopyOfDish(){
@@ -52,7 +72,10 @@ public class Dish {
 		return -2;
 	}
 
-	
+	/**
+	 * returns status of dish
+	 * @return
+	 */
 	public char getStatus(){
 		return status;
 	}

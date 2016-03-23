@@ -1,56 +1,70 @@
 package databaseB;
 
-//LAST CODED BY: CHRISTINA SEGERHOLM ON 3/16
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-
 import com.google.gson.Gson;
 
 import configuration.Configure;
 
 /**
- * Starts the DB B- Chef will use this to continually update the inventory by giving it the name of the dish it started
- * This will also update the chef when low inventory is met
+ * Starts the DB B.
+ * Host will use this to grab the list of tables 
  * @author cms549
  *
  */
 public class DatabaseBController extends Thread {
 	
+	/**
+	 * port number DB B will be listening on
+	 */
 	private final static int portNumber = Configure.getPortNumber("DatabaseBController");
 	
+	/**
+	 * used to convert java objects to JSON format and vice versa.
+	 */
 	public static Gson jsonConverter = new Gson();
 	
-	
+	/**
+	 * Listens to one tablet.
+	 * Each DBCController thread gets one.
+	 */
 	private Socket currListener;
 	
-	//Maps Ingredient Name to Ingredient
-	private HashMap<String, Ingredient> inventory;
-	
 	/**
-	 * Links name of dish to its dish data
+	 * Holds the list of tables. 
+	 * See TableList.java
 	 */
-	private HashMap<String, DishData> dishData;
-	
-	private static Menu menu;
-	
+	public static TableList listOfTables;
 
+	/**
+	 * Constructor
+	 * @param listener
+	 */
 	public DatabaseBController(Socket listener) {
 		currListener=listener;
 	}
 
-	//adds ingredient to inventory returns false if ingredient already exists
-	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
-		if(inventory.containsKey(ingredientName)){
+	/**
+	 * Adds table to the list of tables
+	 * @param tabNum - table number you wish to add
+	 * @param maxOccupancy - max amount of people that can fit at the table
+	 * @return true on success, false on failure
+	 */
+	public static boolean addTable(int tabNum, int maxOccupancy){
+		if(listOfTables.hm.containsKey(tabNum)){
 			return false;
 		}
-		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
+		listOfTables.hm.put(tabNum, new Table(tabNum, maxOccupancy));
 		return true;
 	}
 	
+	
+	/**
+	 * Each request will get its own thread. This will be used to send the host the list of tables
+	 */
 	public void run(){
 		try {
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
@@ -58,36 +72,27 @@ public class DatabaseBController extends Thread {
 			while(true){
 				String mess =in.readUTF();
 				char first = mess.charAt(0);
-				if(first=='A'){ //add ingredinet
-					//add the ingredient with the info into the inventory
-				}
-				else if(first=='R'){//Remove this ingredinet from inventory
-					
-				}
-				else if(first =='d'){//decrement the ingredients for this dish
-					
-				}
-				else if(first=='M'){//Waiter needs menu when loggin in
-					String jmenu = jsonConverter.toJson(menu);
-					out.writeUTF(jmenu);
+				if(first=='T'){ //send the host a list of tables
+					out.writeUTF(jsonConverter.toJson(listOfTables));
 				}
 			}
 			
 			
 		} catch (Exception e) {
 			System.out.println("Disconnected from a client.");
-			e.printStackTrace();
 		} 
 	}
 	
+	/**
+	 * Starts base thread for DB B
+	 * @param args
+	 */
 	public static void main(String[] args){
-		menu = new Menu();
-		//set up the inventory
-		//set up dishdata converter aka menu
-		generateDishes();
-		
+		listOfTables = new TableList();
+		generateTables();
+		ServerSocket server = null;
 		try {
-			ServerSocket server = new ServerSocket(portNumber);
+			server = new ServerSocket(portNumber);
 			
 			while(true){
 				Socket listener = server.accept();
@@ -95,41 +100,37 @@ public class DatabaseBController extends Thread {
 				t.start();
 			}
 		} catch (Exception e) {
-			System.out.println("ERROR: FAILED TO START SERVER.");
-			e.printStackTrace();
-		}
-		
-		
-	}
-	//returns 0 on success and -1 on failure/duplicate dish 
-	public static int addDishtoMenu(String type, String dishname, double price){
-		Dish newdish = new Dish(dishname,price,type);
-		if(menu.menu.containsKey(type)){
-			HashMap<String,Dish> tem = menu.menu.get(type);
-			if(tem.containsKey(dishname)){
-				return -1;
-			}else{
-				tem.put(dishname, newdish);     //add new dish to the hashmap of the hashmap
-                return 0;			
+			if(server!=null){
+				try {
+					server.close();
+				} catch (IOException e1) {}
 			}
-		}else{//type does not exist
-			HashMap<String,Dish> temp= new HashMap<String,Dish>();
-			temp.put(dishname, newdish);
-			menu.menu.put(type,temp);               // places the type in the hashmap
-			return 0;
+			System.out.println("ERROR: FAILED TO START SERVER.");
 		}
-	}
-	
-	public static void generateDishes(){
-		addDishtoMenu("appetizer","buffalo wings",7.99);
-		addDishtoMenu("appetizer","bread sticks",4.99);
-		addDishtoMenu("entree","pasta",12.99);
-		addDishtoMenu("entree","steak",18.99);
-		addDishtoMenu("dessert","cheesecake",8.99);
-		addDishtoMenu("dessert","creme brulee",10.99);
-		addDishtoMenu("drinks","water",0.00);
-		addDishtoMenu("drinks","coke",1.99);
+		
 		
 	}
 	
+	
+	/**
+	 * Used for testing
+	 */
+	public static void generateTables(){
+		addTable(1,4);
+		addTable(2,4);
+		addTable(3,4);
+		addTable(4,6);
+		addTable(5,6);
+		addTable(6,2);
+		addTable(7,2);
+		addTable(8,4);
+		addTable(9,4);
+		addTable(10,4);
+		addTable(11,6);
+		addTable(12,6);
+		addTable(13,6);
+		addTable(14,2);
+		addTable(15,2);
+		addTable(16,2);
+	}	
 }
