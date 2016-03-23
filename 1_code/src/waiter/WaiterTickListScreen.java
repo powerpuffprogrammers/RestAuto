@@ -139,7 +139,7 @@ public class WaiterTickListScreen extends JPanel {
 			}
 		});
 		logOutButton.setBounds(1000, 0, 200, 30);
-		add(logOutButton);
+		add(logOutButton,0);
 		
 	}
 	
@@ -148,14 +148,14 @@ public class WaiterTickListScreen extends JPanel {
 	 * Creates an are you sure message box
 	 */
 	private void makeAreYouSure() {
-		//Make a White box with "Are you sure"
+		//Make a orange box with "Are you sure"
 		JTextField areYouSure;
 		areYouSure = new JTextField("Are you sure you want to log out?");
 		areYouSure.setEditable(false);
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
-		areYouSure.setBounds(200, 100, 800, 300);
+		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 0);
 		
@@ -169,7 +169,7 @@ public class WaiterTickListScreen extends JPanel {
 				wi.loggedOut=true;
 			}
 		});
-		yes.setBounds(100,100, 200, 30);
+		yes.setBounds(50,200, 200, 30);
 		areYouSure.add(yes);
 		
 		//Make no button
@@ -181,7 +181,7 @@ public class WaiterTickListScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(450,100, 200, 30);
+		no.setBounds(450,200, 200, 30);
 		areYouSure.add(no);
 		repaint();
 	}

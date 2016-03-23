@@ -158,6 +158,7 @@ public class HostInterface {
 	 */
 	public void notifyManager() {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help at host stand."));
+		updateScreen();
 	}
 
 	/**

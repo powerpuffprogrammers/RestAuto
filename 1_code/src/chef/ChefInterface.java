@@ -1,6 +1,7 @@
 package chef;
 
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,10 @@ import com.google.gson.Gson;
 import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
+import host.HostMessageListener;
+import host.HostMessageSender;
+import messageController.Message;
+import messageController.SenderInfo;
 
 //Starts the DB B
 public class ChefInterface {
@@ -23,14 +28,13 @@ public class ChefInterface {
 	
 	public boolean loggedOut;
 	
-	
-	
 	//gives you the currTicketNumber you should give the next ticket created
 	static long currTicketNumber =0;
 	
-	
 	//Ticket number to ticket
 	HashMap<Long, Ticket>ticketLookup;
+	
+	public ChefMessageSender sender;
 	
 	//Ticket Queue = holds all ticket orders
 	public ArrayList<Long> ticketQueueUnstarted;
@@ -118,16 +122,21 @@ public class ChefInterface {
 	}
 
 	private void setUpMessageController() {
-		Socket listener;
+		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new ChefMessageHandler(listener,empID, this);
+			Thread t= new ChefMessageListener(listener,empID, this);
 			t.start();
+			sender = new ChefMessageSender(listener,empID);
+			
 			
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			System.out.println("Host: Disconnected from MC.");
+			try {
+				listener.close();
+			} catch (IOException e1) {}
 		}
+		
 		
 	}
 	
@@ -189,15 +198,18 @@ public class ChefInterface {
 		
 	}
 
-
-	
-	//To implement:
-/*
-	//adds ingredient to inventory returns false if ingredient already exists
-	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
-		//send message to DBBcontroller
-		return true;
+	/**
+	 * Sends a notification to the manager
+	 */
+	public void notifyManager() {
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help in the kitchen."));
+		updateScreen();
 	}
-//	public void removeIngredientToInventory(String ingredientName);
-*/
+
+
+	private void updateScreen() {
+		chefPanel.updateScreen();
+		
+	}
+	
 }

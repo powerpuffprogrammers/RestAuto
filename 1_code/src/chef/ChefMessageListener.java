@@ -11,13 +11,13 @@ import com.google.gson.Gson;
 import configuration.Configure;
 
 
-public class ChefMessageHandler extends Thread {
+public class ChefMessageListener extends Thread {
 	
 	private long empID;
 	private Socket sock;
 	private ChefInterface ci;
 	
-	public ChefMessageHandler(Socket listener, long empID, ChefInterface wI) {
+	public ChefMessageListener(Socket listener, long empID, ChefInterface wI) {
 		sock=listener;
 		this.empID=empID;
 		ci=wI;

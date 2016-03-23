@@ -74,7 +74,7 @@ public class ManagerScreen extends JPanel {
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
-		areYouSure.setBounds(200, 100, 800, 300);
+		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 0);
 		
@@ -88,7 +88,7 @@ public class ManagerScreen extends JPanel {
 				mi.loggedOut=true;
 			}
 		});
-		yes.setBounds(100,100, 200, 30);
+		yes.setBounds(50,200, 200, 30);
 		areYouSure.add(yes);
 				
 		//Make no button
@@ -100,7 +100,7 @@ public class ManagerScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(450,100, 200, 30);
+		no.setBounds(450,200, 200, 30);
 		areYouSure.add(no);
 		repaint();
 	}

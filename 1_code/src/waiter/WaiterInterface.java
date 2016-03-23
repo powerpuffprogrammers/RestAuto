@@ -159,6 +159,7 @@ public class WaiterInterface {
 
 	public void notifyManager(Ticket currTicket2) {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+		updateScreen();
 	}
 
 	public void sendTicket(Ticket t){

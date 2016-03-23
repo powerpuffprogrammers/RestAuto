@@ -136,7 +136,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		total.setEditable(false);
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
-		total.setBounds(0, 510, 300, 30);
+		total.setBounds(0, 470, 300, 30);
 		whiteBox.add(total);
 		
 	}
@@ -239,7 +239,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
-		areYouSure.setBounds(200, 100, 800, 300);
+		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 2);
 		
@@ -258,9 +258,8 @@ public class WaiterOneTicketScreen extends JPanel {
 				}
 			}
 		});
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
+		yes.setBounds(50,200, 200, 30);
+		areYouSure.add(yes);
 		
 		//Make no button
 		JButton no = new JButton("NO");
@@ -271,9 +270,8 @@ public class WaiterOneTicketScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
+		no.setBounds(450,200, 200, 30);
+		areYouSure.add(no);
 		repaint();
 	}
 	
