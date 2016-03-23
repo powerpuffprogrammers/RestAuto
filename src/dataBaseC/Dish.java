@@ -2,7 +2,11 @@ package dataBaseC;
 
 /**
  * Data structure to hold dish name, price, and status.
+<<<<<<< HEAD:src/dataBaseC/Dish.java
  * Used by waiter, chef, and Database C
+=======
+ * Used by waiter, chef, and Database B
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30:src/databaseB/Dish.java
  * @author cms549
  */
 public class Dish {

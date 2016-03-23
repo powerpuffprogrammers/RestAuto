@@ -74,9 +74,15 @@ public class ManagerScreen extends JPanel {
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
+<<<<<<< HEAD
 		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 0);
+=======
+		areYouSure.setBounds(200, 100, 800, 300);
+		add(areYouSure);
+		setComponentZOrder(areYouSure, 2);
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		
 		
 		//Make yes button
@@ -88,9 +94,16 @@ public class ManagerScreen extends JPanel {
 				mi.loggedOut=true;
 			}
 		});
+<<<<<<< HEAD
 		yes.setBounds(50,200, 200, 30);
 		areYouSure.add(yes);
 				
+=======
+		yes.setBounds(300,300, 200, 30);
+		add(yes);
+		setComponentZOrder(yes, 1);
+		
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		//Make no button
 		JButton no = new JButton("NO");
 		no.setForeground(Color.BLACK);
@@ -100,8 +113,14 @@ public class ManagerScreen extends JPanel {
 				updateScreen();
 			}
 		});
+<<<<<<< HEAD
 		no.setBounds(450,200, 200, 30);
 		areYouSure.add(no);
+=======
+		no.setBounds(650,300, 200, 30);
+		add(no);
+		setComponentZOrder(no, 0);
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		repaint();
 	}
 	

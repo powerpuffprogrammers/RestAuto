@@ -109,7 +109,11 @@ public class DatabaseAController extends Thread {
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
 					//if employee id is valid log them out
+<<<<<<< HEAD
 					if(number<employeeList.size() && number>=0){
+=======
+					if(number<employeeList.size() && number>0){
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 						Employee curE = employeeList.get(number);
 						curE.loggedIn=false;
 					}

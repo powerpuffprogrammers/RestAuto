@@ -1,4 +1,8 @@
+<<<<<<< HEAD:src/dataBaseC/Ticket.java
 package dataBaseC;
+=======
+package databaseB;
+>>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30:src/databaseB/Ticket.java
 
 import java.util.ArrayList;
 
