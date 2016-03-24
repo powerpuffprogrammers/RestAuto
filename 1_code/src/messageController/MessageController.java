@@ -7,7 +7,7 @@ import configuration.Configure;
 
 /**
  * Starts the Message Controller - will handle ticket sends and message sends between tablets
- * @author cms17
+ * @author cms549
  *
  */
 public class MessageController {
@@ -16,13 +16,21 @@ public class MessageController {
 	
 
 	//Message Controller fields:
-	//List of waiters logged in with employee id as key
+	/**
+	 * List of waiters logged in with employee id as key
+	 */
 	static HashMap<Long,Socket> waiters; 
-	//List of Hosts logged in
+	/**
+	 * List of Hosts logged in
+	 */
 	static HashMap<Long,Socket> hosts;
-	//List of chefs logged in
+	/**
+	 * List of chefs logged in
+	 */
 	static HashMap<Long,Socket> chefs;
-	//list of managers logged in
+	/**
+	 * list of managers logged in
+	 */
 	static HashMap<Long,Socket> managers;
 	
 

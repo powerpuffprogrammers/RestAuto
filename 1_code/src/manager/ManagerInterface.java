@@ -60,8 +60,9 @@ public class ManagerInterface {
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
-			System.out.println(loggedOut);
+			System.out.print(loggedOut);
 		}
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
 	}
 
 	/**
@@ -79,7 +80,7 @@ public class ManagerInterface {
 			Thread t= new ManagerMessageListener(listener,empID, this);
 			t.start();
 			sender = new ManagerMessageSender(listener,empID);
-			
+			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

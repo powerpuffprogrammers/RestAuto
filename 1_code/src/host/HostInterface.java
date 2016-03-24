@@ -164,6 +164,8 @@ public class HostInterface {
 			Thread t= new HostMessageListener(listener,empID, this);
 			t.start();
 			sender = new HostMessageSender(listener,empID);
+			//log in
+			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
 			
 			
 		} catch (Exception e) {
@@ -219,13 +221,15 @@ public class HostInterface {
 	}
 	
 	/**
-	 * keeps tablet in host interface screen until it logs out
+	 * Keeps tablet in host interface screen until it logs out.
+	 * Then sends log out message to MC.
 	 */
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
-			System.out.println(loggedOut);
+			System.out.print(loggedOut);
 		}
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
 	}
 
 	/**

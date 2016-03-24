@@ -12,11 +12,14 @@ public class MessageControllerSender extends Thread {
 	
 	private Gson gson;
 	
-	//list of messages to send
+	/**
+	 * list of messages to send
+	 */
 	ConcurrentLinkedQueue<Message> pendingMessages;
 	
 	public MessageControllerSender(){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
+		gson = new Gson();
 	}
 	
 	public void run(){
@@ -53,6 +56,22 @@ public class MessageControllerSender extends Thread {
 					}
 					else{
 						sock=MessageController.waiters.get(id);
+					}
+				}
+				else if(pos=='X'){//logging out
+					pos = m.senderInfo.position;
+					long empID = m.senderInfo.empID;
+					if(pos=='w'){
+						MessageController.removeWaiterSocket(empID);
+					}
+					else if(pos=='c'){
+						MessageController.removeChefSocket(empID);
+					}
+					else if(pos=='h'){
+						MessageController.removeHostSocket(empID);
+					}
+					else if(pos=='m'){
+						MessageController.removeManagerSocket(empID);
 					}
 				}
 				if(sock==null){

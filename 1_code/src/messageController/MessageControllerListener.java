@@ -20,33 +20,35 @@ public class MessageControllerListener  extends Thread{
 	}
 	
 	public void run(){
-		char pos='2';
-		Integer empID=0;
 		try {
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			//Add this guy to the list of listeners
-			String logIn =in.readUTF();
-			pos = logIn.charAt(0);
-			empID = Integer.parseInt(logIn.substring(1));
-			if(pos=='w'){
-				MessageController.addWaiterSocket(empID, currListener);
+			
+			String message =in.readUTF();
+			Message m = gson.fromJson(message, Message.class);
+			char pos = m.receiverInfo.position;
+			if(pos=='L'){//logging in
+				pos = m.senderInfo.position;
+				long empID = m.senderInfo.empID;
+				if(pos=='w'){
+					MessageController.addWaiterSocket(empID, currListener);
+				}
+				else if(pos=='c'){
+					MessageController.addChefSocket(empID, currListener);
+				}
+				else if(pos=='h'){
+					MessageController.addHostSocket(empID, currListener);
+				}
+				else if(pos=='m'){
+					MessageController.addManagerSocket(empID, currListener);
+				}
+				else{
+					currListener.close();
+					return;
+				}
 			}
-			else if(pos=='c'){
-				MessageController.addChefSocket(empID, currListener);
-			}
-			else if(pos=='h'){
-				MessageController.addHostSocket(empID, currListener);
-			}
-			else if(pos=='m'){
-				MessageController.addManagerSocket(empID, currListener);
-			}
+			
+			
 			else{
-				currListener.close();
-				return;
-			}
-			while(true){
-				String message =in.readUTF();
-				Message m = gson.fromJson(message, Message.class);
 				//Add the forwarded message to message controller
 				sender.pendingMessages.offer(m);
 			}
@@ -56,7 +58,6 @@ public class MessageControllerListener  extends Thread{
 			try {
 				currListener.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
 			}
 			
 		}catch (Exception e) {
@@ -64,18 +65,6 @@ public class MessageControllerListener  extends Thread{
 			
 			e.printStackTrace();
 		} 
-		if(pos=='w'){
-			MessageController.removeWaiterSocket(empID);
-		}
-		else if(pos=='c'){
-			MessageController.removeChefSocket(empID);
-		}
-		else if(pos=='h'){
-			MessageController.removeHostSocket(empID);
-		}
-		else if(pos=='m'){
-			MessageController.removeManagerSocket(empID);
-		}
 		
 	}
 }

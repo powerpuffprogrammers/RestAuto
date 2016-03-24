@@ -90,6 +90,7 @@ public class WaiterInterface {
 		}
 		//let the host know you are logging out
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "O"+name));
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
 	}
 
 	private boolean loadMenu() {
@@ -121,6 +122,7 @@ public class WaiterInterface {
 			Thread t= new WaiterMessageListener(listener,empID, this);
 			t.start();
 			sender = new WaiterMessageSender(listener,empID);
+			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
 			
 		} catch (Exception e) {
 			System.out.println("Server: Disconnected from MC.");

@@ -128,7 +128,7 @@ public class ChefInterface {
 			Thread t= new ChefMessageListener(listener,empID, this);
 			t.start();
 			sender = new ChefMessageSender(listener,empID);
-			
+			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
 			
 		} catch (Exception e) {
 			System.out.println("Host: Disconnected from MC.");
@@ -193,8 +193,9 @@ public class ChefInterface {
 	public void runUntilLogOut() {
 		//Don't return until i logged out
 		while(!loggedOut){
-			
+			System.out.print(loggedOut);
 		}
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
 		
 	}
 
