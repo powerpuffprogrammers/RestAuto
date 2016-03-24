@@ -93,13 +93,8 @@ public class WaiterInterface {
 	}
 
 	private boolean loadMenu() {
-<<<<<<< HEAD
 		String DBhost = Configure.getDomainName("DatabaseCController");
 		int DBPortNum = Configure.getPortNumber("DatabaseCController");
-=======
-		String DBBhost = Configure.getDomainName("DatabaseBController");
-		int DBBPortNum = Configure.getPortNumber("DatabaseBController");
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		Socket sock=null;
 		try {
 			sock = new Socket(DBhost, DBPortNum);

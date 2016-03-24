@@ -13,13 +13,8 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-<<<<<<< HEAD
 import databaseB.Table;
 import databaseB.TableList;
-=======
-import dataBaseC.Table;
-import dataBaseC.TableList;
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 import messageController.Message;
 import messageController.SenderInfo;
 
@@ -80,6 +75,11 @@ public class HostInterface {
 	 */
 	ArrayList< Integer> paidTables;
 	
+	/**
+	 * HashMap that maps the name of the waiter to their ID.
+	 */
+	HashMap<String, Long> listOfWaitersLoggedIn;
+	
     /**
      * Constructor
      * @param frame - JFrame of the app 
@@ -89,6 +89,9 @@ public class HostInterface {
 	public HostInterface(JFrame frame, long eID, String empName){
 		name=empName;
 		empID = eID;
+		jsonConverter = new Gson();
+		listOfWaitersLoggedIn = new HashMap<String,Long>();
+		generateListOfWaiters();
 		//if problem loading menu return right away
 		if (!loadTables()){
 			loggedOut=true;
@@ -109,6 +112,17 @@ public class HostInterface {
 		setUpMessageController();
 		
 		tableScreen = new HostTableScreen(this);
+		frame.setContentPane(tableScreen);
+		frame.revalidate();
+	}
+
+	/**
+	 * Used for testing.
+	 */
+	private void generateListOfWaiters() {
+		listOfWaitersLoggedIn.put("Christina Segerholm", (long) 0);
+		listOfWaitersLoggedIn.put("Emma Roussos", (long) 3);
+		
 	}
 
 	/**
@@ -116,29 +130,24 @@ public class HostInterface {
 	 * @return true on success, false on failure
 	 */
 	private boolean loadTables() {
-<<<<<<< HEAD
 		String DBhost = Configure.getDomainName("DatabaseBController");
 		int DBPortNum = Configure.getPortNumber("DatabaseBController");
 		Socket sock=null;
 		try {
 			sock = new Socket(DBhost, DBPortNum);
-=======
-		String DBChost = Configure.getDomainName("DatabaseCController");
-		int DBCPortNum = Configure.getPortNumber("DatabaseCController");
-		Socket sock=null;
-		try {
-			sock = new Socket(DBChost, DBCPortNum);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String logInToMC = "T";
 			out.writeUTF(logInToMC);
 			String jtables = in.readUTF();
-			allTables = jsonConverter.fromJson(jtables, TableList.class).hm;
+			TableList tab = jsonConverter.fromJson(jtables, TableList.class);
+			
+			allTables = tab.hm;
 			sock.close();
 			
 		} catch (Exception e) {
-			System.out.println("ERROR: can't load menu");
+			System.out.println("ERROR: can't load tables");
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -171,12 +180,27 @@ public class HostInterface {
 	 */
 	public void notifyManager() {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help at host stand."));
-<<<<<<< HEAD
 		updateScreen();
-=======
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 	}
 
+	/**
+	 * Seat the table number with this server
+	 * @param waiterName
+	 * @param tableNumber
+	 */
+	public void seat(String waiterName, int tableNumber){
+		Table t = allTables.get(tableNumber);
+		t.status = 's';
+		for(int i =0; i<readyTables.size(); i++){
+			if(readyTables.get(i) == tableNumber){
+				readyTables.remove(i);
+			}
+		}
+		seatedTables.add(tableNumber);
+		sendSeated(listOfWaitersLoggedIn.get(waiterName), tableNumber);
+		updateScreen();
+	}
+	
 	/**
 	 * Sends a message to the waiter whos table you just sat.
 	 * @param waiterId - id of waiter you wish to send message to
@@ -217,6 +241,8 @@ public class HostInterface {
 	 * @param tableNumber
 	 */
 	public void paid(int tableNumber) {
+		Table t = allTables.get(tableNumber);
+		t.status = 'p';
 		for(int i=0; i<seatedTables.size();i++){
 			int curr = seatedTables.get(i);
 			if(curr == tableNumber){
@@ -224,6 +250,25 @@ public class HostInterface {
 				paidTables.add(tableNumber);
 			}
 		}
+		updateScreen();
+		
+	}
+
+	/**
+	 * Move a table that was just cleaned from paid into ready list
+	 * @param tableNumber
+	 */
+	public void cleaned(int tableNumber) {
+		Table t = allTables.get(tableNumber);
+		t.status = 'r';
+		for(int i=0; i<paidTables.size();i++){
+			int curr = paidTables.get(i);
+			if(curr == tableNumber){
+				paidTables.remove(i);
+				readyTables.add(tableNumber);
+			}
+		}
+		
 		updateScreen();
 		
 	}

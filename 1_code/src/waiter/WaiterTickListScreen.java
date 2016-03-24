@@ -186,54 +186,6 @@ public class WaiterTickListScreen extends JPanel {
 		repaint();
 	}
 	
-<<<<<<< HEAD
-=======
-
-	/**
-	 * Creates an are you sure message box
-	 */
-	private void makeAreYouSure() {
-		//Make a White box with "Are you sure"
-		JTextField areYouSure;
-		areYouSure = new JTextField("Are you sure you want to log out?");
-		areYouSure.setEditable(false);
-		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
-		areYouSure.setBackground(Color.ORANGE);
-		areYouSure.setBounds(200, 100, 800, 300);
-		add(areYouSure);
-		setComponentZOrder(areYouSure, 2);
-		
-		
-		//Make yes button
-		JButton yes = new JButton("YES");
-		yes.setForeground(Color.BLACK);
-		yes.setBackground(Color.GREEN);
-		yes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				wi.loggedOut=true;
-			}
-		});
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
-		
-		//Make no button
-		JButton no = new JButton("NO");
-		no.setForeground(Color.BLACK);
-		no.setBackground(Color.RED);
-		no.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				updateScreen();
-			}
-		});
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
-		repaint();
-	}
-	
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 	
 
 	/** makes a notification button on top of screen like banner

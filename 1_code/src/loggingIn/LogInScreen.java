@@ -139,12 +139,12 @@ public class LogInScreen extends JPanel{
 				logInToDBA(currIDEntry);
 				textField.setText("");
 				if(loggedIn=='0'){
-					currIDEntry=0;
+					currIDEntry=-1;
 					failedAttempt.setText("Employee ID not recognized.");
 					failedAttempt.setVisible(true);
 				}
 				else if(loggedIn=='L'){
-					currIDEntry=0;
+					currIDEntry=-1;
 					failedAttempt.setText("Employee already logged in.");
 					failedAttempt.setVisible(true);
 				}
@@ -163,7 +163,7 @@ public class LogInScreen extends JPanel{
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText("");
-				currIDEntry=0;
+				currIDEntry=-1;
 				keypadLock=false;
 			}
 		});
@@ -187,6 +187,9 @@ public class LogInScreen extends JPanel{
 					while(keypadLock){}
 					keypadLock=true;
 					textField.setText(textField.getText()+d);
+					if(currIDEntry==-1){
+						currIDEntry = 0;
+					}
 					currIDEntry=currIDEntry*10+d;
 					keypadLock=false;
 				}
@@ -203,6 +206,9 @@ public class LogInScreen extends JPanel{
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText(textField.getText()+"0");
+				if(currIDEntry==-1){
+					currIDEntry=0;
+				}
 				currIDEntry=currIDEntry*10;
 				keypadLock=false;
 			}

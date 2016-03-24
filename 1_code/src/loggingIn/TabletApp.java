@@ -14,19 +14,16 @@ import waiter.WaiterInterface;
  * @author cms549
  */
 public class TabletApp {
-<<<<<<< HEAD
 	
 	
 	private static void updateScreen(LogInScreen logInPanel, JFrame frame){
 		logInPanel.logOut(logInPanel.currIDEntry);
 		//show log in screen again
 		logInPanel.loggedIn='0';
-		logInPanel.currIDEntry=0;
+		logInPanel.currIDEntry=-1;
 		frame.setContentPane(logInPanel);
 		frame.revalidate();
 	}
-=======
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 	/**
 	 * Starts the log in GUI 
 	 * @param args
@@ -42,7 +39,6 @@ public class TabletApp {
 		frame.pack();
 		frame.setSize(new Dimension(1200,650));
 		while(true){
-<<<<<<< HEAD
 			System.out.print(logInPanel.loggedIn);
 			//calls the interface to set up the screen
 			//constructors won't return until the screen closes or they log out
@@ -74,37 +70,6 @@ public class TabletApp {
 				logInPanel.logOut(id);
 				updateScreen(logInPanel, frame);	
 			}
-=======
-			long id = logInPanel.currIDEntry;
-			//calls the interface to set up the screen
-			//constructors won't return until the screen closes or they log out
-			if(logInPanel.loggedIn=='h'){
-				HostInterface h = new HostInterface(frame, id, logInPanel.empName);
-				h.runUntilLogOut();
-				logInPanel.logOut(id);
-			}
-			else if(logInPanel.loggedIn=='c'){
-				ChefInterface c = new ChefInterface(frame,id,logInPanel.empName);
-				c.runUntilLogOut();
-				logInPanel.logOut(id);
-			}
-			else if(logInPanel.loggedIn=='m'){
-				ManagerInterface m = new ManagerInterface(frame,id, logInPanel.empName);
-				m.runUntilLogOut();
-				logInPanel.logOut(id);
-			}
-			else if(logInPanel.loggedIn=='w'){
-				WaiterInterface w = new WaiterInterface(frame,id,logInPanel.empName);
-				w.runUntilLogOut();
-				logInPanel.logOut(id);
-				
-			}
-			//show log in screen again
-			logInPanel.loggedIn='0';
-			logInPanel.currIDEntry=0;
-			frame.setContentPane(logInPanel);
-			frame.revalidate();
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		}
 		
 		

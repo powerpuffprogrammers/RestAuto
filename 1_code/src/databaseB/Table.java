@@ -6,15 +6,25 @@ import java.util.Date;
 
 public class Table {
 	
-	//time table was last sat
+	/**
+	 * time table was last sat
+	 */
 	public Date timeLastSat;
-	//table number
+	/**
+	 * table number
+	 */
 	public int tableNumber;
-	//status of table: r=ready, p=paid, s=seated
+	/**
+	 * status of table: r=ready, p=paid, s=seated
+	 */
 	public char status;
-	//waiter who has this table
+	/**
+	 * waiter who has this table
+	 */
 	public String waiter;
-	//how many people can sit at this table
+	/**
+	 * how many people can sit at this table
+	 */
 	public int maxOccupancy;
 	
 	public Table(int tableNumber, int maxOccupancy){
@@ -33,7 +43,11 @@ public class Table {
 		return true;
 	}
 
-	//returns false if invalid status
+	/**
+	 * returns false if invalid status
+	 * @param status
+	 * @return
+	 */
 	public boolean changeStatus(char status){
 		if(status=='r'||status=='p'||status=='s'){
 			this.status=status;

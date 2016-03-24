@@ -4,15 +4,28 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import databaseB.Table;
+
 public class HostTableScreen extends JPanel {
 
 	public HostInterface hi;
+	
+	/**
+	 * This is the current table selected by the host
+	 */
+	public Table tableSelected;
+	
+	/**
+	 * This is the current waiter selected by the host
+	 */
+	public String waiterSelected;
 	
 	public HostTableScreen(HostInterface hI) {
 		hi  = hI;
@@ -20,6 +33,8 @@ public class HostTableScreen extends JPanel {
 		setBackground(new Color(51, 153, 255));
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
+		tableSelected=null;
+		waiterSelected= null;
 		updateScreen();
 	}
 
@@ -27,21 +42,207 @@ public class HostTableScreen extends JPanel {
 		removeAll();
 		makeNameText();
 		makeLogOutButton();
+		makeCleanedButton();
+		makeSeatButton();
 		makeNotifyManagerButton();
+		makeListOfWaiters();
 		makeReadyTables();
 		makeUnReadyTables();
 		repaint();
 		
 	}
 	
-	
-	private void makeUnReadyTables() {
-		// TODO Auto-generated method stub
+	/**
+	 * Makes list of waiter names at bottom right of screen
+	 */
+	private void makeListOfWaiters() {
+		int y = 570;
+		Iterator<String> it = hi.listOfWaitersLoggedIn.keySet().iterator();
+		while(it.hasNext()){
+			String name = it.next();
+			JButton waiterButton = new JButton(name);
+			waiterButton.setForeground(Color.BLACK);
+			waiterButton.setBackground(Color.WHITE);
+			waiterButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					waiterSelected=name;
+					
+				}
+			});
+			waiterButton.setBounds(900, y, 300, 30);
+			add(waiterButton);
+			y=y-30;
+		}
+		
+		JTextField header = new JTextField("Waiters:");
+		header.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		header.setEditable(false);
+		header.setHorizontalAlignment(SwingConstants.CENTER);
+		header.setBounds(900, y, 300, 30);
+		header.setForeground(Color.BLACK);
+		add(header);
+		
 		
 	}
 
+	/**
+	 * Draws the seat button used to seat tables.
+	 */
+	private void makeSeatButton() {
+		JButton seatButton = new JButton("Seat");
+		seatButton.setForeground(Color.BLACK);
+		seatButton.setBackground(Color.GREEN);
+		seatButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableSelected ==null){
+					drawWarningMessage("Please select a Table.");
+				}
+				else if(tableSelected.status=='r'){
+					if(waiterSelected!=null){
+						hi.seat(waiterSelected, tableSelected.tableNumber);
+						waiterSelected=null;
+						tableSelected=null;
+					}
+					else{
+						drawWarningMessage("Please select a waiter.");
+					}
+				}
+				else{
+					drawWarningMessage("Table "+tableSelected.tableNumber+ " can't be sat.");
+				}
+				
+			}
+		});
+		seatButton.setBounds(0, 570, 300, 30);
+		add(seatButton);
+		
+	}
+	
+
+	/**
+	 * Draws the cleaned button used specify that a table is cleaned.
+	 */
+	private void makeCleanedButton() {
+		JButton cleanedButton = new JButton("Cleaned");
+		cleanedButton.setForeground(Color.BLACK);
+		cleanedButton.setBackground(Color.YELLOW);
+		cleanedButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableSelected ==null){
+					drawWarningMessage("Please select a Table.");
+				}
+				else if(tableSelected.status=='p'){
+						hi.cleaned(tableSelected.tableNumber);
+						waiterSelected=null;
+						tableSelected=null;
+				}
+				else{
+					drawWarningMessage("Table "+tableSelected.tableNumber+ " can't be cleaned.");
+				}
+				
+			}
+		});
+		cleanedButton.setBounds(300, 570, 300, 30);
+		add(cleanedButton);
+		
+	}
+	
+	
+	/**
+	 * Draws a warning message on screen with the message message
+	 * @param message - warning to show
+	 */
+	private void drawWarningMessage(String message){
+		JTextField failedAttempt = new JTextField(message);
+		failedAttempt.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		failedAttempt.setEditable(false);
+		failedAttempt.setHorizontalAlignment(SwingConstants.CENTER);
+		failedAttempt.setBounds(450, 520, 300, 30);
+		failedAttempt.setForeground(Color.RED);
+		add(failedAttempt);
+	}
+
+	/**
+	 * Makes list of not ready tables
+	 */
+	private void makeUnReadyTables() {
+		JTextField header = new JTextField("Paid/Seated Tables:");
+		header.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		header.setEditable(false);
+		header.setHorizontalAlignment(SwingConstants.CENTER);
+		header.setBounds(100, 70, 400, 30);
+		header.setForeground(Color.BLACK);
+		add(header);
+		
+		
+		
+		int y =100;
+		int cnt=0;
+		for(int i=0; i<hi.paidTables.size() && cnt<10; i++){
+			int tnum = hi.paidTables.get(i);
+			JButton tableButton = new JButton("#"+tnum);
+			tableButton.setForeground(Color.BLACK);
+			tableButton.setBackground(Color.YELLOW);
+			tableButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					tableSelected=hi.allTables.get(tnum);
+					
+				}
+			});
+			tableButton.setBounds(100, y, 400, 50);
+			add(tableButton);
+			y=y+40;
+			cnt++;
+		}
+		if(cnt<10){
+			for(int i=0; i<hi.seatedTables.size() && cnt<10; i++){
+				int tnum = hi.seatedTables.get(i);
+				JButton tableButton = new JButton("#"+tnum);
+				tableButton.setForeground(Color.BLACK);
+				tableButton.setBackground(Color.RED);
+				tableButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						tableSelected=hi.allTables.get(tnum);
+						
+					}
+				});
+				tableButton.setBounds(100, y, 400, 50);
+				add(tableButton);
+				y=y+40;
+				cnt++;
+			}
+		}
+		
+		
+	}
+
+	/**
+	 * Makes list of ready tables
+	 */
 	private void makeReadyTables() {
-		// TODO Auto-generated method stub
+		JTextField header = new JTextField("Ready Tables:");
+		header.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		header.setEditable(false);
+		header.setHorizontalAlignment(SwingConstants.CENTER);
+		header.setBounds(700, 70, 400, 30);
+		header.setForeground(Color.BLACK);
+		add(header);
+		int y =100;
+		for(int i=0; i<hi.readyTables.size() && i<10; i++){
+			int tnum = hi.readyTables.get(i);
+			JButton tableButton = new JButton("#"+tnum);
+			tableButton.setForeground(Color.BLACK);
+			tableButton.setBackground(Color.GREEN);
+			tableButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					tableSelected=hi.allTables.get(tnum);
+					
+				}
+			});
+			tableButton.setBounds(700, y, 400, 50);
+			add(tableButton);
+			y=y+40;
+		}
 		
 	}
 
@@ -109,15 +310,9 @@ public class HostTableScreen extends JPanel {
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		areYouSure.setHorizontalAlignment(SwingConstants.CENTER);
 		areYouSure.setBackground(Color.ORANGE);
-<<<<<<< HEAD
 		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
 		setComponentZOrder(areYouSure, 0);
-=======
-		areYouSure.setBounds(200, 100, 800, 300);
-		add(areYouSure);
-		setComponentZOrder(areYouSure, 2);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		
 		
 		//Make yes button
@@ -135,14 +330,8 @@ public class HostTableScreen extends JPanel {
 				
 			}
 		});
-<<<<<<< HEAD
 		yes.setBounds(50,200, 200, 30);
 		areYouSure.add(yes);
-=======
-		yes.setBounds(300,300, 200, 30);
-		add(yes);
-		setComponentZOrder(yes, 1);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		
 		//Make no button
 		JButton no = new JButton("NO");
@@ -153,14 +342,8 @@ public class HostTableScreen extends JPanel {
 				updateScreen();
 			}
 		});
-<<<<<<< HEAD
 		no.setBounds(450,200, 200, 30);
 		areYouSure.add(no);
-=======
-		no.setBounds(650,300, 200, 30);
-		add(no);
-		setComponentZOrder(no, 0);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		repaint();
 	}
 	

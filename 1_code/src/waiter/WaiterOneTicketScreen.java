@@ -90,11 +90,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		JTextField whiteBox;
 		whiteBox = new JTextField();
 		whiteBox.setEditable(false);
-<<<<<<< HEAD
 		whiteBox.setBounds(0, 30, 300, 500);
-=======
-		whiteBox.setBounds(0, 60, 300, 500);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		add(whiteBox);
 		
 		//Write Table Number
@@ -103,11 +99,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		tableNum.setEditable(false);
 		tableNum.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNum.setHorizontalAlignment(SwingConstants.CENTER);
-<<<<<<< HEAD
 		tableNum.setBounds(0, 0, 300, 30);
-=======
-		tableNum.setBounds(0, 30, 300, 30);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		whiteBox.add(tableNum);
 		
 		//make a row for each item on the ticket (or up to 
@@ -127,14 +119,8 @@ public class WaiterOneTicketScreen extends JPanel {
 					lastDishSelected = index;
 				}
 			});
-<<<<<<< HEAD
 			oneDishButton.setBounds(0, 60+30*i, 300, 30);
 			whiteBox.add(oneDishButton);
-=======
-			oneDishButton.setBounds(0, 30*row, 300, 30);
-			whiteBox.add(oneDishButton);
-			//setComponentZOrder(oneDishButton);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 			i++;
 			row++;
 		}
@@ -150,11 +136,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		total.setEditable(false);
 		total.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		total.setHorizontalAlignment(SwingConstants.CENTER);
-<<<<<<< HEAD
 		total.setBounds(0, 470, 300, 30);
-=======
-		total.setBounds(0, 540, 300, 30);
->>>>>>> 1533b2efae091bb850331c5136faf388f3f9aa30
 		whiteBox.add(total);
 		
 	}
