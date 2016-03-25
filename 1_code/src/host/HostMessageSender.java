@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.google.gson.Gson;
 
 import messageController.Message;
 
@@ -19,10 +18,7 @@ public class HostMessageSender {
 	 * Socket to listen on
 	 */
 	private Socket sock;
-	/**
-	 * Used to convert java objects to string and vice versa
-	 */
-	private Gson gson;
+
 	
 	/**
 	 * Constructor
@@ -32,7 +28,6 @@ public class HostMessageSender {
 	public HostMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
-		gson= new Gson();
 	}
 
 	/**
@@ -45,7 +40,7 @@ public class HostMessageSender {
 			m.senderPosition='h';
 			m.senderEmpID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = gson.toJson(m);
+			String mess = m.toString();
 			out.writeUTF(mess);
 			out.close();
 		} catch (IOException e) {

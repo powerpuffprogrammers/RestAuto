@@ -108,8 +108,14 @@ public class HostInterface {
 		while( it.hasNext()){
 			Integer key= it.next();
 			Table table = allTables.get(key);
-			table.changeStatus('r');
-			readyTables.add(key);
+			if(key>5){
+				table.changeStatus('p');
+				paidTables.add(key);
+			}
+			else{
+				table.changeStatus('r');
+				readyTables.add(key);
+			}
 		}
 		
 		setUpMessageController();

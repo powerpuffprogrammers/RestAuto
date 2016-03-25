@@ -31,10 +31,7 @@ public class WaiterMessageListener extends Thread {
 	 * Pointer back to its waiter interface
 	 */
 	private WaiterInterface wi;
-	/**
-	 * Used to convert java objects to string and vice versa
-	 */
-	private Gson gson;
+
 	/**
 	 * Constructor
 	 * @param listener - socket to listen to
@@ -45,7 +42,6 @@ public class WaiterMessageListener extends Thread {
 		sock=listener;
 		this.empID=empID;
 		wi=wI;
-		gson= new Gson();
 	}
 	/**
 	 * Listens for messages sent from the MC
@@ -62,7 +58,11 @@ public class WaiterMessageListener extends Thread {
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
-				Message m = gson.fromJson(mes,Message.class);
+				if(mes.length()==2){
+					String second = in.readUTF();
+					mes = mes +second;
+				}
+				Message m = Message.fromString(mes);
 				decodeMessage(m);
 			}
 			

@@ -30,10 +30,7 @@ public class ManagerMessageListener extends Thread {
 	 * Pointer back to its manager interface
 	 */
 	private ManagerInterface mi;
-	/**
-	 * Used to convert java objects to string and vice versa
-	 */
-	private Gson gson;
+
 	
 	/**
 	 * Constructor
@@ -45,7 +42,6 @@ public class ManagerMessageListener extends Thread {
 		sock=listener;
 		this.empID=empID;
 		mi=mI;
-		gson= new Gson();
 	}
 	
 	/**
@@ -62,7 +58,7 @@ public class ManagerMessageListener extends Thread {
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
-				Message m = gson.fromJson(mes,Message.class);
+				Message m =Message.fromString(mes);
 				decodeMessage(m);
 			}
 			

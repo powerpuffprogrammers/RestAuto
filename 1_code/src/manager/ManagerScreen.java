@@ -212,7 +212,7 @@ public class ManagerScreen extends JPanel {
 		int size = mi.listOfMessages.size();
 		for(int i =0 ; i< size; i++){
 			int index = size-1 -i ;
-			if(i>55){
+			if(i>20){
 				break;
 			}
 			Message m = mi.listOfMessages.get(index);
@@ -225,7 +225,7 @@ public class ManagerScreen extends JPanel {
 					lastMessageSelected=index;
 				}
 			});
-			newMess.setBounds(100, 50+i*20, 1000, 20);
+			newMess.setBounds(100, 50+i*50, 1000, 50);
 			add(newMess);
 			
 		}

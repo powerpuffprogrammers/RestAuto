@@ -24,10 +24,8 @@ public class WaiterMessageSender extends Thread {
 	 */
 	private Socket sock;
 	
-	/**
-	 * Used to convert java objects to string and vice versa
-	 */
-	private Gson gson;
+	
+	//private Gson gson;
 	
 	/**
 	 * Constructor
@@ -37,7 +35,7 @@ public class WaiterMessageSender extends Thread {
 	public WaiterMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
-		gson= new Gson();
+		//gson= new Gson();
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class WaiterMessageSender extends Thread {
 			m.senderPosition='w';
 			m.senderEmpID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = gson.toJson(m);
+			String mess = m.toString();
 			out.writeUTF(mess);
 			out.close();
 		} catch (IOException e) {

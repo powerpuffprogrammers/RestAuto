@@ -220,8 +220,11 @@ public class WaiterInterface {
 	public void generateTickets(){	
 		Ticket T1=new Ticket(name,1,empID);//table 1, waiter id=1
 		Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
-		T1.recentlySat=true;
-		T2.hotFood=true;
+		if(empID ==0){
+			T1.recentlySat=true;
+		}else{
+			T2.hotFood=true;
+		}
 		listOfTickets.put(1,T1);
 		listOfTickets.put(14,T2);
 	}

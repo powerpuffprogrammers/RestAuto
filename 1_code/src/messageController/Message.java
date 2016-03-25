@@ -37,17 +37,15 @@ public class Message {
 	public String content;
 	
 	/**
-	 * Empty Constructor: For GSON to work
-	 */
-	public Message(){	}
-	
-	/**
 	 *  Creates a new message 
 	 * @param recPos - receiver's position
 	 * @param recID - receiver's employee id
 	 * @param mess
 	 */
 	public Message(char recPos, long recID, String mess){
+		senderPosition = '1';
+		senderEmpID = -1;
+		
 		//Load in receiver
 		receiverPosition =recPos;
 		
@@ -57,5 +55,44 @@ public class Message {
 		//Load in actual message
 		content = mess;
 	}
+	
+	/**
+	 * Empty constructor
+	 */
+	public Message(){}
 
+	
+	/**
+	 * Makes the message into a string so it can be sent over a socket.
+	 */
+	public String toString(){
+		String ans = senderPosition +senderEmpID+"*"+receiverPosition+receiverEmpID+"*"+content;
+		return ans;
+	}
+	
+	public static Message fromString(String string){
+		if(string==null || string.length()<4){
+			return null;
+		}
+		Message ans = new Message();
+		ans.senderPosition = string.charAt(0);
+		string = string.substring(1);
+		int indexStar = string.indexOf('*');
+		String id = string.substring(0, indexStar);
+		int idN = Integer.parseInt(id);
+		ans.senderEmpID = idN;
+		string = string.substring(indexStar+1);
+		
+		ans.receiverPosition = string.charAt(0);
+		string = string.substring(1);
+		indexStar = string.indexOf('*');
+		id = string.substring(0, indexStar);
+		idN = Integer.parseInt(id);
+		ans.receiverEmpID = idN;
+		string = string.substring(indexStar+1);
+		ans.content = string;
+		return ans;
+		
+		
+	}
 }

@@ -13,10 +13,7 @@ import com.google.gson.Gson;
  */
 public class MessageControllerListener  extends Thread{
 
-	/**
-	 * Converts java objects to string and vice versa
-	 */
-	private Gson gson;
+	//private Gson gson;
 	/**
 	 * Socket this controller will listen to
 	 */
@@ -30,7 +27,7 @@ public class MessageControllerListener  extends Thread{
 	 * @param sender - MessageControllerSender - this will add messages to this to send it
 	 */
 	public MessageControllerListener(Socket listener, MessageControllerSender sender) {
-		gson = new Gson();
+		//gson = new Gson();
 		currListener=listener;
 		this.sender=sender;
 	}
@@ -43,8 +40,10 @@ public class MessageControllerListener  extends Thread{
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
 			
 			String message =in.readUTF();
-			System.out.println("Message = "+ message);
-			Message m = gson.fromJson(message, Message.class);
+			String second = in.readUTF();
+			System.out.println("Message = "+ message+second);
+			//Message m = gson.fromJson(message, Message.class);
+			Message m = Message.fromString(message+second);
 			char pos = m.receiverPosition;
 			if(pos=='L'){//logging in
 				pos = m.senderPosition;

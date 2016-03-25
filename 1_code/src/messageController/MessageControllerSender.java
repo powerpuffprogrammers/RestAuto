@@ -14,10 +14,7 @@ import com.google.gson.Gson;
  */
 public class MessageControllerSender extends Thread {
 	
-	/**
-	 * Converts java objects to string and vice versa
-	 */
-	private Gson gson;
+	//private Gson gson;
 	
 	/**
 	 * list of messages to send
@@ -29,7 +26,7 @@ public class MessageControllerSender extends Thread {
 	 */
 	public MessageControllerSender(){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
-		gson = new Gson();
+		//gson = new Gson();
 	}
 	
 	/**
@@ -59,7 +56,7 @@ public class MessageControllerSender extends Thread {
 							sock = it.next();
 							try {
 								DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-								out.writeUTF(gson.toJson(m));
+								out.writeUTF(m.toString());
 								out.close();
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -92,7 +89,7 @@ public class MessageControllerSender extends Thread {
 				}
 				try {
 					DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-					out.writeUTF(gson.toJson(m));
+					out.writeUTF(m.toString());
 					out.close();
 				} catch (IOException e) {
 					e.printStackTrace();

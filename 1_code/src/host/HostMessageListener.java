@@ -27,10 +27,7 @@ public class HostMessageListener extends Thread {
 	 * Pointer back to host interface
 	 */
 	private HostInterface hi;
-	/**
-	 * Used to convert java objects to string and vice versa
-	 */
-	private Gson gson;
+
 	
 	/**
 	 * Constructor
@@ -42,7 +39,6 @@ public class HostMessageListener extends Thread {
 		sock=listener;
 		this.empID=empID;
 		hi=hI;
-		gson = new Gson();
 	}
 
 	/**
@@ -60,7 +56,7 @@ public class HostMessageListener extends Thread {
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
-				Message m = gson.fromJson(mes,Message.class);
+				Message m = Message.fromString(mes);
 				decodeMessage(m);
 			}
 			

@@ -160,7 +160,7 @@ public class DatabaseAController extends Thread {
 	public static void generateRandomEmployeeList(){
 		addEmployee("Emma Roussos", 'w');
 		addEmployee("Athira Haridas",'m');
-		addEmployee("Annie Antony",'c');
+		addEmployee("Annie Antony",'w');
 		addEmployee("Christina Parry",'h');
 		addEmployee("Christina Segerholm", 'w');
 		

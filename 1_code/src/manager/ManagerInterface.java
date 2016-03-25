@@ -62,7 +62,7 @@ public class ManagerInterface {
 		loggedOut=false;
 		
 		//set up MC
-		setUpMessageController();
+		//setUpMessageController();
 		
 		
 		//create waiter screen for list of tickets
@@ -70,6 +70,7 @@ public class ManagerInterface {
 		//set the screen to the waiter panel
 		this.frame.setContentPane(manScreen);
 		frame.revalidate();
+		generateMessages();
 	}
 	
 	/**
@@ -81,6 +82,7 @@ public class ManagerInterface {
 		while(!loggedOut){
 			System.out.print(loggedOut);
 		}
+		if(sender!=null)
 		sender.sendMessage(new Message('X',-1, "Logging out"));
 	}
 
@@ -141,5 +143,15 @@ public class ManagerInterface {
 		listOfMessages.add(m);
 		updateScreen();
 		
+	}
+	
+	public void generateMessages(){
+		
+		Message m =new Message();
+		m.content= "Waiter needs help at Table 6.";
+		addMessageToList(m);
+		Message m1 =new Message();
+		m1.content= "Host needs help at host stand.";
+		addMessageToList(m1);
 	}
 }
