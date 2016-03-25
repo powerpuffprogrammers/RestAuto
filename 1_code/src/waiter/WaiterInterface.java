@@ -46,13 +46,26 @@ public class WaiterInterface {
 	 */
 	Ticket currTicket;
 	
+	/**
+	 * List of the tickets this waiter is in charge of.
+	 * 
+	 */
 	HashMap<Integer, Ticket> listOfTickets;
 	
+	/**
+	 * Menu of dishes.
+	 */
 	Menu menu;
 	
 	WaiterTickListScreen ticketListScreen;
 	WaiterOneTicketScreen oneTickScreen;
 	
+	/**
+	 * Constructor
+	 * @param frame - frame that will be used by waiter app
+	 * @param eID - waiter's unique id 
+	 * @param empName = waiter's name
+	 */
 	public WaiterInterface(JFrame frame, long eID, String empName) {
 		jsonConverter = new Gson();
 		this.frame=frame;
@@ -71,7 +84,7 @@ public class WaiterInterface {
 		setUpMessageController();
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "L"+name));
 		
-		generateTickets();
+		//generateTickets();
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -82,7 +95,10 @@ public class WaiterInterface {
 		oneTickScreen = new WaiterOneTicketScreen(this);
 	}
 	
-	
+	/**
+	 * Returns upon logging out. 
+	 * Sends a message to the Host and MC to notify that waiter is logging out.
+	 */
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
@@ -93,6 +109,10 @@ public class WaiterInterface {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
 	}
 
+	/**
+	 * Loads menu from database C.
+	 * @return true on success, false on failure
+	 */
 	private boolean loadMenu() {
 		String DBhost = Configure.getDomainName("DatabaseCController");
 		int DBPortNum = Configure.getPortNumber("DatabaseCController");
@@ -115,6 +135,9 @@ public class WaiterInterface {
 		
 	}
 		
+	/**
+	 * Sets up the Message Controller and alerts it that waiter is logged in.
+	 */
 	private void setUpMessageController() {
 		Socket listener=null;
 		try {
@@ -133,17 +156,30 @@ public class WaiterInterface {
 		
 	}
 
+	/**
+	 * Adds a the given dish to the ticket that is currently selected.
+	 * Caller should make sure currTicket field is not null.
+	 * @param dish - Dish of dish you wish to add
+	 */
 	public void addDishToTicket(Dish dish) {
 		currTicket.addDishToTicket(dish.makeCopyOfDish());
 		updateScreen();
 	}
 
+	/**
+	 * Removes a the dish at the given index on the ticket that is currently selected.
+	 * Caller should make sure currTicket field is not null and index is valid.
+	 * @param indexInTicket = index of the dish in the current ticket
+	 */
 	public void removeDishFromTicket(int indexInTicket) {
 		currTicket.removeDishFromTicket(indexInTicket);
 		updateScreen();
 	}
 
-	
+	/**
+	 * Switches from list of tickets screen to one open ticket screen
+	 * @param ticketNumber - the ticket number you wish to open
+	 */
 	public void openTicketScreens(int ticketNumber) {
 		currTicket = listOfTickets.get(ticketNumber);
 		oneTickScreen.setTicket(currTicket);
@@ -152,6 +188,9 @@ public class WaiterInterface {
 		
 	}
 	
+	/**
+	 * Switches the screen from an open ticket screen to the list of tickets screen.
+	 */
 	public void backToMainScreen(){
 		currTicket = null;
 		frame.setContentPane(ticketListScreen);
@@ -159,18 +198,26 @@ public class WaiterInterface {
 		frame.revalidate();
 	}
 
+	/**
+	 * Sends a notification to the Manager that a certain table needs help
+	 * @param currTicket2
+	 */
 	public void notifyManager(Ticket currTicket2) {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
 		updateScreen();
 	}
-
+	
+	/**
+	 * Sends ticket to Chef
+	 * @param t - ticket to send
+	 */
 	public void sendTicket(Ticket t){
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
 	}
 	
 	//By Athira
-	public void generateTickets(){
-			Ticket T1=new Ticket(name,2,empID);//table 2, waiter id=1
+	public void generateTickets(){	
+		Ticket T1=new Ticket(name,2,empID);//table 2, waiter id=1
 			Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
 			Ticket T3=new Ticket(name ,18,empID);//table 18, waiter id=1
 			
@@ -182,7 +229,7 @@ public class WaiterInterface {
 	
 	/**
 	 * Adds a notification on current screen by calling another method in panel
-	 * @param content
+	 * @param content - content to post on the screen
 	 */
 	public void addNotification(String content) {
 		if(currTicket==null){
@@ -208,8 +255,9 @@ public class WaiterInterface {
 	}
 
 	/**
-	 * Alert host and take this ticket off the list
-	 * @param tableNumber
+	 * This is called when a table has paid and server clicks the paid button.
+	 * It alerts host and take this ticket off the list.
+	 * @param tableNumber - table number of table that just paid
 	 */
 	public void paid(int tableNumber) {
 		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), ""+tableNumber));
@@ -218,8 +266,9 @@ public class WaiterInterface {
 	}
 
 /**
- * Removes the array of dish names from the menu
- * @param dishes
+ * This is called when low inventory is met and chef can no longer make these dishes.
+ * Removes the array of dish names from the menu.
+ * @param dishes - array of dish names to be removed from menu.
  */
 	public void removeLowInventoryDishes(String[] dishes) {
 		//for each dish that we need to mark as low inventory

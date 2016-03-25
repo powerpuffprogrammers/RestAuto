@@ -7,18 +7,37 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
+/**
+ * Listens to messages from all tablets.
+ * @author cms549
+ */
 public class MessageControllerListener  extends Thread{
 
+	/**
+	 * Converts java objects to string and vice versa
+	 */
 	private Gson gson;
+	/**
+	 * Socket this controller will listen to
+	 */
 	private Socket currListener;
+	
 	private MessageControllerSender sender;
 	
+	/**
+	 * Constructor 
+	 * @param listener - socket to listen to
+	 * @param sender - MessageControllerSender - this will add messages to this to send it
+	 */
 	public MessageControllerListener(Socket listener, MessageControllerSender sender) {
 		gson = new Gson();
 		currListener=listener;
 		this.sender=sender;
 	}
 	
+	/**
+	 * Starts listening to messages 
+	 */
 	public void run(){
 		try {
 			DataInputStream in = new DataInputStream(currListener.getInputStream());

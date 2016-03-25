@@ -10,7 +10,11 @@ import com.google.gson.Gson;
 
 import configuration.Configure;
 
-
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefMessageListener extends Thread {
 	
 	private long empID;

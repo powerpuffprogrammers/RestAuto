@@ -27,13 +27,13 @@ public class DatabaseCController extends Thread {
 	private final static int portNumber = Configure.getPortNumber("DatabaseCController");
 	
 	/**
-	 * used to convert java objects to JSON format and vice versa.
+	 * Used to convert java objects to JSON format and vice versa.
 	 */
 	public static Gson jsonConverter = new Gson();
 	
 	/**
 	 * Socket to one tablet that DB C will use to handle one request.
-	 * Each DBBController will have their own as there will be a new DBBController for each request.
+	 * Each DBCController will have their own as there will be a new DBBController for each request.
 	 */
 	private Socket currListener;
 	
@@ -57,14 +57,14 @@ public class DatabaseCController extends Thread {
 
 	/**
 	 * Constructor
-	 * @param listener
+	 * @param listener - socket that this controller will be using
 	 */
 	public DatabaseCController(Socket listener) {
 		currListener=listener;
 	}
 
 	/**
-	 * adds ingredient to inventory returns false if ingredient already exists
+	 * Adds ingredient to inventory returns false if ingredient already exists
 	 * @param ingredientName - name of ingredient to add to inventory
 	 * @param amountLeft - amount of ingredient you have at the time
 	 * @param unitOfAmount - unit that the amountLeft is measured in
@@ -175,14 +175,70 @@ public class DatabaseCController extends Thread {
 	 * Used for Testing.
 	 */
 	public static void generateDishes(){
-		addDishtoMenu("appetizer","buffalo wings",7.99);
-		addDishtoMenu("appetizer","bread sticks",4.99);
-		addDishtoMenu("entree","pasta",12.99);
-		addDishtoMenu("entree","steak",18.99);
-		addDishtoMenu("dessert","cheesecake",8.99);
-		addDishtoMenu("dessert","creme brulee",10.99);
-		addDishtoMenu("drinks","water",0.00);
-		addDishtoMenu("drinks","coke",1.99);
+		
+		addDishtoMenu("appetizer","Buffalo Wings",7.99);
+        addDishtoMenu("appetizer","Bread Sticks",4.99);
+        addDishtoMenu("appetizer","Spiced Olives",5.99);
+        addDishtoMenu("appetizer","Chips and Guacamole",7.99);
+        addDishtoMenu("appetizer","Chicken Soup ",2.99);
+        addDishtoMenu("appetizer","Spring Rolls ",4.99);
+        addDishtoMenu("appetizer","Prawn Chips ",5.99);
+        addDishtoMenu("appetizer","Mixed Apps  ",7.99);
+        addDishtoMenu("appetizer","Sample Platter",7.50);
+        addDishtoMenu("appetizer","Mozzarella sticks",4.99);
+        addDishtoMenu("appetizer","French Fries",5.99);
+        addDishtoMenu("appetizer","Pizza Fries",7.99);
+        addDishtoMenu("appetizer","Breaded Mushrooms",2.99);
+        addDishtoMenu("appetizer","Onion Rings",4.99);
+        addDishtoMenu("appetizer","Shrimp Basket",5.99);
+        addDishtoMenu("appetizer","Garlic Bread",7.99);
+        
+        addDishtoMenu("entree","pasta",12.99);
+        addDishtoMenu("entree","steak",18.99);
+        addDishtoMenu("entree","Eggplant Parmesan",11.99);
+        addDishtoMenu("entree","Chicken salad",12.99);
+        addDishtoMenu("entree","Chicken Alfredo",12.99);
+        addDishtoMenu("entree","Tossed Salad",18.99);
+        addDishtoMenu("entree","Fried Chicken Salad ",11.99);
+        addDishtoMenu("entree","Tuna Salad",12.99);
+        addDishtoMenu("entree","Stuffed Shells",12.99);
+        addDishtoMenu("entree","Baked Lasagna",18.99);
+        addDishtoMenu("entree","Italian Trio ",11.99);
+        addDishtoMenu("entree","Baked Ziti ",12.99);
+        addDishtoMenu("entree","Sandwich",12.99);
+        addDishtoMenu("entree","Bean Burrito",18.99);
+        addDishtoMenu("entree","Cheese Quesedilla ",11.99);
+        addDishtoMenu("entree","Carnitas ",12.99);
+        
+        addDishtoMenu("dessert","cheesecake",8.99);
+        addDishtoMenu("dessert","creme brulee",10.99);
+        addDishtoMenu("dessert","Tiramasu",13.99);
+        addDishtoMenu("dessert","Ice Cream",2.99);
+        addDishtoMenu("dessert","Pineapple Cheesecake",8.99);
+        addDishtoMenu("dessert","Creme Caramel ",10.99);
+        addDishtoMenu("dessert","Peanut Butter Pie",13.99);
+        addDishtoMenu("dessert","Lemon Marangue Pie ",2.99);
+        addDishtoMenu("dessert","Carrot Cake",8.99);
+        addDishtoMenu("dessert","Red Velvet Cake ",10.99);
+        addDishtoMenu("dessert","Bread Pudding",13.99);
+        addDishtoMenu("dessert","Chocolate Ice Cream ",2.99);
+        addDishtoMenu("dessert","Double Chocolate Brownie",8.99);
+        addDishtoMenu("dessert","Coconut Cake ",10.99);
+        addDishtoMenu("dessert","Peppermint Cupcake",13.99);
+        addDishtoMenu("dessert","Mini Cupcakes",2.99);
+        
+        addDishtoMenu("drinks","water",0.00);
+        addDishtoMenu("drinks","coke",1.99);
+        addDishtoMenu("drinks","pepsi",1.99);
+        addDishtoMenu("drinks","milk",1.49);
+        addDishtoMenu("drinks","tea",1.99);
+        addDishtoMenu("drinks","coffee",1.99);
+        addDishtoMenu("drinks","apple juice",1.99);
+        addDishtoMenu("drinks","orange juice",1.49);
+        addDishtoMenu("drinks","green juice",1.99);
+        addDishtoMenu("drinks","tomato juice",1.99);
+        addDishtoMenu("drinks","red wine",1.99);
+        addDishtoMenu("drinks","white wine",1.49);
 		
 	}
 	

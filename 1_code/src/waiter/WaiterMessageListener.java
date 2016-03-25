@@ -11,18 +11,35 @@ import com.google.gson.Gson;
 import dataBaseC.Ticket;
 import messageController.Message;
 
-
+/**
+ * Used to listen from messages from the message controller and decode them.
+ * @author cms549
+ */
 public class WaiterMessageListener extends Thread {
 	
+	/**
+	 * Waiter's employee id
+	 */
 	private long empID;
+	
+	/**
+	 * Socket that this waiter will connect to.
+	 */
 	private Socket sock;
+	
+	/**
+	 * Pointer back to its waiter interface
+	 */
 	private WaiterInterface wi;
+	/**
+	 * Used to convert java objects to string and vice versa
+	 */
 	private Gson gson;
 	/**
 	 * Constructor
-	 * @param listener
-	 * @param empID
-	 * @param wI
+	 * @param listener - socket to listen to
+	 * @param empID - waiter's employee id
+	 * @param wI - waiter interface
 	 */
 	public WaiterMessageListener(Socket listener, long empID, WaiterInterface wI) {
 		sock=listener;

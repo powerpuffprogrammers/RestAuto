@@ -10,10 +10,20 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel that is displayed when manager logs on.
+ * Shows all of the messages sent by any employees to the manger.
+ * Also allows for manager to broadcast a message to all employees.
+ * @author cms549
+ *
+ */
 public class ManagerScreen extends JPanel {
 
 	public ManagerInterface mi;
 	
+	/**
+	 * Keeps track of the last message clicked on. This will be used in the delete message method.
+	 */
 	private int lastMessageSelected;
 	
 	/**
@@ -64,7 +74,7 @@ public class ManagerScreen extends JPanel {
 
 
 	/**
-	 * Creates an are you sure message box
+	 * Creates an are you sure message box for logging out
 	 */
 	private void makeAreYouSure() {
 		//Make a White box with "Are you sure"

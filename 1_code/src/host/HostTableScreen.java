@@ -13,6 +13,15 @@ import javax.swing.SwingConstants;
 
 import databaseB.Table;
 
+/**
+ * Panel that shows the two lists of tables.
+ * One that is ready (can be seated). This is in green.
+ * And one that is not ready. In this list, first the 
+ * tables that are paid are listed (in yellow) these must be cleaned soon.
+ * Then the seated tables are listed (in red).
+ * @author cms549
+ *
+ */
 public class HostTableScreen extends JPanel {
 
 	public HostInterface hi;
@@ -27,6 +36,10 @@ public class HostTableScreen extends JPanel {
 	 */
 	public String waiterSelected;
 	
+	/**
+	 * Constructor
+	 * @param hI - host interface
+	 */
 	public HostTableScreen(HostInterface hI) {
 		hi  = hI;
 		//Set color to blue
@@ -37,7 +50,10 @@ public class HostTableScreen extends JPanel {
 		waiterSelected= null;
 		updateScreen();
 	}
-
+	
+	/** 
+	 * Redraw the host screen
+	 */
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
@@ -300,7 +316,10 @@ public class HostTableScreen extends JPanel {
 
 	
 	/**
-	 * Creates an are you sure message box
+	 * Creates an are you sure message box. Already prints "Are you sure "
+	 * @param m - message to append to Are you sure 
+	 * @param i - used to id what operation you are using this for
+	 * 	1 is for log out, 2 is for notify manager
 	 */
 	private void makeAreYouSure(String m, int choice) {
 		//Make a White box with "Are you sure"
@@ -350,7 +369,7 @@ public class HostTableScreen extends JPanel {
 	
 	/** makes a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be displayed
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);

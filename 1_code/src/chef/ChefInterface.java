@@ -17,7 +17,11 @@ import host.HostMessageSender;
 import messageController.Message;
 import messageController.SenderInfo;
 
-//Starts the DB B
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefInterface {
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");

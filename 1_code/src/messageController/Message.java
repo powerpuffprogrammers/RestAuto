@@ -2,8 +2,9 @@ package messageController;
 
 /**
  * Data structure used to represent a message. Used for communication between tablets.
+ * Consists of sender info which lets the MC know who is sending the message and
+ * Receiver info which lets the MC know who to send the message to.
  * @author cms549
- *
  */
 public class Message {
 	
@@ -19,7 +20,7 @@ public class Message {
 	public SenderInfo receiverInfo;
 	
 	/**
-	 * Actual message
+	 * Actual message to be forwarded
 	 */
 	public String content;
 	

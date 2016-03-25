@@ -105,7 +105,7 @@ public class DatabaseBController extends Thread {
 					server.close();
 				} catch (IOException e1) {}
 			}
-			System.out.println("ERROR: FAILED TO START SERVER.");
+			System.out.println("ERROR: FAILED TO START DB B.");
 		}
 		
 		

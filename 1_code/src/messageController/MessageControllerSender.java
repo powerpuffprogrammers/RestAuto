@@ -8,8 +8,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.google.gson.Gson;
 
+/**
+ * Sends messages to all tablets connected to the message controller.
+ * @author cms549
+ */
 public class MessageControllerSender extends Thread {
 	
+	/**
+	 * Converts java objects to string and vice versa
+	 */
 	private Gson gson;
 	
 	/**
@@ -17,11 +24,17 @@ public class MessageControllerSender extends Thread {
 	 */
 	ConcurrentLinkedQueue<Message> pendingMessages;
 	
+	/**
+	 * Constructor
+	 */
 	public MessageControllerSender(){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
 		gson = new Gson();
 	}
 	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
 	public void run(){
 		while(true){
 			Message m =pendingMessages.poll();

@@ -13,6 +13,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 
+/**
+ * Panel that draws the screen for the waiter's list of ticket screen.
+ * This is shown when a waiter first logs in.
+ * @author cms549
+ *
+ */
 public class WaiterTickListScreen extends JPanel {
 
 	public WaiterInterface wi;
@@ -31,6 +37,9 @@ public class WaiterTickListScreen extends JPanel {
 		updateScreen();
 	}
 
+	/**
+	 * Redraws the screen using current data.
+	 */
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
@@ -40,7 +49,7 @@ public class WaiterTickListScreen extends JPanel {
 	}
 
 	/**
-	 * writes the waiter's name at the top left
+	 * Writes the waiter's name at the top left
 	 */
 	private void makeNameText() {
 		JTextField nameHeader;
@@ -66,6 +75,11 @@ public class WaiterTickListScreen extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws one ticket button on the screen
+	 * @param t - ticket to be drawn
+	 * @param index - spot on the screen to draw the ticket (can be 0-3)
+	 */
 	private void makeTicketButton(Ticket t, int index) {
 		int xbut=0, ybut=0;
 		if(index ==0){
@@ -188,9 +202,9 @@ public class WaiterTickListScreen extends JPanel {
 	
 	
 
-	/** makes a notification button on top of screen like banner
+	/** Makes a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be displayed in notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);

@@ -10,14 +10,37 @@ import com.google.gson.Gson;
 
 import messageController.Message;
 
-
+/**
+ * Used to listen from messages from the message controller and decode them.
+ * @author cms549
+ */
 public class ManagerMessageListener extends Thread {
 	
+	/**
+	 * Waiter's employee id
+	 */
 	private long empID;
+	
+	/**
+	 * Socket that this waiter will connect to.
+	 */
 	private Socket sock;
+	
+	/**
+	 * Pointer back to its manager interface
+	 */
 	private ManagerInterface mi;
+	/**
+	 * Used to convert java objects to string and vice versa
+	 */
 	private Gson gson;
 	
+	/**
+	 * Constructor
+	 * @param listener - socket to listen to
+	 * @param empID - manager's employee id
+	 * @param mI - manager interface
+	 */
 	public ManagerMessageListener(Socket listener, long empID, ManagerInterface mI) {
 		sock=listener;
 		this.empID=empID;
@@ -25,6 +48,9 @@ public class ManagerMessageListener extends Thread {
 		gson= new Gson();
 	}
 	
+	/**
+	 * Listens for messages sent from the MC
+	 */
 	public void run(){
 		try {
 			DataInputStream in = new DataInputStream(sock.getInputStream());
@@ -58,8 +84,8 @@ public class ManagerMessageListener extends Thread {
 	}
 
 	/**
-	 * Add any messages to the list
-	 * @param m
+	 * Add any messages to the list so they can ve displayed
+	 * @param m - message to add
 	 */
 	private void decodeMessage(Message m) {
 		mi.addMessageToList(m);

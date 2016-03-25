@@ -20,6 +20,7 @@ import messageController.SenderInfo;
 
 /**
  * Controls the jpanels being displayed and all the data for the host.
+ * The host interface keeps track of all of the tables in the restaurant.
  * @author cms549
  *
  */
@@ -29,6 +30,9 @@ public class HostInterface {
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
+	/**
+	 * Used to convert java objects to string and vice versa.
+	 */
 	private Gson jsonConverter;
 	/**
 	 * Used to send messages to message controller
@@ -241,8 +245,8 @@ public class HostInterface {
 	}
 
 	/**
-	 * moves seated table to paid
-	 * @param tableNumber
+	 * Moves seated table to paid
+	 * @param tableNumber - table number that paid
 	 */
 	public void paid(int tableNumber) {
 		Table t = allTables.get(tableNumber);

@@ -8,15 +8,26 @@ import configuration.Configure;
 import messageController.Message;
 import messageController.SenderInfo;
 
+/**
+ * Holds the list of messages that all of the employees sent the manager.
+ * Controls this list of messages.
+ * @author cms549
+ *
+ */
 public class ManagerInterface {
 	
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
+	
 	/**
+	 * List of messages that manager has recieved
 	 * End of list is most recent
 	 */
 	public LinkedList<Message> listOfMessages;
 	
+	/**
+	 * This will be used to send messages to the MC
+	 */
 	public ManagerMessageSender sender;
 	
 	private JFrame frame;
@@ -38,6 +49,12 @@ public class ManagerInterface {
 	
 	ManagerScreen manScreen;
 	
+	/**
+	 * Constructor
+	 * @param frame - frame to be used by this application
+	 * @param eID - manager's employee id
+	 * @param empName - manager's name
+	 */
 	public ManagerInterface(JFrame frame, long eID, String empName) {
 		listOfMessages = new LinkedList<Message>();
 		this.frame=frame;
@@ -56,7 +73,10 @@ public class ManagerInterface {
 		frame.revalidate();
 	}
 	
-	
+	/**
+	 * Returns when manager logs out.
+	 * Sends a message to the MC to alert it that the manager is logging out.
+	 */
 	public void runUntilLogOut(){
 		//Don't return until i logged out
 		while(!loggedOut){
@@ -73,6 +93,9 @@ public class ManagerInterface {
 		frame.revalidate();
 	}
 	
+	/**
+	 * Sets up the socket to the MC
+	 */
 	private void setUpMessageController() {
 		Socket listener;
 		try {
@@ -88,19 +111,34 @@ public class ManagerInterface {
 		
 	}
 	
+	/**
+	 * Delete's the message at the given index in the message list
+	 * Caller should be sure to check the index is valid.
+	 * @param index - index of message to be deleted in the list of messages
+	 */
 	public void deleteMessage(int index){
 		listOfMessages.remove(index);
 		updateScreen();
 	}
 	
+	/**
+	 * Sends a mass notification to all servers, hosts, and chefs
+	 * @param content
+	 */
 	public void sendMassNotification(String content){
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), content));
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'), content));
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('s'), content));
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h',-1), content));
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c',-1), content));
+		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('s',-1), content));
 	}
 
-
+	/**
+	 * Adds this message to the list of messages
+	 * @param m - message to be added
+	 */
 	public void addMessageToList(Message m) {
+		if(m==null){
+			return;
+		}
 		listOfMessages.add(m);
 		updateScreen();
 		

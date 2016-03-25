@@ -1,5 +1,14 @@
-How to Run the code:
--run database A, B, C
-run Message Controller
-Run the tablet APP-> in order for messages to be sent to each other you should run one tablet app process for each tablet 
-(each person who is logged on)
+The SWE application code and documentation is stored on github located at:  https://github.com/powerpuffprogrammers
+The SWE application website is: https://sites.google.com/site/sweservewithease/home
+
+In order to run our application, the following steps should be taken after moving the code to a Java IDE for example, eclipse. 
+Run databaseAController.java, databaseBController.java, databaseCController.java
+Run messageController.java
+Run TabletApp.java
+This should open up the login screen. On each tablet, only the TabletApp.java file will be needed to run the SWE application.
+
+In order to demo our application at this time, we have hardcoded some login IDs for your convenience. 
+0->waiter
+1->manager
+2->chef
+3->host 

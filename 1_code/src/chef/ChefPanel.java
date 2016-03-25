@@ -14,6 +14,11 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefPanel extends JPanel {
 
 	public ChefInterface ci;

@@ -10,15 +10,26 @@ import com.google.gson.Gson;
 import messageController.Message;
 
 /**
- * Listens to messages from the Message Controller to the host.
+ * Listens for and decodes the messages from the Message Controller to the host.
  * @author cms549
- *
  */
 public class HostMessageListener extends Thread {
-
+	/**
+	 * Host's unique employee id
+	 */
 	private long empID;
+	
+	/**
+	 * Socket to listen on
+	 */
 	private Socket sock;
+	/**
+	 * Pointer back to host interface
+	 */
 	private HostInterface hi;
+	/**
+	 * Used to convert java objects to string and vice versa
+	 */
 	private Gson gson;
 	
 	/**
@@ -65,9 +76,10 @@ public class HostMessageListener extends Thread {
 	}
 
 	/**
+	 * Decodes message
 	 * If manager sent message it must be a notification
-	 * if server sent message it must be a log in, log out, or paid message
-	 * @param m
+	 * If server sent message it must be a log in, log out, or paid message
+	 * @param m - message to decode
 	 */
 	private void decodeMessage(Message m) {
 		char senderPos = m.senderInfo.position;

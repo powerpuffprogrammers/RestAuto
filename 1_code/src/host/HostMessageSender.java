@@ -10,16 +10,36 @@ import messageController.Message;
 
 public class HostMessageSender {
 
+	/**
+	 * Host's unique employee id
+	 */
 	private long empID;
+	
+	/**
+	 * Socket to listen on
+	 */
 	private Socket sock;
+	/**
+	 * Used to convert java objects to string and vice versa
+	 */
 	private Gson gson;
 	
+	/**
+	 * Constructor
+	 * @param listener - socket to use
+	 * @param empID - host's employee id
+	 */
 	public HostMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
 		gson= new Gson();
 	}
 
+	/**
+	 * Sends a message to message controller to be forwarded.
+	 * Automatically fills in sender info with host position and employee id.
+	 * @param m
+	 */
 	public void sendMessage(Message m) {
 		try {
 			m.senderInfo.position='h';

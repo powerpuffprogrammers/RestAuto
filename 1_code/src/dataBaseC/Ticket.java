@@ -3,10 +3,9 @@ package dataBaseC;
 import java.util.ArrayList;
 
 /**
- * Data structure to hold the ticket.
+ * Data structure to hold the ticket and the data associated with it.
  * Used by waiter and chef.
  * @author cms549
- *
  */
 public class Ticket {
 	/**
@@ -46,8 +45,14 @@ public class Ticket {
 	public int amountOfDishesFinished;
 	public int amountOfDishes;
 	
-	//Used to keep track of recently sat tables and hot food for waiters
+	/**
+	 * Used to keep track of recently sat tables for waiters
+	 */
 	public boolean recentlySat;
+	
+	/**
+	 * Used to keep track of hot food tables for waiters
+	 */
 	public boolean hotFood;
 	
 	/**

@@ -4,10 +4,11 @@ import java.util.HashMap;
 
 /**
  * This class is used to hold the ingredients of one dish on the menu.
+ * It will hold the ingredients and the name of the dish
+ * The Database C hold these so instead of having multiple copies of one dish 
+ * with all of its ingredients we have each Dish's name linked to a DishData 
+ * which will hold the info of that dish. This lowers data usage.
  * @author cms549
- *It will hold the ingredients and the name of the dish
- *A dish will point to this so instead of having multiple copies of one dish 
- *and the ingredients we have each Dish have a DishData field which points here
  */
 
 public class DishData {
@@ -21,19 +22,20 @@ public class DishData {
 	HashMap<String, Ingredient> listOfIngredients;
 	
 	/**
-	 * amount of each Ingredient in the dish
+	 * Amount of each Ingredient in the dish
 	 */
 	HashMap<String, Double> amtOfIngredient;
 	
 	/**
-	 * price of dish
+	 * Price of dish
 	 */
 	public double price;
 	
 	/**
-	 * creates a dish data with the name dishName.
-	 * Makes an empty list of ingredients
-	 * use addIngredient to add to this dish data
+	 * Creates a dish data with the name dishName.
+	 * Makes an empty list of ingredients.
+	 * Use addIngredient to add to this dish data
+	 * @parameter dishName = name of dish you wish to add
 	 */
 	public DishData(String dishName){
 		this.name = dishName;
@@ -42,7 +44,7 @@ public class DishData {
 	}
 	
 	/**
-	 * adds Ingredient to this dishdata
+	 * Adds Ingredient to this Dishdata
 	 * @param ingredientName- name of ingredient
 	 * @param ingredientData - Ingredient obect 
 	 * @return true on success, false if that ingredient was already added
@@ -57,7 +59,7 @@ public class DishData {
 	}
 	
 	/**
-	 * gets the amount of ingredient that is used by this dish
+	 * Gets the amount of ingredient that is used by this dish.
 	 * @param ing - ingredient name
 	 * @return amount the dish uses, -1.0 if that ingredient is not in the dish
 	 */
@@ -70,8 +72,8 @@ public class DishData {
 	}
 
 	/**
-	 * Returns the ingredients used in this dish
-	 * @return
+	 * Returns the ingredients used in this dish.
+	 * @return ingredients used in this dish as an array.
 	 */
 	public String[] getListOfIngredients() {
 		return listOfIngredients.keySet().toArray(null);

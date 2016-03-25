@@ -1,18 +1,19 @@
 package dataBaseC;
 
 /**
- * Hold each ingredient's data
+ * Data structure to hold each ingredient's data. 
+ * Used by Database C to keep track of inventory.
+ * Only have one object for each ingredient to keep memory usage low.
  * @author cms549
- *Only have one object for each ingredient
  */
 public class Ingredient {
 	
 	/**
-	 * Amount of ingredient left in inventory
+	 * Amount of ingredient left in inventory (units specified by unit)
 	 */
 	Double amountLeftInInventory;
 	/**
-	 * unit that is used in amount Left in inventory and threshold
+	 * Unit of amount that is used in amount left in inventory and threshold fields
 	 */
 	String unit;
 	/**
@@ -20,7 +21,7 @@ public class Ingredient {
 	 */
 	String name;
 	/**
-	 * Amount of ingredient that will cause a low inventory notification
+	 * Amount of ingredient that will cause a low inventory notification. (units specified by unit)
 	 */
 	Double threshold;
 	

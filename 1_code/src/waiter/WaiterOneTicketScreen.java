@@ -16,6 +16,12 @@ import javax.swing.SwingConstants;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
 
+/**
+ * Panel that will be used when one ticket is selected from the list of ticket screen.
+ * Displays the current ticket as well as the menu.
+ * This is where the waiter will place the order.
+ * @author cms549
+ */
 public class WaiterOneTicketScreen extends JPanel {
 
 	public WaiterInterface wi;
@@ -44,6 +50,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		setLayout(null);
 	}
 
+	/**
+	 * Draws the menu tabs near the top of the screen
+	 */
 	private void makeMenuChoices() {
 		//make the categories
 		int i =0; 
@@ -86,6 +95,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws the ticket on the left of the screen.
+	 */
 	private void makeTicketOnLeft() {
 		JTextField whiteBox;
 		whiteBox = new JTextField();
@@ -142,7 +154,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 
 	/**
-	 * writes the waiter's name at the top left
+	 * Draws the waiter's name at the top left
 	 */
 	private void makeNameText() {
 		JTextField nameHeader;
@@ -156,7 +168,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Back Button
+	 * Sets up the Back Button which is used to jump back to the list of tickets screen.
 	 */
 	private void makeBackButton(){
 		
@@ -174,7 +186,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the notifyManager Button
+	 * Sets up the notifyManager Button used to notify the manager about a unhappy table.
 	 */
 	private void makeNotifyManagerButton(){
 		
@@ -192,7 +204,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the sendTicket Button
+	 * Sets up the sendTicket Button used to send the chef the ticket
 	 */
 	private void makeSendTicketButton(){
 		
@@ -210,7 +222,8 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Paid Button
+	 * Sets up the Paid Button used to notify the host that this table has paid and take it off of this waiter's
+	 * list of tickets as they have paid so the ticket is no longer needed.
 	 */
 	private void makePaidButton(){
 		
@@ -229,7 +242,10 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Creates an are you sure message box
+	 * Creates an are you sure message box. Already prints "Are you sure "
+	 * @param m - message to append to Are you sure 
+	 * @param i - used to id what operation you are using this for
+	 * 	0 is for paid, 1 is for log out, 2 is for notify manager
 	 */
 	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
@@ -276,7 +292,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Remove Dish Button
+	 * Sets up the Remove Dish Button used to remove a dish from the open ticket.
 	 */
 	private void makeRemoveButton(){
 		
@@ -296,6 +312,11 @@ public class WaiterOneTicketScreen extends JPanel {
 		
 	}
 	
+	/**
+	 * This is called when ever you switch to this screen, it sets up the ticket 
+	 * to be displayed on the screen.
+	 * @param t - ticket to be displayed
+	 */
 	public void setTicket(Ticket t){
 		currTicket = t;
 		currTicket.recentlySat=false;
@@ -304,6 +325,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		
 	}
 
+	/**
+	 * Refreshes the screen
+	 */
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
@@ -318,9 +342,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		validate();
 	}
 
-	/** makes a notification button on top of screen like banner
+	/** Draws a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be put in the notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);

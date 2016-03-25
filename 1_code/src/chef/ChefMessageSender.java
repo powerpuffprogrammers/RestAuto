@@ -8,6 +8,11 @@ import com.google.gson.Gson;
 
 import messageController.Message;
 
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefMessageSender {
 
 	private long empID;
