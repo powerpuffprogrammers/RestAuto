@@ -15,7 +15,6 @@ import dataBaseC.Ticket;
 import host.HostMessageListener;
 import host.HostMessageSender;
 import messageController.Message;
-import messageController.SenderInfo;
 
 /**
  * WIP
@@ -132,7 +131,7 @@ public class ChefInterface {
 			Thread t= new ChefMessageListener(listener,empID, this);
 			t.start();
 			sender = new ChefMessageSender(listener,empID);
-			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
+			sender.sendMessage(new Message('L',-1, ""));
 			
 		} catch (Exception e) {
 			System.out.println("Host: Disconnected from MC.");
@@ -199,7 +198,7 @@ public class ChefInterface {
 		while(!loggedOut){
 			System.out.print(loggedOut);
 		}
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
+		sender.sendMessage(new Message('X',-1, ""));
 		
 	}
 
@@ -207,7 +206,7 @@ public class ChefInterface {
 	 * Sends a notification to the manager
 	 */
 	public void notifyManager() {
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help in the kitchen."));
+		sender.sendMessage(new Message('m',-1, name+" needs help in the kitchen."));
 		updateScreen();
 	}
 

@@ -8,16 +8,28 @@ package messageController;
  */
 public class Message {
 	
+	/**
+	 * Sender info:
+	 * position of employee
+	 */
+	public char senderPosition;
 	
 	/**
-	 * Info about sender
+	 * Sender info:
+	 * employee's unique id
 	 */
-	public SenderInfo senderInfo;
+	public long senderEmpID;
 	
 	/**
-	 * Info about receiver
+	 * Receiver info:
+	 * position of employee
 	 */
-	public SenderInfo receiverInfo;
+	public char receiverPosition;
+	/**
+	 * Receiver info:
+	 * employee's unique id
+	 */
+	public long receiverEmpID;
 	
 	/**
 	 * Actual message to be forwarded
@@ -25,17 +37,22 @@ public class Message {
 	public String content;
 	
 	/**
-	 * Creates a new message 
-	 * @param s - sender info
-	 * @param r - receiver info
-	 * @param mess - message to send
+	 * Empty Constructor: For GSON to work
 	 */
-	public Message(SenderInfo s, SenderInfo r, String mess){
-		//Load in sender info
-		senderInfo =s;
+	public Message(){	}
+	
+	/**
+	 *  Creates a new message 
+	 * @param recPos - receiver's position
+	 * @param recID - receiver's employee id
+	 * @param mess
+	 */
+	public Message(char recPos, long recID, String mess){
+		//Load in receiver
+		receiverPosition =recPos;
 		
-		//Load in receiver info
-		receiverInfo = r;
+		//Load in receiver id
+		receiverEmpID = recID;
 		
 		//Load in actual message
 		content = mess;

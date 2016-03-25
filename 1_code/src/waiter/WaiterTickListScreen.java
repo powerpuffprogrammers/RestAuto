@@ -115,25 +115,21 @@ public class WaiterTickListScreen extends JPanel {
 		
 		if(t.hotFood){
 			JTextField nameHeader;
-			nameHeader = new JTextField();
+			nameHeader = new JTextField("Hot Food");
 			nameHeader.setEditable(false);
 			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			nameHeader.setText("HOT FOOD");
-			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
-			add(nameHeader);
-			nameHeader.setColumns(10);	
+			nameHeader.setBounds(xbut+110, ybut+100, 200, 30);
+			add(nameHeader);	
 		}
 		else if (t.recentlySat){
 			JTextField nameHeader;
-			nameHeader = new JTextField();
+			nameHeader = new JTextField("Recently Sat");
 			nameHeader.setEditable(false);
 			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			nameHeader.setText("HOT FOOD");
-			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
+			nameHeader.setBounds(xbut+110, ybut+100, 200, 30);
 			add(nameHeader);
-			nameHeader.setColumns(10);	
 		}
 		
 		

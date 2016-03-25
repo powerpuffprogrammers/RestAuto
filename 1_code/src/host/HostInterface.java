@@ -16,7 +16,6 @@ import configuration.Configure;
 import databaseB.Table;
 import databaseB.TableList;
 import messageController.Message;
-import messageController.SenderInfo;
 
 /**
  * Controls the jpanels being displayed and all the data for the host.
@@ -124,8 +123,8 @@ public class HostInterface {
 	 * Used for testing.
 	 */
 	private void generateListOfWaiters() {
-		listOfWaitersLoggedIn.put("Christina Segerholm", (long) 0);
-		listOfWaitersLoggedIn.put("Emma Roussos", (long) 3);
+		listOfWaitersLoggedIn.put("Emma Roussos", (long) 0);
+		listOfWaitersLoggedIn.put("Christina Segerholm", (long) 4);
 		
 	}
 
@@ -169,7 +168,7 @@ public class HostInterface {
 			t.start();
 			sender = new HostMessageSender(listener,empID);
 			//log in
-			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
+			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
 			
 		} catch (Exception e) {
@@ -185,7 +184,7 @@ public class HostInterface {
 	 * Sends a notification to the manager
 	 */
 	public void notifyManager() {
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help at host stand."));
+		sender.sendMessage(new Message('m',-1, name+" needs help at host stand."));
 		updateScreen();
 	}
 
@@ -213,7 +212,7 @@ public class HostInterface {
 	 * @param tableNumber - table you just sat 
 	 */
 	public void sendSeated(long waiterId, int tableNumber){
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('w',waiterId), ""+tableNumber ));
+		sender.sendMessage(new Message('w',waiterId, ""+tableNumber ));
 	}
 	
 	/**
@@ -233,7 +232,7 @@ public class HostInterface {
 		while(!loggedOut){
 			System.out.print(loggedOut);
 		}
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
+		sender.sendMessage(new Message('X',-1, "Log out"));
 	}
 
 	/**

@@ -48,8 +48,8 @@ public class ManagerMessageSender extends Thread {
 	public void sendMessage(Message m){
 		
 		try {
-			m.senderInfo.position='m';
-			m.senderInfo.empID=empID;
+			m.senderPosition='m';
+			m.senderEmpID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String mess = gson.toJson(m);
 			out.writeUTF(mess);

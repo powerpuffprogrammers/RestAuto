@@ -82,7 +82,7 @@ public class HostMessageListener extends Thread {
 	 * @param m - message to decode
 	 */
 	private void decodeMessage(Message m) {
-		char senderPos = m.senderInfo.position;
+		char senderPos = m.senderPosition;
 		if(senderPos=='m'){
 			//NOTIFY
 			hi.addNotification(m.content);
@@ -90,13 +90,13 @@ public class HostMessageListener extends Thread {
 		else if(senderPos=='w'){
 			if(m.content.charAt(0)=='L'){
 				//logging in
-				long waiterID = m.senderInfo.empID;
+				long waiterID = m.senderEmpID;
 				String name = m.content.substring(1); 
 				//add to list of servers
 			}
 			if(m.content.charAt(0)=='O'){
 				//logging out
-				long waiterID = m.senderInfo.empID;
+				long waiterID = m.senderEmpID;
 				String name = m.content.substring(1); 
 				//remove from list of servers
 			}

@@ -11,7 +11,6 @@ import configuration.Configure;
 /**
  * Starts the DataBase A. This will handle requests for log in. DB A holds employee info.
  * @author cms549
- *
  */
 public class DatabaseAController extends Thread {
 	
@@ -163,6 +162,7 @@ public class DatabaseAController extends Thread {
 		addEmployee("Athira Haridas",'m');
 		addEmployee("Annie Antony",'c');
 		addEmployee("Christina Parry",'h');
+		addEmployee("Christina Segerholm", 'w');
 		
 		
 	}

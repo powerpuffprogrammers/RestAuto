@@ -43,11 +43,12 @@ public class MessageControllerListener  extends Thread{
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
 			
 			String message =in.readUTF();
+			System.out.println("Message = "+ message);
 			Message m = gson.fromJson(message, Message.class);
-			char pos = m.receiverInfo.position;
+			char pos = m.receiverPosition;
 			if(pos=='L'){//logging in
-				pos = m.senderInfo.position;
-				long empID = m.senderInfo.empID;
+				pos = m.senderPosition;
+				long empID = m.senderEmpID;
 				if(pos=='w'){
 					MessageController.addWaiterSocket(empID, currListener);
 				}

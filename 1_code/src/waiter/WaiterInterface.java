@@ -14,7 +14,6 @@ import dataBaseC.Dish;
 import dataBaseC.Menu;
 import dataBaseC.Ticket;
 import messageController.Message;
-import messageController.SenderInfo;
 
 public class WaiterInterface {
 	
@@ -82,9 +81,9 @@ public class WaiterInterface {
 		
 		//set up MC
 		setUpMessageController();
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "L"+name));
+		sender.sendMessage(new Message('h',-1, "L"+name));
 		
-		//generateTickets();
+		generateTickets();
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -105,8 +104,8 @@ public class WaiterInterface {
 			System.out.print(loggedOut);
 		}
 		//let the host know you are logging out
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), "O"+name));
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
+		sender.sendMessage(new Message('h',-1, "O"+name));
+		sender.sendMessage(new Message('X',-1, "Log out"));
 	}
 
 	/**
@@ -145,7 +144,7 @@ public class WaiterInterface {
 			Thread t= new WaiterMessageListener(listener,empID, this);
 			t.start();
 			sender = new WaiterMessageSender(listener,empID);
-			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
+			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
 		} catch (Exception e) {
 			System.out.println("Server: Disconnected from MC.");
@@ -203,7 +202,7 @@ public class WaiterInterface {
 	 * @param currTicket2
 	 */
 	public void notifyManager(Ticket currTicket2) {
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+		sender.sendMessage(new Message('m',-1, currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
 		updateScreen();
 	}
 	
@@ -212,18 +211,19 @@ public class WaiterInterface {
 	 * @param t - ticket to send
 	 */
 	public void sendTicket(Ticket t){
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c'),jsonConverter.toJson(t) ));
+		sender.sendMessage(new Message('c',-1,jsonConverter.toJson(t) ));
 	}
 	
-	//By Athira
+	/**
+	 * Used for testing
+	 */
 	public void generateTickets(){	
-		Ticket T1=new Ticket(name,2,empID);//table 2, waiter id=1
-			Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
-			Ticket T3=new Ticket(name ,18,empID);//table 18, waiter id=1
-			
-			listOfTickets.put(2,T1);
-			listOfTickets.put(14,T2);
-			listOfTickets.put(18,T3);
+		Ticket T1=new Ticket(name,1,empID);//table 1, waiter id=1
+		Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
+		T1.recentlySat=true;
+		T2.hotFood=true;
+		listOfTickets.put(1,T1);
+		listOfTickets.put(14,T2);
 	}
 
 	
@@ -260,7 +260,7 @@ public class WaiterInterface {
 	 * @param tableNumber - table number of table that just paid
 	 */
 	public void paid(int tableNumber) {
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h'), ""+tableNumber));
+		sender.sendMessage(new Message('h',-1, ""+tableNumber));
 		listOfTickets.remove(tableNumber);
 		backToMainScreen();
 	}

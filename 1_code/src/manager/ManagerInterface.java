@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import javax.swing.JFrame;
 import configuration.Configure;
 import messageController.Message;
-import messageController.SenderInfo;
 
 /**
  * Holds the list of messages that all of the employees sent the manager.
@@ -82,7 +81,7 @@ public class ManagerInterface {
 		while(!loggedOut){
 			System.out.print(loggedOut);
 		}
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('X'), ""));
+		sender.sendMessage(new Message('X',-1, "Logging out"));
 	}
 
 	/**
@@ -103,7 +102,7 @@ public class ManagerInterface {
 			Thread t= new ManagerMessageListener(listener,empID, this);
 			t.start();
 			sender = new ManagerMessageSender(listener,empID);
-			sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('L'), ""));
+			sender.sendMessage(new Message('L',-1, "Logging in"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,9 +125,9 @@ public class ManagerInterface {
 	 * @param content
 	 */
 	public void sendMassNotification(String content){
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('h',-1), content));
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('c',-1), content));
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('s',-1), content));
+		sender.sendMessage(new Message('h',-1, content));
+		sender.sendMessage(new Message('c',-1, content));
+		sender.sendMessage(new Message('s',-1, content));
 	}
 
 	/**

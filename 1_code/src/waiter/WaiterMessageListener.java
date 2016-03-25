@@ -70,6 +70,7 @@ public class WaiterMessageListener extends Thread {
 		}catch (EOFException e) { 
 			try {
 				sock.close();
+				System.out.println("WAITER CLOSED PORT TO MC.");
 			} catch (IOException e1) {
 			}
 		}catch (Exception e) {
@@ -87,7 +88,7 @@ public class WaiterMessageListener extends Thread {
 	 * @param m
 	 */
 	private void decodeMessage(Message m) {
-		char senderPos = m.senderInfo.position;
+		char senderPos = m.senderPosition;
 		if(senderPos=='m'){
 			//NOTIFY
 			wi.addNotification(m.content);

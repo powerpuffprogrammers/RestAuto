@@ -13,8 +13,6 @@ public class MessageController {
 	
 	private final static int portNumber = Configure.getPortNumber("MessageController");
 	
-
-	//Message Controller fields:
 	/**
 	 * List of waiters logged in with employee id as key
 	 */

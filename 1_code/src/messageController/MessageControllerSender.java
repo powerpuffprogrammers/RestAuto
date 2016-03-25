@@ -39,8 +39,8 @@ public class MessageControllerSender extends Thread {
 		while(true){
 			Message m =pendingMessages.poll();
 			if(m!=null){
-				char pos= m.receiverInfo.position;
-				long id = m.receiverInfo.empID;
+				char pos= m.receiverPosition;
+				long id = m.receiverEmpID;
 				Socket sock=null;
 				if(pos=='h'){
 					sock=MessageController.hosts.values().iterator().next();
@@ -72,8 +72,8 @@ public class MessageControllerSender extends Thread {
 					}
 				}
 				else if(pos=='X'){//logging out
-					pos = m.senderInfo.position;
-					long empID = m.senderInfo.empID;
+					pos = m.senderPosition;
+					long empID = m.senderEmpID;
 					if(pos=='w'){
 						MessageController.removeWaiterSocket(empID);
 					}

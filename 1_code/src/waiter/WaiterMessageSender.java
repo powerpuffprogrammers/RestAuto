@@ -48,8 +48,8 @@ public class WaiterMessageSender extends Thread {
 	public void sendMessage(Message m){
 		
 		try {
-			m.senderInfo.position='w';
-			m.senderInfo.empID=empID;
+			m.senderPosition='w';
+			m.senderEmpID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String mess = gson.toJson(m);
 			out.writeUTF(mess);

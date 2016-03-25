@@ -27,8 +27,8 @@ public class ChefMessageSender {
 
 	public void sendMessage(Message m) {
 		try {
-			m.senderInfo.position='c';
-			m.senderInfo.empID=empID;
+			m.senderPosition='c';
+			m.senderEmpID=empID;
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String mess = gson.toJson(m);
 			out.writeUTF(mess);
