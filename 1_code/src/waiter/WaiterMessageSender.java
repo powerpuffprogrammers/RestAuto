@@ -53,7 +53,7 @@ public class WaiterMessageSender extends Thread {
 			out.writeUTF(mess);
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	}

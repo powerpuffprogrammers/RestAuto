@@ -63,7 +63,7 @@ public class HostInterface {
 	/**
 	 * Hash map links integer (table #) to its table object - holds all the tables in the restaurant
 	 */
-	HashMap<Integer, Table> allTables; 
+	public HashMap<Integer, Table> allTables; 
 	
 	/**
 	 * list of all the ready tables in order they will be displayed
@@ -138,7 +138,7 @@ public class HostInterface {
 	 * Loads the list of tables from Data base B
 	 * @return true on success, false on failure
 	 */
-	private boolean loadTables() {
+	public boolean loadTables() {
 		String DBhost = Configure.getDomainName("DatabaseBController");
 		int DBPortNum = Configure.getPortNumber("DatabaseBController");
 		Socket sock=null;
@@ -198,9 +198,13 @@ public class HostInterface {
 	 * Seat the table number with this server
 	 * @param waiterName
 	 * @param tableNumber
+	 * @return 0 on success and -1 on fail.
 	 */
-	public void seat(String waiterName, int tableNumber){
+	public int seat(String waiterName, int tableNumber){//CHANGE
 		Table t = allTables.get(tableNumber);
+		if (!(t.status=='r')){
+			return -1;
+		}
 		t.status = 's';
 		for(int i =0; i<readyTables.size(); i++){
 			if(readyTables.get(i) == tableNumber){
@@ -209,7 +213,12 @@ public class HostInterface {
 		}
 		seatedTables.add(tableNumber);
 		sendSeated(listOfWaitersLoggedIn.get(waiterName), tableNumber);
+		try{
 		updateScreen();
+		}catch(Exception e){
+			
+		}
+		return 0;////CHANGE
 	}
 	
 	/**

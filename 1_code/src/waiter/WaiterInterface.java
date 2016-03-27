@@ -8,13 +8,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
+
 import com.google.gson.Gson;
+
 import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Menu;
 import dataBaseC.Ticket;
 import messageController.Message;
 
+/**
+ * Controls what screen the waiter sees. 
+ * Holds the waiters current tickets.
+ * @author cms549
+ *
+ */
 public class WaiterInterface {
 	
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
@@ -43,7 +51,7 @@ public class WaiterInterface {
 	/**
 	 * current ticket open, null if none is open
 	 */
-	Ticket currTicket;
+ public Ticket currTicket;
 	
 	/**
 	 * List of the tickets this waiter is in charge of.
@@ -57,7 +65,7 @@ public class WaiterInterface {
 	Menu menu;
 	
 	WaiterTickListScreen ticketListScreen;
-	WaiterOneTicketScreen oneTickScreen;
+	public WaiterOneTicketScreen oneTickScreen;
 	
 	/**
 	 * Constructor
@@ -112,7 +120,7 @@ public class WaiterInterface {
 	 * Loads menu from database C.
 	 * @return true on success, false on failure
 	 */
-	private boolean loadMenu() {
+public boolean loadMenu() {
 		String DBhost = Configure.getDomainName("DatabaseCController");
 		int DBPortNum = Configure.getPortNumber("DatabaseCController");
 		Socket sock=null;
@@ -160,9 +168,16 @@ public class WaiterInterface {
 	 * Caller should make sure currTicket field is not null.
 	 * @param dish - Dish of dish you wish to add
 	 */
-	public void addDishToTicket(Dish dish) {
+	public boolean addDishToTicket(Dish dish) {
 		currTicket.addDishToTicket(dish.makeCopyOfDish());
-		updateScreen();
+	     updateScreen();
+		for(int i = 0; i < currTicket.listOfDishes.size() ; i++){
+			if(dish.name.equals(currTicket.listOfDishes.get(i).name)){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 
 	/**

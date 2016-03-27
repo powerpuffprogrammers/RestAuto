@@ -44,7 +44,7 @@ public class HostMessageSender {
 			out.writeUTF(mess);
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	}
