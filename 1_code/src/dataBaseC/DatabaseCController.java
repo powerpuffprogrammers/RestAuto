@@ -10,6 +10,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 
 import configuration.Configure;
+import databaseA.DatabaseAController;
 
 /**
  * Starts the DB C.
@@ -86,14 +87,15 @@ public class DatabaseCController extends Thread {
 	/**
 	 * Starts a new thread for the DB B controller so it can communicate with one tablet on one thread.
 	 * Reads the socket in to determine the request and responds accordingly.
+	 * Socket will hang up on waiters after sending them menu and after reading a ticket
+	 * Socket won't hang up on chef since chef will be sending information about each dish that was started.
 	 */
 	public void run(){
-		
-		try {
-			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			DataOutputStream out = new DataOutputStream(currListener.getOutputStream());
+		String mess = "";
+		try(DataInputStream in = new DataInputStream(currListener.getInputStream()); 
+				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
 			while(true){
-				String mess =in.readUTF();
+				mess =in.readUTF();
 				char first = mess.charAt(0);
 				if(first=='A'){ //add ingredinet
 					//add the ingredient with the info into the inventory
@@ -104,15 +106,28 @@ public class DatabaseCController extends Thread {
 				else if(first =='d'){//decrement the ingredients for this dish
 					
 				}
-				else if(first=='M'){//Waiter needs menu when loggin in
+				else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
 					String jmenu = jsonConverter.toJson(menu);
 					out.writeUTF(jmenu);
+					in.close();
+					out.close();
+					currListener.close();
+					break;
+				}
+				else if(first == 'T'){//waiter is sending you a paid ticket so you can save it - hang up after you read it
+					String ticket = mess.substring(1);
+					//add the ticket to the file that holds all tickets for today
+					in.close();
+					out.close();
+					currListener.close();
+					break;
 				}
 			}
 			
 			
 		} catch (Exception e) {
-			System.out.println("Disconnected from a client.");
+			System.out.println("Before error Read in: "+ mess);
+			e.printStackTrace();
 		} 
 	}
 	
@@ -125,24 +140,14 @@ public class DatabaseCController extends Thread {
 		//set up the inventory
 		//set up dishdata converter
 		generateDishes();
-		ServerSocket server=null;
-		try {
-			server = new ServerSocket(portNumber);
-			
-			while(true){
-				Socket listener = server.accept();
-				Thread t= new DatabaseCController(listener);
-				t.start();
-			}
-		} catch (Exception e) {
-			if(server!=null){
-				try {
-					server.close();
-				} catch (IOException e1) {}
-			}
-			System.out.println("ERROR: FAILED TO START SERVER.");
-			
-		}
+		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
+            while (true) {
+               new DatabaseAController(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: DB C failed to start. Port " + portNumber+" is in use.");
+            System.exit(-1);
+        }
 		
 		
 	}

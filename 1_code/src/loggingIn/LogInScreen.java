@@ -78,24 +78,23 @@ public class LogInScreen extends JPanel{
 	 */
 	private void logInToDBA(long empID){
 		//set up socket (as client)
-		Socket client;
-		try {
-			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
+		try(Socket client = new Socket(dataBaseAServerName, dataBaseAPortNumber)) {
 			DataOutputStream out = new DataOutputStream(client.getOutputStream());
 			DataInputStream in = new DataInputStream(client.getInputStream());
 			
 			//send request 
 			String message = "L:"+empID;
+			System.out.println(message);
 			out.writeUTF(message);
 			String ans =in.readUTF();
 			loggedIn=ans.charAt(0);
 			if(loggedIn!='0'&& loggedIn!='L'){
 				empName=ans.substring(1);
 			}
+			in.close();
+			out.close();
 			client.close();
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: CLIENT CAN'T CONNECT.");
+		} catch (Exception e){
 			loggedIn='0';
 			return;
 		}
@@ -235,18 +234,16 @@ public class LogInScreen extends JPanel{
 	 */
 	public void logOut(long empID) {
 		//set up socket (as client)
-		Socket client;
-		try {
-			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
+		try(Socket client = new Socket(dataBaseAServerName, dataBaseAPortNumber)) {
 			DataOutputStream out = new DataOutputStream(client.getOutputStream());
 			
 			//send log out
 			String message = "O:"+empID;
 			out.writeUTF(message);
+			out.close();
 			client.close();
 			
 		} catch (Exception e) {
-			System.out.println("ERROR:");
 			loggedIn='0';
 			return;
 		}

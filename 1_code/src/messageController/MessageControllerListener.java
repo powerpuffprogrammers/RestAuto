@@ -13,23 +13,18 @@ import com.google.gson.Gson;
  */
 public class MessageControllerListener  extends Thread{
 
-	//private Gson gson;
 	/**
 	 * Socket this controller will listen to
 	 */
 	private Socket currListener;
-	
-	private MessageControllerSender sender;
 	
 	/**
 	 * Constructor 
 	 * @param listener - socket to listen to
 	 * @param sender - MessageControllerSender - this will add messages to this to send it
 	 */
-	public MessageControllerListener(Socket listener, MessageControllerSender sender) {
-		//gson = new Gson();
+	public MessageControllerListener(Socket listener) {
 		currListener=listener;
-		this.sender=sender;
 	}
 	
 	/**
@@ -42,23 +37,22 @@ public class MessageControllerListener  extends Thread{
 			String message =in.readUTF();
 			String second = in.readUTF();
 			System.out.println("Message = "+ message+second);
-			//Message m = gson.fromJson(message, Message.class);
 			Message m = Message.fromString(message+second);
 			char pos = m.receiverPosition;
 			if(pos=='L'){//logging in
 				pos = m.senderPosition;
 				long empID = m.senderEmpID;
 				if(pos=='w'){
-					MessageController.addWaiterSocket(empID, currListener);
+					MessageController.addWaiterSocket(empID, currListener, in);
 				}
 				else if(pos=='c'){
-					MessageController.addChefSocket(empID, currListener);
+					MessageController.addChefSocket(empID, currListener,in);
 				}
 				else if(pos=='h'){
-					MessageController.addHostSocket(empID, currListener);
+					MessageController.addHostSocket(empID, currListener,in);
 				}
 				else if(pos=='m'){
-					MessageController.addManagerSocket(empID, currListener);
+					MessageController.addManagerSocket(empID, currListener, in);
 				}
 				else{
 					currListener.close();
@@ -69,19 +63,11 @@ public class MessageControllerListener  extends Thread{
 			
 			else{
 				//Add the forwarded message to message controller
+				sender = MessageController.getSocket(pos, senderid);
 				sender.pendingMessages.offer(m);
 			}
 			
-			
-		}catch (EOFException e) { 
-			try {
-				currListener.close();
-			} catch (IOException e1) {
-			}
-			
 		}catch (Exception e) {
-			System.out.println("Disconnected from a client.");
-			
 			e.printStackTrace();
 		} 
 		

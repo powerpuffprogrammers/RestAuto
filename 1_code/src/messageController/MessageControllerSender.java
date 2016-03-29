@@ -14,8 +14,6 @@ import com.google.gson.Gson;
  */
 public class MessageControllerSender extends Thread {
 	
-	//private Gson gson;
-	
 	/**
 	 * list of messages to send
 	 */
@@ -23,8 +21,9 @@ public class MessageControllerSender extends Thread {
 	
 	/**
 	 * Constructor
+	 * @param oneTablet 
 	 */
-	public MessageControllerSender(){
+	public MessageControllerSender(Socket oneTablet){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
 		//gson = new Gson();
 	}

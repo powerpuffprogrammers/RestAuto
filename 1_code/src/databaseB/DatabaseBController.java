@@ -8,6 +8,7 @@ import java.net.Socket;
 import com.google.gson.Gson;
 
 import configuration.Configure;
+import databaseA.DatabaseAController;
 
 /**
  * Starts the DB B.
@@ -63,23 +64,25 @@ public class DatabaseBController extends Thread {
 	
 	
 	/**
-	 * Each request will get its own thread. This will be used to send the host the list of tables
+	 * Each request will get its own thread. This will be used to send the host the list of tables.
+	 * Socket hangs up after sending the table list.
 	 */
 	public void run(){
-		try {
-			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			DataOutputStream out = new DataOutputStream(currListener.getOutputStream());
-			while(true){
-				String mess =in.readUTF();
-				char first = mess.charAt(0);
-				if(first=='T'){ //send the host a list of tables
-					out.writeUTF(jsonConverter.toJson(listOfTables));
-				}
+		String mess = "";
+		try(DataInputStream in = new DataInputStream(currListener.getInputStream());
+				DataOutputStream out = new DataOutputStream(currListener.getOutputStream());) {
+			mess=in.readUTF();
+			char first = mess.charAt(0);
+			if(first=='T'){ //send the host a list of tables
+				System.out.println(jsonConverter.toJson(listOfTables));
+				out.writeUTF(jsonConverter.toJson(listOfTables));
 			}
-			
-			
+			in.close();
+			out.close();
+			currListener.close();
 		} catch (Exception e) {
-			System.out.println("Disconnected from a client.");
+			System.out.println("Before Error: Read in: "+ mess);
+			e.printStackTrace();
 		} 
 	}
 	
@@ -90,25 +93,14 @@ public class DatabaseBController extends Thread {
 	public static void main(String[] args){
 		listOfTables = new TableList();
 		generateTables();
-		ServerSocket server = null;
-		try {
-			server = new ServerSocket(portNumber);
-			
-			while(true){
-				Socket listener = server.accept();
-				Thread t= new DatabaseBController(listener);
-				t.start();
-			}
-		} catch (Exception e) {
-			if(server!=null){
-				try {
-					server.close();
-				} catch (IOException e1) {}
-			}
-			System.out.println("ERROR: FAILED TO START DB B.");
-		}
-		
-		
+		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
+            while (true) {
+               new DatabaseBController(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: DB B failed to start. Port " + portNumber+" is in use.");
+            System.exit(-1);
+        }	
 	}
 	
 	
