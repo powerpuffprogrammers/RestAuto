@@ -4,8 +4,9 @@ import java.util.Date;
 
 /**
  * Table is a data structure that is used to represent a table.
- * It will hold the table's table number, status, max occupancy, 
- * as well as the name of the waiter who is taking care of this table.
+ * Holds the information for the table, including the maximum occupancy, 
+ * the time the table was last sat, the status of the table, and the name of the waiter 
+ * who is serving it.
  * @author cms549
  *
  */
