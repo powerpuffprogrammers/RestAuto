@@ -3,8 +3,7 @@ package waiter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import messageController.Message;
 
@@ -24,8 +23,10 @@ public class WaiterMessageSender extends Thread {
 	 */
 	private Socket sock;
 	
-	
-	//private Gson gson;
+	/**
+	 * list of messages to send
+	 */
+	ConcurrentLinkedQueue<Message> pendingMessages;
 	
 	/**
 	 * Constructor
@@ -35,7 +36,7 @@ public class WaiterMessageSender extends Thread {
 	public WaiterMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
-		//gson= new Gson();
+		pendingMessages = new ConcurrentLinkedQueue<Message>();
 	}
 
 	/**
@@ -44,18 +45,35 @@ public class WaiterMessageSender extends Thread {
 	 * @param m - message to send
 	 */
 	public void sendMessage(Message m){
-		
-		try {
-			m.senderPosition='w';
-			m.senderEmpID=empID;
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = m.toString();
-			out.writeUTF(mess);
-			out.close();
-		} catch (IOException e) {
-			//e.printStackTrace();
-		}
-		
+		m.senderPosition='w';
+		m.senderEmpID=empID;
+		pendingMessages.offer(m);
 	}
 	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
+	public void run(){
+		DataOutputStream out;
+		try {
+			out = new DataOutputStream(sock.getOutputStream());
+		} catch (IOException e1) {
+			System.out.println("Failed to start up sender for waiter.");
+			return;
+		}
+		
+		
+		while(true){
+			Message m =pendingMessages.poll();
+			if(m!=null){
+				try {
+					out.writeUTF(m.toString());
+				} catch (IOException e) {
+					System.out.println("Waiter Messsage Sender shutting down.");
+					return;
+				}
+				
+			}
+		}
+	}
 }

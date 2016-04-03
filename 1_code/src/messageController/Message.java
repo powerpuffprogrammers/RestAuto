@@ -23,11 +23,13 @@ public class Message {
 	/**
 	 * Receiver info:
 	 * position of employee
+	 * 	w=waiter, m=manager, h=host, c=chef, X = log out, L=log in
 	 */
 	public char receiverPosition;
 	/**
 	 * Receiver info:
 	 * employee's unique id
+	 * 	-1 will mean send it to all of the employees of this pos logged in
 	 */
 	public long receiverEmpID;
 	

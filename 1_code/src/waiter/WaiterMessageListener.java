@@ -1,12 +1,7 @@
 package waiter;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
 
 import dataBaseC.Ticket;
 import messageController.Message;
@@ -16,11 +11,6 @@ import messageController.Message;
  * @author cms549
  */
 public class WaiterMessageListener extends Thread {
-	
-	/**
-	 * Waiter's employee id
-	 */
-	private long empID;
 	
 	/**
 	 * Socket that this waiter will connect to.
@@ -38,11 +28,11 @@ public class WaiterMessageListener extends Thread {
 	 * @param empID - waiter's employee id
 	 * @param wI - waiter interface
 	 */
-	public WaiterMessageListener(Socket listener, long empID, WaiterInterface wI) {
+	public WaiterMessageListener(Socket listener, WaiterInterface wI) {
 		sock=listener;
-		this.empID=empID;
 		wi=wI;
 	}
+	
 	/**
 	 * Listens for messages sent from the MC
 	 */
@@ -50,11 +40,6 @@ public class WaiterMessageListener extends Thread {
 		DataInputStream in = null;
 		try {
 			in = new DataInputStream(sock.getInputStream());
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			//send a message wempID to MC so they sign you in
-			String logInToMC = "w"+empID;
-			out.writeUTF(logInToMC);
-			out.close();
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
@@ -67,16 +52,9 @@ public class WaiterMessageListener extends Thread {
 			}
 			
 			
-		}catch (EOFException e) { 
-			try {
-				sock.close();
-				System.out.println("WAITER CLOSED PORT TO MC.");
-			} catch (IOException e1) {
-			}
 		}catch (Exception e) {
-			System.out.println("Waiter Listener disconnected from MC.");
+			System.out.println("Waiter Message Listener disconnected from MC.");
 		} 
-		
 		
 	}
 
@@ -84,7 +62,6 @@ public class WaiterMessageListener extends Thread {
 	 * If manager sent message it must be a notification
 	 * if host sent message it must be a recently sat -> the content is the table number
 	 * if chef sent message it must be hot food -> the content is the table number
-	 * if none of above then it must be low inventory -> content is list of dish names separated by commas	
 	 * @param m
 	 */
 	private void decodeMessage(Message m) {
@@ -109,13 +86,6 @@ public class WaiterMessageListener extends Thread {
 			t.hotFood=true;
 			wi.updateScreen();
 		}
-		else{
-			//LOW INVENTORY
-			String arrListOfDishes = m.content;
-			String[] dishes= arrListOfDishes.split(",");
-			wi.removeLowInventoryDishes(dishes);
-		}
-		
 	}
 	
 }

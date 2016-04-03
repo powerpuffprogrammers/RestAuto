@@ -1,4 +1,4 @@
-package messageController;
+package dataBaseC;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Sends messages to a particular tablet connected to the message controller.
  * @author cms549
  */
-public class MessageControllerSender extends Thread {
+public class Sender extends Thread {
 	
 	/**
 	 * Socket this controller will listen to
@@ -37,7 +37,7 @@ public class MessageControllerSender extends Thread {
 	 * @param empId - unique id of employee this socket sends messages to
 	 * @param empPos - position of employee this socket sends messages to
 	 */
-	public MessageControllerSender(Socket oneTablet, char empPos, long empId){
+	public Sender(Socket oneTablet, char empPos, long empId){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
 		currSender = oneTablet;
 		this.empPos = empPos;

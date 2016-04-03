@@ -29,7 +29,14 @@ public class WaiterInterface {
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
 	private Gson jsonConverter;
+	/**
+	 * Sends messages to the Message controller
+	 */
 	public WaiterMessageSender sender;
+	/**
+	 * Sends messages to DB C - used for ticket auditing.
+	 */
+	public DataBaseCSender DBCSender;
 	
 	JFrame frame;
 	
@@ -112,6 +119,9 @@ public class WaiterInterface {
 			System.out.print(loggedOut);
 		}
 		//let the host know you are logging out
+		try {
+			DBCSender.sock.close();
+		} catch (IOException e) {}
 		sender.sendMessage(new Message('h',-1, "O"+name));
 		sender.sendMessage(new Message('X',-1, "Log out"));
 	}
@@ -120,20 +130,22 @@ public class WaiterInterface {
 	 * Loads menu from database C.
 	 * @return true on success, false on failure
 	 */
-public boolean loadMenu() {
-		String DBhost = Configure.getDomainName("DatabaseCController");
-		int DBPortNum = Configure.getPortNumber("DatabaseCController");
+	public boolean loadMenu() {
+		String DChost = Configure.getDomainName("DatabaseCController");
+		int DCPortNum = Configure.getPortNumber("DatabaseCController");
 		Socket sock=null;
 		try {
-			sock = new Socket(DBhost, DBPortNum);
+			sock = new Socket(DChost, DCPortNum);
 			DataInputStream in = new DataInputStream(sock.getInputStream());
 			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 			String logInToMC = "M";
 			out.writeUTF(logInToMC);
 			String jmenu = in.readUTF();
 			menu = jsonConverter.fromJson(jmenu, Menu.class);
-			sock.close();
-			
+			DBCSender = new DataBaseCSender(sock, out);
+			DBCSender.start();
+			new DataBaseCListener( in, this).start();
+
 		} catch (Exception e) {
 			System.out.println("ERROR: can't load menu");
 			return false;
@@ -149,16 +161,14 @@ public boolean loadMenu() {
 		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new WaiterMessageListener(listener,empID, this);
+			Thread t= new WaiterMessageListener(listener, this);
 			t.start();
 			sender = new WaiterMessageSender(listener,empID);
+			sender.start();
 			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
 		} catch (Exception e) {
-			System.out.println("Server: Disconnected from MC.");
-			try {
-				listener.close();
-			} catch (IOException e1) {}
+			System.out.println("Problem setting up Waiter MC.");
 		}
 		
 	}
@@ -279,6 +289,7 @@ public boolean loadMenu() {
 	 */
 	public void paid(int tableNumber) {
 		sender.sendMessage(new Message('h',-1, ""+tableNumber));
+		DBCSender.sendTicket(listOfTickets.get(tableNumber));
 		listOfTickets.remove(tableNumber);
 		backToMainScreen();
 	}

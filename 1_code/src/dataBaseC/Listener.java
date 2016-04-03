@@ -1,4 +1,4 @@
-package messageController;
+package dataBaseC;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.net.Socket;
  * Listens to messages from all tablets.
  * @author cms549
  */
-public class MessageControllerListener  extends Thread{
+public class Listener  extends Thread{
 
 	/**
 	 * Socket this controller will listen to
@@ -29,7 +29,7 @@ public class MessageControllerListener  extends Thread{
 	 * @param listener - socket to listen to
 	 * @param sender - MessageControllerSender - this will add messages to this to send it
 	 */
-	public MessageControllerListener(Socket listener) {
+	public Listener(Socket listener) {
 		currListener=listener;
 	}
 	

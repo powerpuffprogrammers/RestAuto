@@ -141,4 +141,30 @@ public class Ticket {
 		return oldstatus;
 	}
 
+	/**
+	 * Creates a string representation of this ticket that DB C will use to record expenses.
+	 * Includes the waiter name and id, the table number, and the price of the ticket.
+	 * @return the string format of the ticket
+	 * Format:
+	 * 	Waiter Name:John Waiter ID:123 Table Number:14 Price:$5.00
+	 */
+	public String toStringForDBC(){
+		String ans = "Waiter Name:"+waiterName+" Waiter ID:"+waiterID+" Table Number:"+tableNumber+" Price:$"+price;
+		return ans;
+	}
+	
+	/**
+	 * Creates a string representation of this ticket that Chef will use to see dishes.
+	 * Includes the waiter's name, id, the table number, and the list of dishes
+	 * @return the string format of the ticket
+	 * Format is as follows:
+	 * 	WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
+	 */
+	public String toStringForChef(){
+		String ans = waiterName+":"+waiterID+":"+tableNumber+":";
+		for(int i=0; i<listOfDishes.size();i++){
+			ans = ans+","+ listOfDishes.get(i);
+		}
+		return ans;
+	}
 }

@@ -33,12 +33,6 @@ public class DatabaseCController extends Thread {
 	public static Gson jsonConverter = new Gson();
 	
 	/**
-	 * Socket to one tablet that DB C will use to handle one request.
-	 * Each DBCController will have their own as there will be a new DBBController for each request.
-	 */
-	private Socket currListener;
-	
-	/**
 	 * Inventory of restaurant. Maps Ingredient Name to Ingredient
 	 */
 	private HashMap<String, Ingredient> inventory;
