@@ -1,24 +1,21 @@
 package dataBaseC;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Listens to messages from all tablets.
+ * Listens to messages from one chef or waiter.
  * @author cms549
  */
 public class Listener  extends Thread{
 
 	/**
-	 * Socket this controller will listen to
+	 * Socket this listener will listen on
 	 */
 	private Socket currListener;
 	
-	/**
-	 * Unique Employee ID of employee communicating with this socket
-	 */
-	private long empId;
 	/**
 	 * Employee position of employee communicating with this socket
 	 */
@@ -33,127 +30,56 @@ public class Listener  extends Thread{
 		currListener=listener;
 	}
 	
+
 	/**
-	 * Starts listening to messages. Closes the socket once employee sends log out message (pos ='X')
+	 * Starts a new thread for the DB C controller so it can communicate with one tablet on one thread.
+	 * Reads the socket in to determine the request and responds accordingly.
+	 * Socket will hang up on waiters after sending them menu and after reading a ticket
+	 * Socket won't hang up on chef since chef will be sending information about each dish that was started.
 	 */
 	public void run(){
-		try {
-			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			String message =in.readUTF();
-			String second = in.readUTF();
-			message = message+second;
-			System.out.println("Log in message : "+message);
-			Message m = Message.fromString(message);
-			char pos = m.receiverPosition;
-			if(pos=='L'){//logging in
-				empPos = m.senderPosition;
-				empId = m.senderEmpID;
-				if(empPos=='w'|| empPos=='c' || empPos=='h'|| empPos=='m'){
-					new MessageControllerSender(currListener, empPos, empId).start();
+		//MUST FIRST ADD WAITER OR CHEF SENDER TO THE LIST
+		//then start listening 
+		
+		String mess = "";
+		try(DataInputStream in = new DataInputStream(currListener.getInputStream()); 
+				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
+			while(true){
+				mess =in.readUTF();
+				char first = mess.charAt(0);
+				if(first=='A'){ //add ingredinet
+					//add the ingredient with the info into the inventory
 				}
-				else{
-					System.out.println("Position "+empPos+" is not recognized.");
+				else if(first=='R'){//Remove this ingredinet from inventory
+					
+				}
+				else if(first =='d'){//decrement the ingredients for this dish
+					
+				}
+				else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
+					String jmenu = jsonConverter.toJson(menu);
+					out.writeUTF(jmenu);
+					in.close();
+					out.close();
 					currListener.close();
-					return;
+					break;
 				}
-			}else{//issue everyone needs to first log in before using MC
-				pos = m.senderPosition;
-				System.out.println("Position "+pos+" tried to use MC w/o log in");
-				currListener.close();
-				return;
+				else if(first == 'T'){//waiter is sending you a paid ticket so you can save it - hang up after you read it
+					String ticket = mess.substring(1);
+					//add the ticket to the file that holds all tickets for today
+					in.close();
+					out.close();
+					currListener.close();
+					break;
+				}
 			}
 			
-			//listen to messages until a log out
-			while(true){
-				message =in.readUTF();
-				second = in.readUTF();
-				message = message+second;
-				m = Message.fromString(message);
-				pos = m.receiverPosition;
-				if(pos=='X'){//logging out
-					if(empPos=='w'){
-						MessageController.removeWaiterSocket(empId);
-					}
-					else if(empPos=='c'){
-						MessageController.removeChefSocket(empId);
-					}
-					else if(empPos=='h'){
-						MessageController.removeHostSocket(empId);
-					}
-					else if(empPos=='m'){
-						MessageController.removeManagerSocket(empId);
-					}
-					currListener.close();
-					return;
-				}
-				else{
-					MessageControllerSender sender;
-					if(pos=='w'){
-						if(MessageController.waiterOut.isEmpty()){ //if no waiter logged in
-							continue;
-						}
-						if(m.receiverEmpID==-1){
-							//send to all waiters
-							
-							continue;
-						}
-						sender = MessageController.waiterOut.get(m.receiverEmpID);
-					}
-					else if(pos=='c'){
-						if(MessageController.chefOut.isEmpty()){ //if no chef logged in
-							continue;
-						}
-						if(m.receiverEmpID==-1){
-							m.receiverEmpID = MessageController.chefOut.keySet().iterator().next();
-						}
-						sender = MessageController.chefOut.get(m.receiverEmpID);
-					}
-					else if(pos=='h'){
-						if(MessageController.hostOut.isEmpty()){ //if no host logged in
-							continue;
-						}
-						if(m.receiverEmpID==-1){
-							m.receiverEmpID = MessageController.hostOut.keySet().iterator().next();
-						}
-						sender = MessageController.hostOut.get(m.receiverEmpID);
-					}
-					else if(pos=='m'){
-						if(MessageController.managerOut.isEmpty()){ //if no manager logged in
-							continue;
-						}
-						if(m.receiverEmpID==-1){
-							m.receiverEmpID = MessageController.hostOut.keySet().iterator().next();
-						}
-						sender = MessageController.managerOut.get(m.receiverEmpID);
-					}
-					else{//error with this message position
-						System.out.println("Error message did not have valid receiver.");
-						continue;
-					}
-					//Add the forwarded message to message controller
-					sender.pendingMessages.offer(m);
-				}
-			}	
-		}catch (Exception e) {
-			if(empPos=='w'){
-				MessageController.removeWaiterSocket(empId);
-			}
-			else if(empPos=='c'){
-				MessageController.removeChefSocket(empId);
-			}
-			else if(empPos=='h'){
-				MessageController.removeHostSocket(empId);
-			}
-			else if(empPos=='m'){
-				MessageController.removeManagerSocket(empId);
-			}
-			try {
-				currListener.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			
+		} catch (Exception e) {
+			System.out.println("Before error Read in: "+ mess);
 			e.printStackTrace();
 		} 
-		
 	}
+	
+	
 }

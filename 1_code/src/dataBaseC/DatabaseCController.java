@@ -1,16 +1,16 @@
 package dataBaseC;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import databaseA.DatabaseAController;
 
 /**
  * Starts the DB C.
@@ -20,7 +20,8 @@ import databaseA.DatabaseAController;
  * @author cms549
  *
  */
-public class DatabaseCController extends Thread {
+public class DatabaseCController {
+	
 	
 	/**
 	 * Port number that Database C will be on.
@@ -35,13 +36,23 @@ public class DatabaseCController extends Thread {
 	/**
 	 * Inventory of restaurant. Maps Ingredient Name to Ingredient
 	 */
-	private HashMap<String, Ingredient> inventory;
+	private static HashMap<String, Ingredient> inventory;
 	
 	/**
 	 * Links name of dish to its dish data. 
 	 * This will be used to figure out how much of an ingredient to decrement from the inventory for a started dish.
 	 */
-	private HashMap<String, DishData> dishData;
+	private static HashMap<String, DishData> dishData;
+
+	/**
+	 * List of all the waiter senders that are connected to DB C
+	 */
+	public static ArrayList<Sender> waiterSenders;
+	
+	/**
+	 * Chef sender that is connected to DB C
+	 */
+	public static Sender chefSender;
 	
 	/**
 	 * Holds the menu. Waiter will need this when logging on.
@@ -49,14 +60,6 @@ public class DatabaseCController extends Thread {
 	 */
 	private static Menu menu;
 	
-
-	/**
-	 * Constructor
-	 * @param listener - socket that this controller will be using
-	 */
-	public DatabaseCController(Socket listener) {
-		currListener=listener;
-	}
 
 	/**
 	 * Adds ingredient to inventory returns false if ingredient already exists
@@ -67,7 +70,7 @@ public class DatabaseCController extends Thread {
 	 * 	if you put it a threshold>=amount left or threshold = 0 then this will fail
 	 * @return true on success, false on failure
 	 */
-	public boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
+	public static boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
 		if(inventory.containsKey(ingredientName)){
 			return false;
 		}
@@ -79,64 +82,20 @@ public class DatabaseCController extends Thread {
 	}
 	
 	/**
-	 * Starts a new thread for the DB B controller so it can communicate with one tablet on one thread.
-	 * Reads the socket in to determine the request and responds accordingly.
-	 * Socket will hang up on waiters after sending them menu and after reading a ticket
-	 * Socket won't hang up on chef since chef will be sending information about each dish that was started.
-	 */
-	public void run(){
-		String mess = "";
-		try(DataInputStream in = new DataInputStream(currListener.getInputStream()); 
-				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
-			while(true){
-				mess =in.readUTF();
-				char first = mess.charAt(0);
-				if(first=='A'){ //add ingredinet
-					//add the ingredient with the info into the inventory
-				}
-				else if(first=='R'){//Remove this ingredinet from inventory
-					
-				}
-				else if(first =='d'){//decrement the ingredients for this dish
-					
-				}
-				else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
-					String jmenu = jsonConverter.toJson(menu);
-					out.writeUTF(jmenu);
-					in.close();
-					out.close();
-					currListener.close();
-					break;
-				}
-				else if(first == 'T'){//waiter is sending you a paid ticket so you can save it - hang up after you read it
-					String ticket = mess.substring(1);
-					//add the ticket to the file that holds all tickets for today
-					in.close();
-					out.close();
-					currListener.close();
-					break;
-				}
-			}
-			
-			
-		} catch (Exception e) {
-			System.out.println("Before error Read in: "+ mess);
-			e.printStackTrace();
-		} 
-	}
-	
-	/**
-	 * Starts the Database C base thread.
+	 * Starts the Listener thread for each socket trying to connect with it.
+	 * The listener will make the sender thread.
+	 * Sockets should be from chefs or waiters.
 	 * @param args
 	 */
 	public static void main(String[] args){
 		menu = new Menu();
+		waiterSenders= new ArrayList<Sender>();
 		//set up the inventory
 		//set up dishdata converter
 		generateDishes();
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (true) {
-               new DatabaseAController(serverSocket.accept()).start();
+               new Listener(serverSocket.accept()).start();
             }
         } catch (IOException e) {
             System.err.println("ERROR: DB C failed to start. Port " + portNumber+" is in use.");
@@ -145,6 +104,7 @@ public class DatabaseCController extends Thread {
 		
 		
 	}
+	
 	/**
 	 * Adds a dish to the menu
 	 * @param type - type of dish. (Appetizer, Dessert, Entree)
@@ -170,6 +130,28 @@ public class DatabaseCController extends Thread {
 		}
 	}
 	
+	/**
+	 * Adds the ticket to the records
+	 * @param tick - string representation of ticket from waiter interface
+	 */
+	public static void recordTicket(String tick){
+		try (BufferedWriter br = new BufferedWriter(new FileWriter("TicketRecords.txt"))){
+			String date = getDate();
+			br.write(date+tick+"\n");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	/**
+	 * Gets the date as a string
+	 * @return mon/day/yr
+	 */
+	private static String getDate() {
+		return Calendar.MONTH +"/"+Calendar.DAY_OF_MONTH +"/"+ Calendar.YEAR+" - ";
+	}
+
 	/**
 	 * Used for Testing.
 	 */
@@ -240,5 +222,5 @@ public class DatabaseCController extends Thread {
         addDishtoMenu("drinks","white wine",1.49);
 		
 	}
-	
+
 }

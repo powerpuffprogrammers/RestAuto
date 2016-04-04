@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Listens to messages from all tablets.
+ * Listens to messages from one tablet.
  * @author cms549
  */
 public class MessageControllerListener  extends Thread{

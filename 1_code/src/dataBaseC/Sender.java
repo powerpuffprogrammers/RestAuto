@@ -19,12 +19,8 @@ public class Sender extends Thread {
 	/**
 	 * list of messages to send
 	 */
-	ConcurrentLinkedQueue<Message> pendingMessages;
+	ConcurrentLinkedQueue<String> pendingMessages;
 	
-	/**
-	 * Unique Employee ID of employee communicating with this socket
-	 */
-	private long empId;
 	/**
 	 * Employee position of employee communicating with this socket
 	 */

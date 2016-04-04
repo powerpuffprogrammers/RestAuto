@@ -62,7 +62,7 @@ public class WaiterInterface {
 	
 	/**
 	 * List of the tickets this waiter is in charge of.
-	 * 
+	 * Maps the table number to the appropriate tickets.
 	 */
 	HashMap<Integer, Ticket> listOfTickets;
 	
@@ -202,10 +202,10 @@ public class WaiterInterface {
 
 	/**
 	 * Switches from list of tickets screen to one open ticket screen
-	 * @param ticketNumber - the ticket number you wish to open
+	 * @param tableNumber - the table number of ticket you wish to open
 	 */
-	public void openTicketScreens(int ticketNumber) {
-		currTicket = listOfTickets.get(ticketNumber);
+	public void openTicketScreens(int tableNumber) {
+		currTicket = listOfTickets.get(tableNumber);
 		oneTickScreen.setTicket(currTicket);
 		frame.setContentPane(oneTickScreen);
 		frame.revalidate();
