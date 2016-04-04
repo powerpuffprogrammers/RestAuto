@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.google.gson.Gson;
+
 /**
  * Listens to messages from one chef or waiter.
  * @author cms549
@@ -17,9 +19,10 @@ public class Listener  extends Thread{
 	private Socket currListener;
 	
 	/**
-	 * Employee position of employee communicating with this socket
+	 * Used to convert java objects to JSON format and vice versa.
 	 */
-	private char empPos;
+	public Gson jsonConverter;
+	
 	
 	/**
 	 * Constructor 
@@ -28,6 +31,7 @@ public class Listener  extends Thread{
 	 */
 	public Listener(Socket listener) {
 		currListener=listener;
+		jsonConverter = new Gson();
 	}
 	
 
@@ -44,39 +48,58 @@ public class Listener  extends Thread{
 		String mess = "";
 		try(DataInputStream in = new DataInputStream(currListener.getInputStream()); 
 				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
-			while(true){
-				mess =in.readUTF();
-				char first = mess.charAt(0);
-				if(first=='A'){ //add ingredinet
-					//add the ingredient with the info into the inventory
-				}
-				else if(first=='R'){//Remove this ingredinet from inventory
+			mess =in.readUTF();
+			char first = mess.charAt(0);
+			if(first =='c'){
+				//set up chef interface
+				DatabaseCController.chefSender = new Sender(out, 'c');
+				while(true){
+					mess =in.readUTF();
+					if(mess.length()<3){
+						mess = mess+ in.readUTF();
+					}
+					first = mess.charAt(0);
 					
+					if(first=='A'){ //add ingredinet
+						//add the ingredient with the info into the inventory
+					}
+					else if(first=='R'){//Remove this ingredinet from inventory
+						
+					}
+					else if(first =='d'){//decrement the ingredients for this dish
+						
+						//if low inventory tell all waiters and chef
+						//DataBaseCController.lowInventory();
+					}
 				}
-				else if(first =='d'){//decrement the ingredients for this dish
-					
-				}
-				else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
-					String jmenu = jsonConverter.toJson(menu);
-					out.writeUTF(jmenu);
-					in.close();
-					out.close();
-					currListener.close();
-					break;
-				}
-				else if(first == 'T'){//waiter is sending you a paid ticket so you can save it - hang up after you read it
-					String ticket = mess.substring(1);
-					//add the ticket to the file that holds all tickets for today
-					in.close();
-					out.close();
-					currListener.close();
-					break;
+				
+				
+			}
+			else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
+				DatabaseCController.waiterSenders.add(new Sender(out, 'w'));
+				String jmenu = jsonConverter.toJson(DatabaseCController.menu);
+				out.writeUTF(jmenu);
+				while(true){
+					mess =in.readUTF();
+					if(mess.length()<3){
+						mess = mess+ in.readUTF();
+					}
+					first = mess.charAt(0);
+					if(first == 'T'){//waiter is sending you a paid ticket so you can save it - hang up after you read it
+						String tick = mess.substring(1);
+						//add the ticket to the file that holds all tickets for today
+						DatabaseCController.recordTicket(tick);
+					}
 				}
 			}
 			
 			
 		} catch (Exception e) {
-			System.out.println("Before error Read in: "+ mess);
+			try {
+				//NEED A WAY TO REMOVE HIM FROM THE LIST!!!!!!!!!!!!
+				currListener.close();
+			} catch (IOException e1) {			}
+			System.out.println("DBC Listener Closing: Before closing Read in: "+ mess);
 			e.printStackTrace();
 		} 
 	}

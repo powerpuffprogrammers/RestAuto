@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+
 import configuration.Configure;
 import messageController.MessageControllerListener;
 
@@ -76,6 +79,7 @@ public class DatabaseAController extends Thread {
 	 * 	it writes L if the employee is already logged in
 	 * on a log out it changes the employee with that id to logged out
 	 * This ensures that an employee doesn't log on to two devices.
+	 * This is also used by the host when the host needs the list of employees and their ids.
 	 * The socket will hang up after it logs a user in or out.
 	 */
 	public void run(){
@@ -109,7 +113,7 @@ public class DatabaseAController extends Thread {
 					}
 				}
 				//Logging out
-				if(first=='O'){ 
+				else if(first=='O'){ 
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
 					//if employee id is valid log them out
@@ -118,14 +122,32 @@ public class DatabaseAController extends Thread {
 						curE.loggedIn=false;
 					}
 				}
-				in.close();
-				out.close();
+				//Grab list of waiters 
+				else if(first =='W'){
+					out.writeUTF(sendWaiters());
+				}
 				currListener.close();
 			}catch (Exception e) {
 				e.printStackTrace();
 			} 
 	}
 	
+	/**
+	 * Generates a string of all the waiters. ID,Name:ID,Name:ID,Name:
+	 * @return
+	 */
+	private String sendWaiters() {
+		String ans ="";
+		for(int i=0; i< employeeList.size(); i++){
+			Employee e = employeeList.get(i);
+			if(e.position=='w'){
+				ans = ans+i+","+e.name+":";
+			}
+		}
+		return ans;
+		
+	}
+
 	/**
 	 * Starts the DataBase A. Creates a new thread for each log in request.
 	 * @param args

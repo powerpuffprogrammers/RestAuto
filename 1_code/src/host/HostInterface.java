@@ -13,9 +13,12 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
+import dataBaseC.Menu;
 import databaseB.Table;
 import databaseB.TableList;
 import messageController.Message;
+import waiter.DataBaseCListener;
+import waiter.DataBaseCSender;
 
 /**
  * Controls the jpanels being displayed and all the data for the host.
@@ -81,7 +84,8 @@ public class HostInterface {
 	/**
 	 * HashMap that maps the name of the waiter to their ID.
 	 */
-	HashMap<String, Long> listOfWaitersLoggedIn;
+	HashMap<String, Integer> listOfWaiters;
+	
 	
     /**
      * Constructor
@@ -93,8 +97,13 @@ public class HostInterface {
 		name=empName;
 		empID = eID;
 		jsonConverter = new Gson();
-		listOfWaitersLoggedIn = new HashMap<String,Long>();
-		generateListOfWaiters();
+		listOfWaiters = new HashMap<String,Integer>();
+		if(!loadWaiters()){
+			loggedOut=true;
+			return;
+		}
+		
+		
 		//if problem loading menu return right away
 		if (!loadTables()){
 			loggedOut=true;
@@ -123,15 +132,6 @@ public class HostInterface {
 		tableScreen = new HostTableScreen(this);
 		frame.setContentPane(tableScreen);
 		frame.revalidate();
-	}
-
-	/**
-	 * Used for testing.
-	 */
-	private void generateListOfWaiters() {
-		listOfWaitersLoggedIn.put("Emma Roussos", (long) 0);
-		listOfWaitersLoggedIn.put("Christina Segerholm", (long) 4);
-		
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class HostInterface {
 			}
 		}
 		seatedTables.add(tableNumber);
-		sendSeated(listOfWaitersLoggedIn.get(waiterName), tableNumber);
+		sendSeated(listOfWaiters.get(waiterName), tableNumber);
 		try{
 		updateScreen();
 		}catch(Exception e){
@@ -295,6 +295,39 @@ public class HostInterface {
 		
 	}
 
-	
+	/**
+	 * Loads waiters and ids from database A.
+	 * @return true on success, false on failure
+	 */
+	public boolean loadWaiters() {
+		String DAhost = Configure.getDomainName("DatabaseAController");
+		int DAPortNum = Configure.getPortNumber("DatabaseAController");
+		Socket sock=null;
+		try {
+			sock = new Socket(DAhost, DAPortNum);
+			DataInputStream in = new DataInputStream(sock.getInputStream());
+			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+			String requestWaiters = "W";
+			out.writeUTF(requestWaiters);
+			String waiterAsString = in.readUTF();
+			String[] waiter = waiterAsString.split(":");
+			for(int i=0; i<waiter.length;i++){
+				String idString = waiter[i].substring(0, waiter[i].indexOf(","));
+				int id = Integer.parseInt(idString);
+				String name = waiter[i].substring(waiter[i].indexOf(",")+1);
+				listOfWaiters.put(name,id);
+				
+			}
+			
+			
+			sock.close();
+
+		} catch (Exception e) {
+			System.out.println("ERROR: can't get waiter list");
+			return false;
+		}
+		return true;
+		
+	}
 	
 }

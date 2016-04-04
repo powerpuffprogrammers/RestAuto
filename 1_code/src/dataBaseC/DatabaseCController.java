@@ -28,10 +28,6 @@ public class DatabaseCController {
 	 */
 	private final static int portNumber = Configure.getPortNumber("DatabaseCController");
 	
-	/**
-	 * Used to convert java objects to JSON format and vice versa.
-	 */
-	public static Gson jsonConverter = new Gson();
 	
 	/**
 	 * Inventory of restaurant. Maps Ingredient Name to Ingredient
@@ -58,7 +54,7 @@ public class DatabaseCController {
 	 * Holds the menu. Waiter will need this when logging on.
 	 * See Menu.java
 	 */
-	private static Menu menu;
+	static Menu menu;
 	
 
 	/**

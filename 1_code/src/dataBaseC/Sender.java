@@ -2,6 +2,7 @@ package dataBaseC;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -12,9 +13,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Sender extends Thread {
 	
 	/**
-	 * Socket this controller will listen to
+	 * DataOutputStream this controller will send to
 	 */
-	private Socket currSender;
+	private DataOutputStream currSender;
 	
 	/**
 	 * list of messages to send
@@ -33,38 +34,16 @@ public class Sender extends Thread {
 	 * @param empId - unique id of employee this socket sends messages to
 	 * @param empPos - position of employee this socket sends messages to
 	 */
-	public Sender(Socket oneTablet, char empPos, long empId){
-		pendingMessages = new ConcurrentLinkedQueue<Message>();
+	public Sender(DataOutputStream oneTablet, char empPos){
+		pendingMessages = new ConcurrentLinkedQueue<String>();
 		currSender = oneTablet;
 		this.empPos = empPos;
-		this.empId = empId;
 	}
 	
 	/**
 	 * Starts sending messages in pendingMessage.
 	 */
 	public void run(){
-		DataOutputStream out;
-		try {
-			out = new DataOutputStream(currSender.getOutputStream());
-		} catch (IOException e1) {
-			System.out.println("Failed to start up sender for pos = "+empPos);
-			return;
-		}
-		if(empPos=='w'){
-			MessageController.addWaiterSender(empId, this);
-		}
-		else if(empPos=='c'){
-			MessageController.addChefSender(empId, this);
-		}
-		else if(empPos=='h'){
-			MessageController.addHostSender(empId, this);
-		}
-		else if(empPos=='m'){
-			MessageController.addManagerSender(empId, this);
-		}
-		
-		
 		while(true){
 			Message m =pendingMessages.poll();
 			if(m!=null){
