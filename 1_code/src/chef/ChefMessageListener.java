@@ -1,61 +1,74 @@
 package chef;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
-
-import configuration.Configure;
+import messageController.Message;
 
 /**
- * WIP
+ * Used to listen from messages from the message controller and decode them.
  * @author cms549
- *
  */
 public class ChefMessageListener extends Thread {
 	
-	private long empID;
+	/**
+	 * Socket that this waiter will connect to.
+	 */
 	private Socket sock;
-	private ChefInterface ci;
 	
-	public ChefMessageListener(Socket listener, long empID, ChefInterface wI) {
+	/**
+	 * Pointer back to its waiter interface
+	 */
+	private ChefInterface ci;
+
+	/**
+	 * Constructor
+	 * @param listener - socket to listen to
+	 * @param cI - chef interface
+	 */
+	public ChefMessageListener(Socket listener, ChefInterface wI) {
 		sock=listener;
-		this.empID=empID;
 		ci=wI;
 	}
 	
+	/**
+	 * Listens for messages sent from the MC
+	 */
 	public void run(){
+		DataInputStream in = null;
 		try {
-			DataInputStream in = new DataInputStream(sock.getInputStream());
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			//send a message cempID to MC so they sign you in
-			String logInToMC = "c"+empID;
-			out.writeUTF(logInToMC);
-			
+			in = new DataInputStream(sock.getInputStream());
 			//just keep listening
 			while(true){
-				//if message = ticket
-				//ci.addTicketToQ();
+				String mes = in.readUTF();
+				if(mes.length()==2){
+					String second = in.readUTF();
+					mes = mes +second;
+				}
+				Message m = Message.fromString(mes);
+				decodeMessage(m);
 			}
 			
-			
-		}catch (EOFException e) { 
-			try {
-				sock.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
 			
 		}catch (Exception e) {
-			System.out.println("Disconnected from a client.");
-			
-			e.printStackTrace();
+			System.out.println("Chef Message Listener disconnected from MC.");
 		} 
 		
-		
+	}
+
+	/**
+	 * If manager sent message it must be a notification
+	 * @param m
+	 */
+	private void decodeMessage(Message m) {
+		char senderPos = m.senderPosition;
+		if(senderPos=='m'){
+			//NOTIFY from manager
+		//	ci.addNotification(m.content);
+		}
+		else if(senderPos=='w'){
+			//add new ticket
+			//THE STRING IS IN THE FORM ticket.toString from the Ticket class
+		}
 	}
 	
 }

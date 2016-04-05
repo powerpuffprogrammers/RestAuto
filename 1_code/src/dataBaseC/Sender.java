@@ -15,7 +15,7 @@ public class Sender extends Thread {
 	/**
 	 * DataOutputStream this controller will send to
 	 */
-	private DataOutputStream currSender;
+	private DataOutputStream out;
 	
 	/**
 	 * list of messages to send
@@ -36,7 +36,7 @@ public class Sender extends Thread {
 	 */
 	public Sender(DataOutputStream oneTablet, char empPos){
 		pendingMessages = new ConcurrentLinkedQueue<String>();
-		currSender = oneTablet;
+		out = oneTablet;
 		this.empPos = empPos;
 	}
 	
@@ -45,12 +45,12 @@ public class Sender extends Thread {
 	 */
 	public void run(){
 		while(true){
-			Message m =pendingMessages.poll();
+			String m =pendingMessages.poll();
 			if(m!=null){
 				try {
-					out.writeUTF(m.toString());
+					out.writeUTF(m);
 				} catch (IOException e) {
-					System.out.println("Messsage Controller for Pos = "+ empPos+" shutting down.");
+					System.out.println("DBC Messsage Sender for Pos = "+ empPos+" shutting down.");
 					return;
 				}
 				

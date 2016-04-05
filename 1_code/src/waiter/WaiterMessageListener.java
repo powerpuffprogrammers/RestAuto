@@ -25,7 +25,6 @@ public class WaiterMessageListener extends Thread {
 	/**
 	 * Constructor
 	 * @param listener - socket to listen to
-	 * @param empID - waiter's employee id
 	 * @param wI - waiter interface
 	 */
 	public WaiterMessageListener(Socket listener, WaiterInterface wI) {
@@ -40,6 +39,7 @@ public class WaiterMessageListener extends Thread {
 		DataInputStream in = null;
 		try {
 			in = new DataInputStream(sock.getInputStream());
+			System.out.println("WML will start listening now.");
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
@@ -47,6 +47,7 @@ public class WaiterMessageListener extends Thread {
 					String second = in.readUTF();
 					mes = mes +second;
 				}
+				System.out.println("Waiter reading message:"+mes);
 				Message m = Message.fromString(mes);
 				decodeMessage(m);
 			}
@@ -74,7 +75,8 @@ public class WaiterMessageListener extends Thread {
 			//RECENTLY SAT
 			String tNumStr = m.content;
 			int tableNumber = Integer.parseInt(tNumStr);
-			Ticket t =wi.listOfTickets.get(tableNumber);
+			Ticket t = new Ticket(wi.name, tableNumber, wi.empID);
+			wi.listOfTickets.put(tableNumber, t);
 			t.recentlySat=true;
 			wi.updateScreen();
 		}

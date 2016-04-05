@@ -3,50 +3,79 @@ package host;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import messageController.Message;
 
-public class HostMessageSender {
+/**
+ * Used to Send messages to the message controller to be forwarded to the correct employee.
+ * @author cms549
+ */
+public class HostMessageSender extends Thread {
 
 	/**
-	 * Host's unique employee id
+	 * Host's employee id
 	 */
 	private long empID;
 	
 	/**
-	 * Socket to listen on
+	 * Socket that this Host will connect to.
 	 */
 	private Socket sock;
-
+	
+	/**
+	 * list of messages to send
+	 */
+	ConcurrentLinkedQueue<Message> pendingMessages;
 	
 	/**
 	 * Constructor
-	 * @param listener - socket to use
-	 * @param empID - host's employee id
+	 * @param listener - socket to be used
+	 * @param empID - Host's employee id
 	 */
 	public HostMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
+		pendingMessages = new ConcurrentLinkedQueue<Message>();
 	}
 
 	/**
-	 * Sends a message to message controller to be forwarded.
-	 * Automatically fills in sender info with host position and employee id.
-	 * @param m
+	 * Sends message out to Message controller
+	 * Automatically will fill in senderInfo with host's position and id.
+	 * @param m - message to send
 	 */
-	public void sendMessage(Message m) {
+	public void sendMessage(Message m){
+		m.senderPosition='h';
+		m.senderEmpID=empID;
+		System.out.println("Host adding message:"+m);
+		pendingMessages.offer(m);
+	}
+	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
+	public void run(){
+		DataOutputStream out;
 		try {
-			m.senderPosition='h';
-			m.senderEmpID=empID;
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = m.toString();
-			out.writeUTF(mess);
-			out.close();
-		} catch (IOException e) {
-			//e.printStackTrace();
+			out = new DataOutputStream(sock.getOutputStream());
+		} catch (IOException e1) {
+			System.out.println("Failed to start up sender for Host.");
+			return;
 		}
 		
+		
+		while(true){
+			Message m =pendingMessages.poll();
+			if(m!=null){
+				try {
+					System.out.println("Host sending message:"+m);
+					out.writeUTF(m.toString());
+				} catch (IOException e) {
+					System.out.println("Host Messsage Sender shutting down.");
+					return;
+				}
+				
+			}
+		}
 	}
-
 }

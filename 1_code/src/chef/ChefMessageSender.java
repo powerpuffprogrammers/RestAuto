@@ -3,40 +3,77 @@ package chef;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import messageController.Message;
 
 /**
- * WIP
+ * Used to Send messages to the message controller to be forwarded to the correct employee.
  * @author cms549
- *
  */
-public class ChefMessageSender {
+public class ChefMessageSender extends Thread {
 
+	/**
+	 * Chef's employee id
+	 */
 	private long empID;
-	private Socket sock;
-	private Gson gson;
 	
+	/**
+	 * Socket that this Chef will connect to.
+	 */
+	private Socket sock;
+	
+	/**
+	 * list of messages to send
+	 */
+	ConcurrentLinkedQueue<Message> pendingMessages;
+	
+	/**
+	 * Constructor
+	 * @param listener - socket to be used
+	 * @param empID - chef's employee id
+	 */
 	public ChefMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
-		gson= new Gson();
+		pendingMessages = new ConcurrentLinkedQueue<Message>();
 	}
 
-	public void sendMessage(Message m) {
+	/**
+	 * Sends message out to Message controller
+	 * Automatically will fill in senderInfo with Chef's position and id.
+	 * @param m - message to send
+	 */
+	public void sendMessage(Message m){
+		m.senderPosition='c';
+		m.senderEmpID=empID;
+		pendingMessages.offer(m);
+	}
+	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
+	public void run(){
+		DataOutputStream out;
 		try {
-			m.senderPosition='c';
-			m.senderEmpID=empID;
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = gson.toJson(m);
-			out.writeUTF(mess);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			out = new DataOutputStream(sock.getOutputStream());
+		} catch (IOException e1) {
+			System.out.println("Failed to start up sender for Chef.");
+			return;
 		}
 		
+		
+		while(true){
+			Message m =pendingMessages.poll();
+			if(m!=null){
+				try {
+					out.writeUTF(m.toString());
+				} catch (IOException e) {
+					System.out.println("Waiter Messsage Sender shutting down.");
+					return;
+				}
+				
+			}
+		}
 	}
-
 }

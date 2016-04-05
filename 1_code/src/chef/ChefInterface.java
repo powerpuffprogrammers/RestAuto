@@ -128,13 +128,13 @@ public class ChefInterface {
 		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new ChefMessageListener(listener,empID, this);
+			Thread t= new ChefMessageListener(listener, this);
 			t.start();
 			sender = new ChefMessageSender(listener,empID);
 			sender.sendMessage(new Message('L',-1, ""));
 			
 		} catch (Exception e) {
-			System.out.println("Host: Disconnected from MC.");
+			System.out.println("Chef: Disconnected from MC.");
 			try {
 				listener.close();
 			} catch (IOException e1) {}

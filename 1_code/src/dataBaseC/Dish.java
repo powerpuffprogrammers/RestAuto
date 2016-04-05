@@ -6,7 +6,10 @@ package dataBaseC;
  * @author cms549
  */
 public class Dish {
-	
+	/**
+	 * was this dish sent to the chef yet
+	 */
+	public boolean sent;
 	/**
 	 * Name of the dish
 	 */

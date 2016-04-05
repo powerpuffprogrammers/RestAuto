@@ -9,10 +9,18 @@ import com.google.gson.Gson;
 
 /**
  * Listens to messages from one chef or waiter.
+ * Waiter will send it Tickets to record. This message must start with a T followed by the ticket info.
+ * Chef will send it started dishes. This message must start with D followed by the dish name.
  * @author cms549
  */
 public class Listener  extends Thread{
 
+	static int currID=0;
+	/**
+	 * Socket's id - used in the DB C list of Waiters, -1 means its a chef
+	 */
+	private int socketid;
+	
 	/**
 	 * Socket this listener will listen on
 	 */
@@ -50,33 +58,10 @@ public class Listener  extends Thread{
 				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
 			mess =in.readUTF();
 			char first = mess.charAt(0);
-			if(first =='c'){
-				//set up chef interface
-				DatabaseCController.chefSender = new Sender(out, 'c');
-				while(true){
-					mess =in.readUTF();
-					if(mess.length()<3){
-						mess = mess+ in.readUTF();
-					}
-					first = mess.charAt(0);
-					
-					if(first=='A'){ //add ingredinet
-						//add the ingredient with the info into the inventory
-					}
-					else if(first=='R'){//Remove this ingredinet from inventory
-						
-					}
-					else if(first =='d'){//decrement the ingredients for this dish
-						
-						//if low inventory tell all waiters and chef
-						//DataBaseCController.lowInventory();
-					}
-				}
-				
-				
-			}
-			else if(first=='M'){//Waiter needs menu when loggin in- hang up after you give them the menu
-				DatabaseCController.waiterSenders.add(new Sender(out, 'w'));
+			if(first=='M'){//Waiter needs menu when logging in
+				currID++;
+				socketid = currID;
+				DatabaseCController.waiterSenders.put(currID,new Sender(out, 'w'));
 				String jmenu = jsonConverter.toJson(DatabaseCController.menu);
 				out.writeUTF(jmenu);
 				while(true){
@@ -92,11 +77,41 @@ public class Listener  extends Thread{
 					}
 				}
 			}
+			else{
+				//set up chef interface
+				DatabaseCController.chefSender = new Sender(out, 'c');
+				socketid = -1;
+				while(true){
+					mess =in.readUTF();
+					if(mess.length()<3){
+						mess = mess+ in.readUTF();
+					}
+					first = mess.charAt(0);
+					
+					if(first=='A'){ //add ingredinet
+						//add the ingredient with the info into the inventory
+					}
+					else if(first=='R'){//Remove this ingredinet from inventory
+						
+					}
+					else if(first =='D'){//decrement the ingredients for this dish
+						DatabaseCController.decrementDish(mess.substring(1));
+					}
+				}
+				
+				
+			}
 			
 			
 		} catch (Exception e) {
 			try {
 				//NEED A WAY TO REMOVE HIM FROM THE LIST!!!!!!!!!!!!
+				if(socketid==-1){
+					DatabaseCController.chefSender=null;
+				}
+				else{
+					DatabaseCController.waiterSenders.remove(currID);
+				}
 				currListener.close();
 			} catch (IOException e1) {			}
 			System.out.println("DBC Listener Closing: Before closing Read in: "+ mess);

@@ -56,6 +56,11 @@ public class Ticket {
 	public boolean hotFood;
 	
 	/**
+	 * Used to mark the ticket as a priority ticket to the chef
+	 */
+	public  boolean priority;
+	
+	/**
 	 * Creates a new empty ticket with the following
 	 * @param waiterName - name of waiter for this ticket
 	 * @param tableNum - table number the ticket is under
@@ -98,7 +103,7 @@ public class Ticket {
 		}
 		
 		Dish del =listOfDishes.get(indexOfDishInTickList);
-		if(del==null){
+		if(del==null || del.sent){
 			return false;
 		}
 		this.price=this.price - del.price;
@@ -155,15 +160,28 @@ public class Ticket {
 	
 	/**
 	 * Creates a string representation of this ticket that Chef will use to see dishes.
-	 * Includes the waiter's name, id, the table number, and the list of dishes
+	 * Includes the priority waiter's name, id, the table number, and the list of dishes
+	 * MARKS DISHES THAT ARE GETTING SENT AS SENT
 	 * @return the string format of the ticket
 	 * Format is as follows:
-	 * 	WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
+	 * 	P:WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
+	 * 	N:WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
 	 */
 	public String toStringForChef(){
-		String ans = waiterName+":"+waiterID+":"+tableNumber+":";
+		String ans;
+		if(priority){
+			ans = "P:"+waiterName+":"+waiterID+":"+tableNumber+":";
+		}
+		else{
+			ans = "N:"+waiterName+":"+waiterID+":"+tableNumber+":";
+		}
 		for(int i=0; i<listOfDishes.size();i++){
-			ans = ans+","+ listOfDishes.get(i);
+			Dish d = listOfDishes.get(i);
+			//only send dishes that have not been sent
+			if(!d.sent){
+				ans = ans+","+ d.name;
+				d.sent=true;
+			}
 		}
 		return ans;
 	}

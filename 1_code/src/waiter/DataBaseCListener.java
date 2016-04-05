@@ -30,7 +30,7 @@ public class DataBaseCListener extends Thread {
 	}
 	
 	/**
-	 * Listens for messages sent from the DB C
+	 * Listens for messages sent from the DB C - should just be low inventory
 	 */
 	public void run(){
 		try{	
@@ -53,14 +53,14 @@ public class DataBaseCListener extends Thread {
 
 	/**
 	 * Update the menu in case of low inventory.
-	 * The message should have form lDISH1,DISH2
-	 * 	so it should start with the letter l (for low inventory)
-	 * 	then have the name of dish 1 then a comma then the name of dish 2
+	 * The message should have form LDISH1,DISH2
+	 * 	so it should start with the letter L (for low inventory)
+	 * 	then have the name of dish L then a comma then the name of dish 2
 	 * @param m
 	 */
 	private void decodeMessage(String m) {
 		//check if low inventory message
-		if(m.charAt(0)=='l'){
+		if(m.charAt(0)=='L'){
 			m = m.substring(1);
 			String[] menuItems = m.split(",");
 			wi.removeLowInventoryDishes(menuItems);

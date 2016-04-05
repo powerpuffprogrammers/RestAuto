@@ -47,6 +47,7 @@ public class WaiterMessageSender extends Thread {
 	public void sendMessage(Message m){
 		m.senderPosition='w';
 		m.senderEmpID=empID;
+		System.out.println("Waiter adding message:"+m);
 		pendingMessages.offer(m);
 	}
 	
@@ -67,6 +68,7 @@ public class WaiterMessageSender extends Thread {
 			Message m =pendingMessages.poll();
 			if(m!=null){
 				try {
+					System.out.println("Waiter sending message:"+m);
 					out.writeUTF(m.toString());
 				} catch (IOException e) {
 					System.out.println("Waiter Messsage Sender shutting down.");

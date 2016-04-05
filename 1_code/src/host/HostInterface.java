@@ -2,7 +2,6 @@ package host;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +12,9 @@ import javax.swing.JFrame;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import dataBaseC.Menu;
 import databaseB.Table;
 import databaseB.TableList;
 import messageController.Message;
-import waiter.DataBaseCListener;
-import waiter.DataBaseCSender;
 
 /**
  * Controls the jpanels being displayed and all the data for the host.
@@ -164,24 +160,20 @@ public class HostInterface {
 	}
 
 	/**
-	 * Sets up the threads to communicate with the Message Controller 
+	 * Sets up the Message Controller and alerts it that waiter is logged in.
 	 */
 	private void setUpMessageController() {
 		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new HostMessageListener(listener,empID, this);
+			Thread t= new HostMessageListener(listener, this);
 			t.start();
 			sender = new HostMessageSender(listener,empID);
-			//log in
+			sender.start();
 			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
-			
 		} catch (Exception e) {
-			System.out.println("Host: Disconnected from MC.");
-			try {
-				listener.close();
-			} catch (IOException e1) {}
+			System.out.println("Problem setting up Waiter MC.");
 		}
 		
 	}

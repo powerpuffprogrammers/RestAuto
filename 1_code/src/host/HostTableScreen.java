@@ -73,7 +73,7 @@ public class HostTableScreen extends JPanel {
 	 */
 	private void makeListOfWaiters() {
 		int y = 570;
-		Iterator<String> it = hi.listOfWaitersLoggedIn.keySet().iterator();
+		Iterator<String> it = hi.listOfWaiters.keySet().iterator();
 		while(it.hasNext()){
 			String name = it.next();
 			JButton waiterButton = new JButton(name);

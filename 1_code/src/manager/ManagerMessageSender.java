@@ -3,8 +3,7 @@ package manager;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import messageController.Message;
 
@@ -24,35 +23,57 @@ public class ManagerMessageSender extends Thread {
 	 */
 	private Socket sock;
 	
+	/**
+	 * list of messages to send
+	 */
+	ConcurrentLinkedQueue<Message> pendingMessages;
 	
 	/**
 	 * Constructor
 	 * @param listener - socket to be used
-	 * @param empID - manager's employee id
+	 * @param empID - Manager's employee id
 	 */
 	public ManagerMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
+		pendingMessages = new ConcurrentLinkedQueue<Message>();
 	}
 
 	/**
 	 * Sends message out to Message controller
-	 * Automatically will fill in senderInfo with manager's position and id.
+	 * Automatically will fill in senderInfo with waiter's position and id.
 	 * @param m - message to send
 	 */
 	public void sendMessage(Message m){
-		
-		try {
-			m.senderPosition='m';
-			m.senderEmpID=empID;
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			String mess = m.toString();
-			out.writeUTF(mess);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		m.senderPosition='m';
+		m.senderEmpID=empID;
+		pendingMessages.offer(m);
 	}
 	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
+	public void run(){
+		DataOutputStream out;
+		try {
+			out = new DataOutputStream(sock.getOutputStream());
+		} catch (IOException e1) {
+			System.out.println("Failed to start up sender for manager.");
+			return;
+		}
+		
+		
+		while(true){
+			Message m =pendingMessages.poll();
+			if(m!=null){
+				try {
+					out.writeUTF(m.toString());
+				} catch (IOException e) {
+					System.out.println("Manager Messsage Sender shutting down.");
+					return;
+				}
+				
+			}
+		}
+	}
 }

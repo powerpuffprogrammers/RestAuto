@@ -40,8 +40,10 @@ public class MessageControllerListener  extends Thread{
 		try {
 			DataInputStream in = new DataInputStream(currListener.getInputStream());
 			String message =in.readUTF();
-			String second = in.readUTF();
-			message = message+second;
+			if(message.length()==2){
+				String second = in.readUTF();
+				message = message+second;
+			}
 			System.out.println("Log in message : "+message);
 			Message m = Message.fromString(message);
 			char pos = m.receiverPosition;
@@ -66,8 +68,11 @@ public class MessageControllerListener  extends Thread{
 			//listen to messages until a log out
 			while(true){
 				message =in.readUTF();
-				second = in.readUTF();
-				message = message+second;
+				if(message.length()==2){
+					String second = in.readUTF();
+					message = message+second;
+				}
+				System.out.println("Received : "+message);
 				m = Message.fromString(message);
 				pos = m.receiverPosition;
 				if(pos=='X'){//logging out
@@ -131,10 +136,12 @@ public class MessageControllerListener  extends Thread{
 						continue;
 					}
 					//Add the forwarded message to message controller
+					System.out.println("Adding message:"+m+" -To "+pos);
 					sender.pendingMessages.offer(m);
 				}
 			}	
 		}catch (Exception e) {
+			System.out.println("Removing "+empPos+empId+" from MC");
 			if(empPos=='w'){
 				MessageController.removeWaiterSocket(empId);
 			}

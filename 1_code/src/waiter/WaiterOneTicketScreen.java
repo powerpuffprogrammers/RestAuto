@@ -115,17 +115,22 @@ public class WaiterOneTicketScreen extends JPanel {
 		whiteBox.add(tableNum);
 		
 		//make a row for each item on the ticket (or up to 
-		ArrayList<Dish> listOfDishes = currTicket.listOfDishes;
+		ArrayList<DishForTicket> listOfDishes = checkForRepeats(currTicket.listOfDishes);
 		int row = 3, i =0;
 		while(row<19 && i<listOfDishes.size()){
 			int index =i;
-			Dish dish = listOfDishes.get(i);
+			DishForTicket dish = listOfDishes.get(i);
 			String name = dish.name;
 			double price = dish.price;
-			//write the name then price
-			JButton oneDishButton = new JButton(name + "\t$"+price);
+			//write the x1 name then price
+			JButton oneDishButton = new JButton("x"+dish.amount+" "+name + "\t$"+price);
 			oneDishButton.setForeground(Color.BLACK);
-			oneDishButton.setBackground(Color.WHITE);
+			if(dish.sent){
+				oneDishButton.setBackground(Color.CYAN);
+			}
+			else{
+				oneDishButton.setBackground(Color.WHITE);
+			}
 			oneDishButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					lastDishSelected = index;
@@ -152,6 +157,36 @@ public class WaiterOneTicketScreen extends JPanel {
 		whiteBox.add(total);
 		
 	}
+
+	/**
+	 * Generates the x2 field by converting dishes to DishForTicket
+	 * @param listOfDishes
+	 * @return
+	 */
+	private ArrayList<DishForTicket> checkForRepeats(ArrayList<Dish> listOfDishes) {
+		ArrayList<DishForTicket> ans = new ArrayList<DishForTicket>();
+		if(listOfDishes==null){
+			return ans;
+		}
+		for(int i = 0; i<listOfDishes.size();i++){
+			Dish d = listOfDishes.get(i);
+			for(int j =0; j<ans.size();j++){
+				boolean times2 = false;
+				//if you have a duplicate and if they both were sent or not
+				if(d.name.equals(ans.get(j).name)&& d.sent == ans.get(j).sent){
+					ans.get(j).amount++;
+					ans.get(j).price = ans.get(j).price + d.price;
+					times2=true;
+					break;
+				}
+				if(!times2){
+					ans.add(new DishForTicket(d));
+				}
+			}	
+		}
+		return ans;
+	}
+	
 
 	/**
 	 * Draws the waiter's name at the top left
@@ -184,6 +219,25 @@ public class WaiterOneTicketScreen extends JPanel {
 		add(logOutButton, getComponentCount());
 		
 	}
+	
+	/**
+	 * Sets up the Priority Button which is used to mark a ticket as a priority ticket.
+	 */
+	private void makePriorityButton(){
+		
+		JButton prior = new JButton("Priority Ticket");
+		prior.setForeground(Color.WHITE);
+		prior.setBackground(Color.ORANGE);
+		prior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				currTicket.priority = true;
+			}
+		});
+		prior.setBounds(550, 500, 200, 30);
+		add(prior, getComponentCount());
+		
+	}
+	
 	
 	/**
 	 * Sets up the notifyManager Button used to notify the manager about a unhappy table.
@@ -338,6 +392,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		makePaidButton();
 		makeRemoveButton();
 		makeMenuChoices();
+		makePriorityButton();
 		repaint();
 		validate();
 	}

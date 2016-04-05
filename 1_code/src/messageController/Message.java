@@ -68,7 +68,7 @@ public class Message {
 	 * Makes the message into a string so it can be sent over a socket.
 	 */
 	public String toString(){
-		String ans = senderPosition +senderEmpID+"*"+receiverPosition+receiverEmpID+"*"+content;
+		String ans = senderPosition +""+senderEmpID+"*"+receiverPosition+receiverEmpID+"*"+content;
 		return ans;
 	}
 	

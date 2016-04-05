@@ -62,7 +62,7 @@ public class ManagerInterface {
 		loggedOut=false;
 		
 		//set up MC
-		//setUpMessageController();
+		setUpMessageController();
 		
 		
 		//create waiter screen for list of tickets
@@ -101,7 +101,7 @@ public class ManagerInterface {
 		Socket listener;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new ManagerMessageListener(listener,empID, this);
+			Thread t= new ManagerMessageListener(listener, this);
 			t.start();
 			sender = new ManagerMessageSender(listener,empID);
 			sender.sendMessage(new Message('L',-1, "Logging in"));

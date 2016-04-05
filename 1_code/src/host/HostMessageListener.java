@@ -1,11 +1,7 @@
 package host;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
-
-import com.google.gson.Gson;
 
 import messageController.Message;
 
@@ -14,10 +10,7 @@ import messageController.Message;
  * @author cms549
  */
 public class HostMessageListener extends Thread {
-	/**
-	 * Host's unique employee id
-	 */
-	private long empID;
+
 	
 	/**
 	 * Socket to listen on
@@ -32,12 +25,10 @@ public class HostMessageListener extends Thread {
 	/**
 	 * Constructor
 	 * @param listener - socket this will be listening to
-	 * @param empID - id of the host
 	 * @param hI - host interface
 	 */
-	public HostMessageListener(Socket listener, long empID, HostInterface hI) {
+	public HostMessageListener(Socket listener, HostInterface hI) {
 		sock=listener;
-		this.empID=empID;
 		hi=hI;
 	}
 
@@ -48,33 +39,28 @@ public class HostMessageListener extends Thread {
 		DataInputStream in = null;
 		try {
 			in = new DataInputStream(sock.getInputStream());
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			//send a message hempID to MC so they sign you in
-			String logInToMC = "h"+empID;
-			out.writeUTF(logInToMC);
-			out.close();
 			//just keep listening
 			while(true){
 				String mes = in.readUTF();
+				if(mes.length()==2){
+					String second = in.readUTF();
+					mes = mes +second;
+				}
 				Message m = Message.fromString(mes);
 				decodeMessage(m);
 			}
 			
 			
 		}catch (Exception e) {
-			System.out.println("Host Listener disconnected from MC.");
-			try {
-				sock.close();
-			} catch (IOException e1) {			}
+			System.out.println("Host Message Listener disconnected from MC.");
 		} 
-		
 		
 	}
 
 	/**
 	 * Decodes message
 	 * If manager sent message it must be a notification
-	 * If server sent message it must be a log in, log out, or paid message
+	 * If server sent message it must be a paid message
 	 * @param m - message to decode
 	 */
 	private void decodeMessage(Message m) {
@@ -84,24 +70,11 @@ public class HostMessageListener extends Thread {
 			hi.addNotification(m.content);
 		}
 		else if(senderPos=='w'){
-			if(m.content.charAt(0)=='L'){
-				//logging in
-				long waiterID = m.senderEmpID;
-				String name = m.content.substring(1); 
-				//add to list of servers
-			}
-			if(m.content.charAt(0)=='O'){
-				//logging out
-				long waiterID = m.senderEmpID;
-				String name = m.content.substring(1); 
-				//remove from list of servers
-			}
-			else{
-				//PAID
-				String tNumStr = m.content;
-				int tableNumber = Integer.parseInt(tNumStr);
-				hi.paid(tableNumber);
-			}
+			//PAID
+			String tNumStr = m.content;
+			int tableNumber = Integer.parseInt(tNumStr);
+			hi.paid(tableNumber);
+			
 		}
 		
 	}

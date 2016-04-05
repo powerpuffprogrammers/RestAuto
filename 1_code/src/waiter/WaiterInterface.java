@@ -58,7 +58,7 @@ public class WaiterInterface {
 	/**
 	 * current ticket open, null if none is open
 	 */
- public Ticket currTicket;
+	public Ticket currTicket;
 	
 	/**
 	 * List of the tickets this waiter is in charge of.
@@ -96,9 +96,8 @@ public class WaiterInterface {
 		
 		//set up MC
 		setUpMessageController();
-		sender.sendMessage(new Message('h',-1, "L"+name));
 		
-		generateTickets();
+		//generateTickets();
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -122,7 +121,6 @@ public class WaiterInterface {
 		try {
 			DBCSender.sock.close();
 		} catch (IOException e) {}
-		sender.sendMessage(new Message('h',-1, "O"+name));
 		sender.sendMessage(new Message('X',-1, "Log out"));
 	}
 

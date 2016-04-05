@@ -73,6 +73,7 @@ public class MessageControllerSender extends Thread {
 			Message m =pendingMessages.poll();
 			if(m!=null){
 				try {
+					System.out.println("Sending: "+ m +" - to "+empPos +empId);
 					out.writeUTF(m.toString());
 				} catch (IOException e) {
 					System.out.println("Messsage Controller for Pos = "+ empPos+" shutting down.");
