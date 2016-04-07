@@ -230,11 +230,11 @@ public class WaiterInterface {
 	}
 	
 	/**
-	 * Sends ticket to Chef
+	 * Sends ticket to Chef and marks the sent items
 	 * @param t - ticket to send
 	 */
 	public void sendTicket(Ticket t){
-		sender.sendMessage(new Message('c',-1,jsonConverter.toJson(t) ));
+		sender.sendMessage(new Message('c',-1,t.toStringForChef() ));
 	}
 	
 	/**

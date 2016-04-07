@@ -4,13 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import databaseB.Table;
 
 /**
@@ -57,6 +58,7 @@ public class HostTableScreen extends JPanel {
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
+		makeTimeText();
 		makeLogOutButton();
 		makeCleanedButton();
 		makeSeatButton();
@@ -74,19 +76,28 @@ public class HostTableScreen extends JPanel {
 	private void makeListOfWaiters() {
 		int y = 570;
 		Iterator<String> it = hi.listOfWaiters.keySet().iterator();
+		HashMap<String,Integer> totalTables=hi.waiterTotalTables;
 		while(it.hasNext()){
 			String name = it.next();
+			int numTables=totalTables.get(name);
+			System.out.println(name+" "+numTables);
 			JButton waiterButton = new JButton(name);
+			JButton numTablesButton=new JButton(""+numTables);
 			waiterButton.setForeground(Color.BLACK);
+			numTablesButton.setForeground(Color.BLACK);
 			waiterButton.setBackground(Color.WHITE);
+			numTablesButton.setBackground(Color.WHITE);
+			
 			waiterButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					waiterSelected=name;
 					
 				}
 			});
-			waiterButton.setBounds(900, y, 300, 30);
+			waiterButton.setBounds(900, y, 200, 30);
+			numTablesButton.setBounds(1100, y, 100, 30);
 			add(waiterButton);
+			add(numTablesButton);
 			y=y-30;
 		}
 		
@@ -94,9 +105,18 @@ public class HostTableScreen extends JPanel {
 		header.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		header.setEditable(false);
 		header.setHorizontalAlignment(SwingConstants.CENTER);
-		header.setBounds(900, y, 300, 30);
+		header.setBounds(900, y, 200, 30);
 		header.setForeground(Color.BLACK);
 		add(header);
+		
+		//add header for num current tables
+		JTextField header2 = new JTextField("Total Tables:");
+		header2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		header2.setEditable(false);
+		header2.setHorizontalAlignment(SwingConstants.LEFT);
+		header2.setBounds(1100, y, 100, 30);
+		header2.setForeground(Color.BLACK);
+		add(header2);
 		
 		
 	}
@@ -196,7 +216,13 @@ public class HostTableScreen extends JPanel {
 		int cnt=0;
 		for(int i=0; i<hi.paidTables.size() && cnt<10; i++){
 			int tnum = hi.paidTables.get(i);
-			JButton tableButton = new JButton("#"+tnum);
+			char ttype=hi.allTables.get(tnum).type;
+			String type="";
+			if (ttype=='b'){
+				type="Booth";
+			}
+			else type="Table";
+			JButton tableButton = new JButton(type+" #"+tnum);
 			tableButton.setForeground(Color.BLACK);
 			tableButton.setBackground(Color.YELLOW);
 			tableButton.addActionListener(new ActionListener() {
@@ -213,7 +239,13 @@ public class HostTableScreen extends JPanel {
 		if(cnt<10){
 			for(int i=0; i<hi.seatedTables.size() && cnt<10; i++){
 				int tnum = hi.seatedTables.get(i);
-				JButton tableButton = new JButton("#"+tnum);
+				char ttype=hi.allTables.get(tnum).type;
+				String type="";
+				if (ttype=='b'){
+					type="Booth";
+				}
+				else type="Table";
+				JButton tableButton = new JButton(type+" #"+tnum);
 				tableButton.setForeground(Color.BLACK);
 				tableButton.setBackground(Color.RED);
 				tableButton.addActionListener(new ActionListener() {
@@ -246,7 +278,13 @@ public class HostTableScreen extends JPanel {
 		int y =100;
 		for(int i=0; i<hi.readyTables.size() && i<10; i++){
 			int tnum = hi.readyTables.get(i);
-			JButton tableButton = new JButton("#"+tnum);
+			char ttype=hi.allTables.get(tnum).type;
+			String type="";
+			if (ttype=='b'){
+				type="Booth";
+			}
+			else type="Table";
+			JButton tableButton = new JButton(type+" #"+tnum);
 			tableButton.setForeground(Color.BLACK);
 			tableButton.setBackground(Color.GREEN);
 			tableButton.addActionListener(new ActionListener() {
@@ -275,7 +313,21 @@ public class HostTableScreen extends JPanel {
 		add(nameHeader);
 		
 	}
-
+/**
+ * writes the time on screen
+ */
+	private void makeTimeText(){
+		Calendar cal=Calendar.getInstance();
+		JTextField timeHeader;
+		String tmp=""+cal.getTime();
+		tmp=tmp.substring(0, tmp.length()-12);
+		timeHeader=new JTextField(tmp);
+		timeHeader.setEditable(false);
+		timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
+		timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		timeHeader.setBounds(450, 0, 300, 30);
+		add(timeHeader);
+	}
 	
 	/**
 	 * Sets up the Log Out Button

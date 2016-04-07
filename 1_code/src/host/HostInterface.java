@@ -82,6 +82,12 @@ public class HostInterface {
 	 */
 	HashMap<String, Integer> listOfWaiters;
 	
+	/**
+	 * HashMap that maps the name of the waiter to the number of tables he currently has.
+	 */
+	
+	HashMap<String, Integer> waiterTotalTables;
+
 	
     /**
      * Constructor
@@ -93,6 +99,7 @@ public class HostInterface {
 		name=empName;
 		empID = eID;
 		jsonConverter = new Gson();
+		waiterTotalTables = new HashMap<String, Integer>();
 		listOfWaiters = new HashMap<String,Integer>();
 		if(!loadWaiters()){
 			loggedOut=true;
@@ -185,6 +192,13 @@ public class HostInterface {
 		sender.sendMessage(new Message('m',-1, name+" needs help at host stand."));
 		updateScreen();
 	}
+	
+	/**
+	 * notify waiter
+	 */
+	public void notifyWaiter(Message m){
+		sender.sendMessage(m);
+	}
 
 	/**
 	 * Seat the table number with this server
@@ -204,6 +218,10 @@ public class HostInterface {
 			}
 		}
 		seatedTables.add(tableNumber);
+		int currTables=waiterTotalTables.get(waiterName);
+		currTables++;
+		waiterTotalTables.put(waiterName, currTables);
+
 		sendSeated(listOfWaiters.get(waiterName), tableNumber);
 		try{
 		updateScreen();
@@ -219,7 +237,7 @@ public class HostInterface {
 	 * @param tableNumber - table you just sat 
 	 */
 	public void sendSeated(long waiterId, int tableNumber){
-		sender.sendMessage(new Message('w',waiterId, ""+tableNumber ));
+		sender.sendMessage(new Message('w',waiterId, "R"+tableNumber ));
 	}
 	
 	/**
@@ -308,6 +326,7 @@ public class HostInterface {
 				int id = Integer.parseInt(idString);
 				String name = waiter[i].substring(waiter[i].indexOf(",")+1);
 				listOfWaiters.put(name,id);
+				waiterTotalTables.put(name, 0);
 				
 			}
 			
@@ -320,6 +339,15 @@ public class HostInterface {
 		}
 		return true;
 		
+	}
+	/**
+	 * 
+	 * @param tableNumber
+	 * @return the ID of the waiter who has this table
+	 * returns NULL if waiter not found
+	 */
+	long getWaiterIdForTable(int tableNumber){
+		return seatedTables.get(tableNumber);
 	}
 	
 }

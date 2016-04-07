@@ -5,6 +5,7 @@ import java.net.Socket;
 
 import messageController.Message;
 
+
 /**
  * Listens for and decodes the messages from the Message Controller to the host.
  * @author cms549
@@ -70,10 +71,23 @@ public class HostMessageListener extends Thread {
 			hi.addNotification(m.content);
 		}
 		else if(senderPos=='w'){
-			//PAID
+			//PAID or NOTIFY 
 			String tNumStr = m.content;
-			int tableNumber = Integer.parseInt(tNumStr);
-			hi.paid(tableNumber);
+			char typeofmes=tNumStr.charAt(0);
+			if (typeofmes=='P'){
+				int tableNumber = Integer.parseInt(tNumStr.substring(1));
+				hi.paid(tableNumber);
+			}
+			else if (typeofmes=='N'){
+				int tableNumber = Integer.parseInt(tNumStr.substring(1));
+				long waiterID=hi.getWaiterIdForTable(tableNumber);
+				String message=typeofmes+tableNumber+"";
+				Message mess=new Message('w',waiterID,message);
+				hi.notifyWaiter(mess);
+				
+			}
+			
+			
 			
 		}
 		

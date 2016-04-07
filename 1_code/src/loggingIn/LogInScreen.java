@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -66,12 +67,20 @@ public class LogInScreen extends JPanel{
 		setBackground(new Color(51, 153, 255));
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
-		
+		updateScreen();
+	}
+	
+	/**
+	 * Redraws the screen using current data.
+	 */
+	private void updateScreen() {
+		makeTime();
 		makeHeaderText();
 		makeIDTextField();
 		makeKeypad();
+		
 	}
-	
+
 	/**
 	 * When logged in button is pressed, this should be called to communicate with DB A.
 	 * @param empID - employee id you wish to log in with
@@ -248,5 +257,21 @@ public class LogInScreen extends JPanel{
 			return;
 		}
 	}
+	
+	/**
+	 * writes the time on screen
+	 */
+		private void makeTime(){
+			Calendar cal=Calendar.getInstance();
+			JTextField timeHeader;
+			String tmp=""+cal.getTime();
+			tmp=tmp.substring(0, tmp.length()-12);
+			timeHeader=new JTextField(tmp);
+			timeHeader.setEditable(false);
+			timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
+			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			timeHeader.setBounds(0, 0, 300, 30);
+			add(timeHeader);
+		}
 	
 }

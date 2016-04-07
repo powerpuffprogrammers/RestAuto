@@ -80,6 +80,18 @@ public class Ticket {
 	}
 	
 	/**
+	 * Creates empty ticket
+	 */
+	public Ticket() {
+		this.status='u';
+		this.listOfDishes= new ArrayList<Dish>();
+		amountOfDishes = 0;
+		amountOfDishesUnstarted = 0;
+		amountOfDishesStarted = 0;
+		amountOfDishesFinished = 0;
+	}
+
+	/**
 	 * Adds dish to ticket and also updates price and status of ticket
 	 * @param d
 	 */
@@ -164,8 +176,8 @@ public class Ticket {
 	 * MARKS DISHES THAT ARE GETTING SENT AS SENT
 	 * @return the string format of the ticket
 	 * Format is as follows:
-	 * 	P:WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
-	 * 	N:WAITERNAME:WAITERID:TABLENUMBER:DISHNAME1,DISHNAME2,DISHNAME3
+	 * 	P:WAITERNAME:WAITERID:TABLENUMBER:;DISHNAME1-,COMMENT11,COMMENT12;DISHNAME2-,COMMENT21;DISHNAME3-,COMMENT31,COMMENT32,COMMENT33
+	 * 	N:WAITERNAME:WAITERID:TABLENUMBER:;DISHNAME1-,COMMENT11,COMMENT12;DISHNAME2-,COMMENT21;DISHNAME3-,COMMENT31,COMMENT32,COMMENT33
 	 */
 	public String toStringForChef(){
 		String ans;
@@ -179,10 +191,53 @@ public class Ticket {
 			Dish d = listOfDishes.get(i);
 			//only send dishes that have not been sent
 			if(!d.sent){
-				ans = ans+","+ d.name;
+				ans = ans+";"+ d.name+"-";
 				d.sent=true;
+				if(d.comments!=null && d.comments.size()>0)
+					for(int j =0; j< d.comments.size();j++){
+						ans = ans+","+d.comments.get(j);
+					}
+				
+				
 			}
 		}
 		return ans;
 	}
+
+	/**
+	 * Takes the string representation of this ticket and make a new ticket object for it
+	 * @return a new Ticket
+	 * Format is as follows:
+	 * 	P:WAITERNAME:WAITERID:TABLENUMBER:;DISHNAME1-,COMMENT11,COMMENT12;DISHNAME2-,COMMENT21;DISHNAME3-,COMMENT31,COMMENT32,COMMENT33
+	 * 	N:WAITERNAME:WAITERID:TABLENUMBER:;DISHNAME1-,COMMENT11,COMMENT12;DISHNAME2-,COMMENT21;DISHNAME3-,COMMENT31,COMMENT32,COMMENT33
+	 */
+	public static Ticket fromString(String tick){
+		Ticket ans = new Ticket();
+		String[] parts= tick.split(":");
+		if(parts[0].charAt(0)=='P'){
+			ans.priority = true;
+		}
+		ans.waiterName = parts[1];
+		ans.waiterID = Integer.parseInt(parts[2]);
+		ans.tableNumber = Integer.parseInt(parts[3]);
+		String[] dishANDcomment = parts[4].split(";");
+		//go through each dish
+		for(int j=1; j<dishANDcomment.length; j++){
+			String[] namelist = dishANDcomment[j].split("-");
+			Dish d = new Dish(namelist[0],0,null);
+			//add the name
+			ans.listOfDishes.add(d);
+			ans.amountOfDishes++;
+			ans.amountOfDishesUnstarted++;
+			String[] eachComm = namelist[1].split(",");
+			for(int c =1; c<eachComm.length; c++){
+				d.comments.add(eachComm[c]);
+			}
+			
+		}
+		
+		return ans;
+	}
+
+
 }

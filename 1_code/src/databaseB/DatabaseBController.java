@@ -8,7 +8,6 @@ import java.net.Socket;
 import com.google.gson.Gson;
 
 import configuration.Configure;
-import databaseA.DatabaseAController;
 
 /**
  * Starts the DB B.
@@ -54,11 +53,11 @@ public class DatabaseBController extends Thread {
 	 * @param maxOccupancy - max amount of people that can fit at the table
 	 * @return true on success, false on failure
 	 */
-	public static boolean addTable(int tabNum, int maxOccupancy){
+	public static boolean addTable(int tabNum, int maxOccupancy, char type){
 		if(listOfTables.hm.containsKey(tabNum)){
 			return false;
 		}
-		listOfTables.hm.put(tabNum, new Table(tabNum, maxOccupancy));
+		listOfTables.hm.put(tabNum, new Table(tabNum, maxOccupancy,type));
 		return true;
 	}
 	
@@ -108,13 +107,13 @@ public class DatabaseBController extends Thread {
 	 * Used for testing
 	 */
 	public static void generateTables(){
-		addTable(1,4);
-		addTable(2,4);
-		addTable(3,4);
-		addTable(4,6);
-		addTable(5,6);
-		addTable(6,2);
-		addTable(7,2);
+		addTable(1,4,'t');
+		addTable(2,4,'t');
+		addTable(3,4,'t');
+		addTable(4,6,'b');
+		addTable(5,6,'b');
+		addTable(6,2,'t');
+		addTable(7,2,'t');
 		/*
 		addTable(8,4);
 		addTable(9,4);

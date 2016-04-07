@@ -1,21 +1,15 @@
 package databaseB;
 
-import java.util.Date;
-
 /**
  * Table is a data structure that is used to represent a table.
  * Holds the information for the table, including the maximum occupancy, 
- * the time the table was last sat, the status of the table, and the name of the waiter 
+ * whether the table is a booth, the status of the table, and the name of the waiter 
  * who is serving it.
  * @author cms549
  *
  */
 public class Table {
 	
-	/**
-	 * Time table was last sat.
-	 */
-	public Date timeLastSat;
 	/**
 	 * Table number
 	 */
@@ -32,16 +26,23 @@ public class Table {
 	 * How many people can sit at this table
 	 */
 	public int maxOccupancy;
+	/**
+	 * The type of table 'b' for booth, 't' for table
+	 */
+	public char type;
+	
+	
 	
 	/**
 	 * Constructor - automatically initializes the status to ready
 	 * @param tableNumber = table number of table to be created
 	 * @param maxOccupancy = the amount of guests taht can sit at this table at once
 	 */
-	public Table(int tableNumber, int maxOccupancy){
+	public Table(int tableNumber, int maxOccupancy, char type){
 		this.tableNumber=tableNumber;
 		status='r';
 		this.maxOccupancy=maxOccupancy;
+		this.type=type;
 	}
 	
 	/**
@@ -54,7 +55,6 @@ public class Table {
 			return false;
 		}
 		this.waiter=waiter;
-		timeLastSat= new Date();
 		this.status='s';
 		return true;
 	}

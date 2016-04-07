@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 /**
  * Panel that is displayed when manager logs on.
@@ -200,6 +201,7 @@ public class ManagerScreen extends JPanel {
 		makeDeleteButton();
 		makeNewMessageButton();
 		makeLogOutButton();	
+		makeTime();
 		makeListOfMessages();
 		repaint();
 		
@@ -232,5 +234,20 @@ public class ManagerScreen extends JPanel {
 		
 	}
 	
+	/**
+	 * writes the time on screen
+	 */
+		private void makeTime(){
+			Calendar cal=Calendar.getInstance();
+			JTextField timeHeader;
+			String tmp=""+cal.getTime();
+			tmp=tmp.substring(0, tmp.length()-12);
+			timeHeader=new JTextField(tmp);
+			timeHeader.setEditable(false);
+			timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
+			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			timeHeader.setBounds(450, 0, 300, 30);
+			add(timeHeader);
+		}
 
 }

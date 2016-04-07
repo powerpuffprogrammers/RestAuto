@@ -114,7 +114,18 @@ public class WaiterOneTicketScreen extends JPanel {
 		tableNum.setBounds(0, 0, 300, 30);
 		whiteBox.add(tableNum);
 		
-		//make a row for each item on the ticket (or up to 
+		if(currTicket.priority){
+			JTextField prior;
+			prior = new JTextField("PRIORITY");
+			prior.setEditable(false);
+			prior.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			prior.setHorizontalAlignment(SwingConstants.CENTER);
+			prior.setBackground(Color.ORANGE);
+			prior.setBounds(0, 30, 300, 30);
+			whiteBox.add(prior);
+		}
+		
+		//make a row for each item on the ticket (or up to 16)
 		ArrayList<DishForTicket> listOfDishes = checkForRepeats(currTicket.listOfDishes);
 		int row = 3, i =0;
 		while(row<19 && i<listOfDishes.size()){
@@ -170,8 +181,8 @@ public class WaiterOneTicketScreen extends JPanel {
 		}
 		for(int i = 0; i<listOfDishes.size();i++){
 			Dish d = listOfDishes.get(i);
+			boolean times2 = false;
 			for(int j =0; j<ans.size();j++){
-				boolean times2 = false;
 				//if you have a duplicate and if they both were sent or not
 				if(d.name.equals(ans.get(j).name)&& d.sent == ans.get(j).sent){
 					ans.get(j).amount++;
@@ -179,10 +190,10 @@ public class WaiterOneTicketScreen extends JPanel {
 					times2=true;
 					break;
 				}
-				if(!times2){
-					ans.add(new DishForTicket(d));
-				}
-			}	
+			}
+			if(!times2){
+				ans.add(new DishForTicket(d));
+			}
 		}
 		return ans;
 	}
@@ -221,19 +232,20 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Priority Button which is used to mark a ticket as a priority ticket.
+	 * Sets up the Priority Button which is used to switch a ticket as a priority or non priority ticket.
 	 */
 	private void makePriorityButton(){
 		
 		JButton prior = new JButton("Priority Ticket");
-		prior.setForeground(Color.WHITE);
-		prior.setBackground(Color.ORANGE);
+		prior.setForeground(Color.ORANGE);
+		prior.setBackground(Color.WHITE);
 		prior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				currTicket.priority = true;
+				currTicket.priority = !currTicket.priority;
+				updateScreen();
 			}
 		});
-		prior.setBounds(550, 500, 200, 30);
+		prior.setBounds(0, 540, 300, 30);
 		add(prior, getComponentCount());
 		
 	}
@@ -268,6 +280,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				wi.sendTicket(currTicket);
+				updateScreen();
 			}
 		});
 		sendButton.setBounds(0,570, 300, 30);

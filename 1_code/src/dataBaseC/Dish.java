@@ -1,5 +1,7 @@
 package dataBaseC;
 
+import java.util.ArrayList;
+
 /**
  * Data structure to hold dish name, price, and status.
  * Used by waiter, chef, and Database C
@@ -32,6 +34,11 @@ public class Dish {
 	public String typeOfDish;
 	
 	/**
+	 * Holds all of the specifications for this dish
+	 */
+	public ArrayList<String> comments;
+	
+	/**
 	 * Constructor
 	 * @param name - name of dish
 	 * @param price - price of dish
@@ -42,6 +49,7 @@ public class Dish {
 		this.name=name;
 		this.price = price;
 		this.typeOfDish=typeOfDish;
+		comments = new ArrayList<String>();
 	}
 	
 	/**
