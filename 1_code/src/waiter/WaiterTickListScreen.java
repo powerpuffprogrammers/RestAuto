@@ -47,6 +47,7 @@ public class WaiterTickListScreen extends JPanel {
 		makeNameText();
 		makeLogOutButton();	
 		makeTicketButtons();
+		makeNotifyWaiter();
 		makeTime();
 		repaint();
 	}
@@ -154,9 +155,8 @@ public class WaiterTickListScreen extends JPanel {
 		logOutButton.setBounds(1000, 0, 200, 30);
 		add(logOutButton,0);
 		
-	}
+	}	
 	
-
 	/**
 	 * Creates an are you sure message box
 	 */
@@ -198,6 +198,40 @@ public class WaiterTickListScreen extends JPanel {
 		areYouSure.add(no);
 		repaint();
 	}
+	
+
+	/**
+	 * Sets up the Notify Waiter Button
+	 */
+	private void makeNotifyWaiter(){
+		
+		JButton notify = new JButton("Notify Waiter");
+		notify.setForeground(Color.BLACK);
+		notify.setBackground(Color.ORANGE);
+		notify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				makeKeypad();
+			}
+		});
+		notify.setBounds(1000, 580, 200, 30);
+		add(notify);
+		
+	}
+	
+	private void makeKeypad(){
+		String entry ="";
+		int tab =0;
+		//draw a box to place everything in
+		//make all numbers 0-9 
+		// make a send 
+		wi.notifyWaiter(tab);
+		//make a clear button
+		//make a back button
+		//DONT HAVE A TEXT FIELD THAT UPDATES JUS
+		//in all the buttons make sure to update the screen
+		updateScreen();
+	}
+	
 	
 	
 

@@ -172,6 +172,31 @@ public class WaiterInterface {
 	}
 
 	/**
+	 * Will add a GiftCard or Coupon to the ticket and price
+	 * @param price - price of gift card or amt to take off with coupon
+	 */
+	public void addGCorCoupon(double price){
+		if(price==0){
+			return;
+		}
+		else if(price>0){
+			//GIFT CARD
+			Dish gc = new Dish("Gift Card", price, null);
+			gc.changeStatus('c');
+			currTicket.listOfDishes.add(gc);
+			currTicket.price=currTicket.price + gc.price;
+		}
+		else{
+			//COUPON
+			Dish comp = new Dish("Coupon", price, null);
+			comp.changeStatus('c');
+			currTicket.listOfDishes.add(comp);
+			currTicket.price=currTicket.price + comp.price;
+		}
+		
+	}
+	
+	/**
 	 * Adds a the given dish to the ticket that is currently selected.
 	 * Caller should make sure currTicket field is not null.
 	 * @param dish - Dish of dish you wish to add
@@ -179,12 +204,7 @@ public class WaiterInterface {
 	public boolean addDishToTicket(Dish dish) {
 		currTicket.addDishToTicket(dish.makeCopyOfDish());
 	     updateScreen();
-		for(int i = 0; i < currTicket.listOfDishes.size() ; i++){
-			if(dish.name.equals(currTicket.listOfDishes.get(i).name)){
-				return true;
-			}
-		}
-		return false;
+		return true;
 		
 	}
 
@@ -195,9 +215,19 @@ public class WaiterInterface {
 	 */
 	public void removeDishFromTicket(int indexInTicket) {
 		currTicket.removeDishFromTicket(indexInTicket);
-		updateScreen();
 	}
 
+	/**
+	 * Adds comment com to the dish at index ind on the curr ticket
+	 * @param ind = index of the dish in the current ticket
+	 */
+	public void addComment(int ind, String com) {
+		Dish d =currTicket.listOfDishes.get(ind);
+		if(d.getStatus()!='c')//can't add a comment to a gc or coupon
+			d.comments.add(com);
+	}
+	
+	
 	/**
 	 * Switches from list of tickets screen to one open ticket screen
 	 * @param tableNumber - the table number of ticket you wish to open
@@ -286,11 +316,21 @@ public class WaiterInterface {
 	 * @param tableNumber - table number of table that just paid
 	 */
 	public void paid(int tableNumber) {
-		sender.sendMessage(new Message('h',-1, ""+tableNumber));
+		sender.sendMessage(new Message('h',-1, "P"+tableNumber));
 		DBCSender.sendTicket(listOfTickets.get(tableNumber));
 		listOfTickets.remove(tableNumber);
 		backToMainScreen();
 	}
+	
+	/**
+	 * This is called when a table requests their waiter.
+	 * The host interface will notify the right waiter.
+	 * @param tableNumber - table number of table that asked for their waiter
+	 */
+	public void notifyWaiter(int tableNumber) {
+		sender.sendMessage(new Message('h',-1, "N"+tableNumber));
+	}
+	
 
 /**
  * This is called when low inventory is met and chef can no longer make these dishes.

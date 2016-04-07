@@ -119,6 +119,10 @@ public class Ticket {
 			return false;
 		}
 		this.price=this.price - del.price;
+		if(del.getStatus() =='c'){
+			listOfDishes.remove(indexOfDishInTickList);
+			return true;
+		}
 		amountOfDishes= amountOfDishes-1;
 		char s = del.getStatus();
 		if(s=='u'){
@@ -166,7 +170,9 @@ public class Ticket {
 	 * 	Waiter Name:John Waiter ID:123 Table Number:14 Price:$5.00
 	 */
 	public String toStringForDBC(){
-		String ans = "Waiter Name:"+waiterName+" Waiter ID:"+waiterID+" Table Number:"+tableNumber+" Price:$"+price;
+		String stprice = ""+price;
+		stprice = stprice.substring(0,stprice.indexOf('.')+3);
+		String ans = "Waiter Name:"+waiterName+" Waiter ID:"+waiterID+" Table Number:"+tableNumber+" Price:$"+stprice;
 		return ans;
 	}
 	

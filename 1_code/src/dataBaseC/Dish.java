@@ -23,7 +23,7 @@ public class Dish {
 	public double price;
 	
 	/**
-	 * Status of dish = u=unstarted, s=started, f=finished
+	 * Status of dish = u=unstarted, s=started, f=finished, c = coupon or gift card
 	 */
 	private char status;
 	
@@ -66,6 +66,10 @@ public class Dish {
 	 * @return 0 on success -2 on failure
 	 */
 	public int changeStatus(char newStatus){
+		if(newStatus=='c'){
+			status = newStatus;
+			return 0;
+		}
 		if(status == 'u' && newStatus=='s'){
 			status = newStatus;
 			return 0;

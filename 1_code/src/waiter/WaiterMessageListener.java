@@ -72,12 +72,19 @@ public class WaiterMessageListener extends Thread {
 			wi.addNotification(m.content);
 		}
 		else if(senderPos=='h'){
-			//RECENTLY SAT
-			String tNumStr = m.content;
-			int tableNumber = Integer.parseInt(tNumStr);
-			Ticket t = new Ticket(wi.name, tableNumber, wi.empID);
-			wi.listOfTickets.put(tableNumber, t);
-			t.recentlySat=true;
+			char type = m.content.charAt(0);
+			String tNumStr = m.content.substring(1);
+			if(type=='R'){
+				//RECENTLY SAT
+				int tableNumber = Integer.parseInt(tNumStr);
+				Ticket t = new Ticket(wi.name, tableNumber, wi.empID);
+				wi.listOfTickets.put(tableNumber, t);
+				t.recentlySat=true;
+			}
+			else if(type == 'N'){
+				//notification that table needs you
+				wi.addNotification("Table "+ tNumStr+ " needs your assistance.");
+			}
 			wi.updateScreen();
 		}
 		else if(senderPos=='c'){
