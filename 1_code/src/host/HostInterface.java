@@ -82,8 +82,12 @@ public class HostInterface {
 	/**
 	 * HashMap that maps the name of the waiter to the number of tables he currently has.
 	 */
-	
 	HashMap<String, Integer> waiterTotalTables;
+	
+	/***
+	 * HashMap that maps table number to the waiter who has it
+	 */
+	HashMap<Integer,String> waiterOfTable;
 	
 	LogInScreen loginPanel;
 
@@ -99,6 +103,7 @@ public class HostInterface {
 		jsonConverter = new Gson();
 		waiterTotalTables = new HashMap<String, Integer>();
 		listOfWaiters = new HashMap<String,Integer>();
+		waiterOfTable=new HashMap<Integer,String>();
 		if(!loadWaiters()){
 			logOut();
 			return;
@@ -218,7 +223,7 @@ public class HostInterface {
 		int currTables=waiterTotalTables.get(waiterName);
 		currTables++;
 		waiterTotalTables.put(waiterName, currTables);
-
+		waiterOfTable.put(tableNumber, waiterName);
 		sendSeated(listOfWaiters.get(waiterName), tableNumber);
 		try{
 		updateScreen();
@@ -250,6 +255,7 @@ public class HostInterface {
 	 * Then sends log out message to MC.
 	 */
 	public void logOut(){
+		if(sender!=null)
 		sender.sendMessage(new Message('X',-1, "Log out"));
 		TabletApp.logOut(loginPanel);
 	}
@@ -274,6 +280,10 @@ public class HostInterface {
 			if(curr == tableNumber){
 				seatedTables.remove(i);
 				paidTables.add(tableNumber);
+				String waiterName=waiterOfTable.get(tableNumber);
+				int currTables=waiterTotalTables.get(waiterName);
+				currTables--;
+				waiterTotalTables.put(waiterName,currTables);
 			}
 		}
 		updateScreen();
@@ -334,14 +344,17 @@ public class HostInterface {
 		return true;
 		
 	}
-	/**
-	 * 
+	 /** 
 	 * @param tableNumber
 	 * @return the ID of the waiter who has this table
-	 * returns NULL if waiter not found
+	 * returns -1 if waiter not found
 	 */
 	long getWaiterIdForTable(int tableNumber){
-		return seatedTables.get(tableNumber);
+		String waiterName=waiterOfTable.get(tableNumber);
+		long waiterID=-1;
+		if (waiterName!=null){
+			waiterID=listOfWaiters.get(waiterName);
+		}
+		return waiterID;
 	}
-	
 }

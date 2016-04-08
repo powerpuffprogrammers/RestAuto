@@ -75,7 +75,7 @@ public class ManagerInterface {
 		//set the screen to the waiter panel
 		this.frame.setContentPane(manScreen);
 		frame.revalidate();
-		generateMessages();
+		//generateMessages();
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class ManagerInterface {
 	public void sendMassNotification(String content){
 		sender.sendMessage(new Message('h',-1, content));
 		sender.sendMessage(new Message('c',-1, content));
-		sender.sendMessage(new Message('s',-1, content));
+		sender.sendMessage(new Message('w',-1, content));
 	}
 
 	/**

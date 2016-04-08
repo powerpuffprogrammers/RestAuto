@@ -3,6 +3,7 @@ package messageController;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Iterator;
 
 /**
  * Listens to messages from one tablet.
@@ -99,6 +100,15 @@ public class MessageControllerListener  extends Thread{
 						}
 						if(m.receiverEmpID==-1){
 							//send to all waiters
+							Iterator<Long> it = MessageController.waiterOut.keySet().iterator();
+							//grab each employees id of waiter and 
+							while(it.hasNext()){
+								sender = MessageController.waiterOut.get(it.next());
+								//Add the forwarded message to message controller
+								System.out.println("Adding message:"+m+" -To "+pos);
+								sender.pendingMessages.offer(m);
+							}
+							
 							
 							continue;
 						}
@@ -127,7 +137,7 @@ public class MessageControllerListener  extends Thread{
 							continue;
 						}
 						if(m.receiverEmpID==-1){
-							m.receiverEmpID = MessageController.hostOut.keySet().iterator().next();
+							m.receiverEmpID = MessageController.managerOut.keySet().iterator().next();
 						}
 						sender = MessageController.managerOut.get(m.receiverEmpID);
 					}

@@ -173,11 +173,11 @@ public class DatabaseAController extends Thread {
 	 * Used for testing.
 	 */
 	public static void generateRandomEmployeeList(){
-		addEmployee("Emma Roussos", 'w');
-		addEmployee("Athira Haridas",'m');
-		addEmployee("Annie Antony",'w');
-		addEmployee("Christina Parry",'h');
-		addEmployee("Christina Segerholm", 'w');
+		addEmployee("Emma Roussos", 'w'); //0
+		addEmployee("Athira Haridas",'m');//1
+		addEmployee("Annie Antony",'c');//2
+		addEmployee("Christina Parry",'h');//3
+		addEmployee("Christina Segerholm", 'w');//4
 		
 		
 	}

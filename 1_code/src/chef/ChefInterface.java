@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
+import loggingIn.LogInScreen;
+import loggingIn.TabletApp;
 import messageController.Message;
 
 /**
@@ -46,15 +48,13 @@ public class ChefInterface {
 	public ArrayList<Long> ticketQueueFinished;
 	
 	private ChefPanel chefPanel;
-	/**
-	 * Tells screen when to go back to login screen
-	 */
-	private ReentrantLock lock;
 	
-	public ChefInterface(JFrame frame, long eID, String empName, ReentrantLock lock){
-		this.lock = lock;
-		name= empName;
-		empID = eID;
+	private LogInScreen loginPanel;
+	
+	public ChefInterface(LogInScreen lp){
+		loginPanel=lp;
+		name= lp.empName;
+		empID = lp.currIDEntry;
 		//Pull this from SQL
 		ticketQueueUnstarted = new ArrayList<Long>();
 		ticketQueuesemiStarted = new ArrayList<Long>();
@@ -66,7 +66,7 @@ public class ChefInterface {
 		
 		generateTickets();
 		chefPanel = new ChefPanel(this);
-		frame.setContentPane(chefPanel);
+		lp.frame.setContentPane(chefPanel);
 		
 		
 	}
@@ -135,7 +135,7 @@ public class ChefInterface {
 			listener = new Socket(MCdomainName, MCportNumber);
 			Thread t= new ChefMessageListener(listener, this);
 			t.start();
-			sender = new ChefMessageSender(listener,empID, lock);
+			sender = new ChefMessageSender(listener,empID);
 			sender.start();
 			sender.sendMessage(new Message('L',-1, ""));
 			
@@ -200,7 +200,9 @@ public class ChefInterface {
 
 
 	public void logOut() {
+		if(sender!=null)
 		sender.sendMessage(new Message('X',-1, ""));
+		TabletApp.logOut(loginPanel);
 	}
 
 	/**
@@ -211,8 +213,16 @@ public class ChefInterface {
 		updateScreen();
 	}
 
+	/**
+	 * Adds this notification to the chef screen
+	 * @param message
+	 */
+	public void addNotification(String message){
+		chefPanel.makeNotification(message);
+	}
 
-	private void updateScreen() {
+
+	public void updateScreen() {
 		chefPanel.updateScreen();
 		
 	}

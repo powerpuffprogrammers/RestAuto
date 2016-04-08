@@ -6,8 +6,6 @@ import javax.swing.SwingConstants;
 
 import chef.ChefInterface;
 import dataBaseC.Ticket;
-import waiter.WaiterInterface;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;

@@ -213,7 +213,7 @@ public class WaiterTickListScreen extends JPanel {
 				makeKeypad();
 			}
 		});
-		notify.setBounds(1000, 580, 200, 30);
+		notify.setBounds(975, 570, 200, 30);
 		add(notify);
 		
 	}

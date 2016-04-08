@@ -3,6 +3,7 @@ package loggingIn;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
+import chef.ChefInterface;
 import host.HostInterface;
 import manager.ManagerInterface;
 import waiter.WaiterInterface;
@@ -32,7 +33,7 @@ public class TabletApp {
 			new HostInterface(logInPanel);
 		}
 		else if(logInPanel.loggedIn=='c'){
-			//new ChefInterface(logInPanel);
+			new ChefInterface(logInPanel);
 		}
 		else if(logInPanel.loggedIn=='m'){
 			new ManagerInterface(logInPanel);

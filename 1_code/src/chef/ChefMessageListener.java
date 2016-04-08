@@ -63,7 +63,7 @@ public class ChefMessageListener extends Thread {
 		char senderPos = m.senderPosition;
 		if(senderPos=='m'){
 			//NOTIFY from manager
-		//	ci.addNotification(m.content);
+			ci.addNotification(m.content);
 		}
 		else if(senderPos=='w'){
 			//add new ticket

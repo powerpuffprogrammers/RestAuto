@@ -315,7 +315,8 @@ public class WaiterInterface {
 	 */
 	public void paid(int tableNumber) {
 		sender.sendMessage(new Message('h',-1, "P"+tableNumber));
-		DBCSender.sendTicket(listOfTickets.get(tableNumber));
+		if(listOfTickets.get(tableNumber).listOfDishes.size()!=0)
+			DBCSender.sendTicket(listOfTickets.get(tableNumber));
 		listOfTickets.remove(tableNumber);
 		backToMainScreen();
 	}

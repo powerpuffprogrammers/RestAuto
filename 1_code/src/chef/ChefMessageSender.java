@@ -4,8 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.ReentrantLock;
-
 import messageController.Message;
 
 /**
@@ -20,7 +18,7 @@ public class ChefMessageSender extends Thread {
 	private long empID;
 	
 	/**
-	 * Socket that this Chef will connect to.
+	 * Socket that this chef will connect to.
 	 */
 	private Socket sock;
 	
@@ -28,20 +26,13 @@ public class ChefMessageSender extends Thread {
 	 * list of messages to send
 	 */
 	ConcurrentLinkedQueue<Message> pendingMessages;
-
-	/**
-	 * used as conditional variable for logging out
-	 */
-	private ReentrantLock lock;
 	
 	/**
 	 * Constructor
 	 * @param listener - socket to be used
-	 * @param empID - chef's employee id
-	 * @param lock 
+	 * @param empID - Chef's employee id
 	 */
-	public ChefMessageSender(Socket listener, long empID, ReentrantLock lock) {
-		this.lock=lock;
+	public ChefMessageSender(Socket listener, long empID) {
 		sock=listener;
 		this.empID=empID;
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
@@ -49,12 +40,13 @@ public class ChefMessageSender extends Thread {
 
 	/**
 	 * Sends message out to Message controller
-	 * Automatically will fill in senderInfo with Chef's position and id.
+	 * Automatically will fill in senderInfo with host's position and id.
 	 * @param m - message to send
 	 */
 	public void sendMessage(Message m){
 		m.senderPosition='c';
 		m.senderEmpID=empID;
+		System.out.println("Chef adding message:"+m);
 		pendingMessages.offer(m);
 	}
 	
@@ -62,13 +54,11 @@ public class ChefMessageSender extends Thread {
 	 * Starts sending messages in pendingMessage.
 	 */
 	public void run(){
-		lock.lock();
 		DataOutputStream out;
 		try {
 			out = new DataOutputStream(sock.getOutputStream());
 		} catch (IOException e1) {
-			System.out.println("Failed to start up sender for Chef.");
-			lock.unlock();
+			System.out.println("Failed to start up sender for Host.");
 			return;
 		}
 		
@@ -77,16 +67,10 @@ public class ChefMessageSender extends Thread {
 			Message m =pendingMessages.poll();
 			if(m!=null){
 				try {
-					System.out.println("Manager sending message:"+m);
-					
+					System.out.println("Chef sending message:"+m);
 					out.writeUTF(m.toString());
-					if(m.receiverPosition=='X'){
-						lock.unlock();
-					}
 				} catch (IOException e) {
-					System.out.println("Manager Messsage Sender shutting down.");
-					if(lock.tryLock())
-						lock.unlock();
+					System.out.println("Chef Messsage Sender shutting down.");
 					return;
 				}
 				

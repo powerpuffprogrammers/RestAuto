@@ -183,6 +183,7 @@ public class ManagerScreen extends JPanel {
 				String message=messageBox.getText();
 				messageBox.setText("");
 				mi.sendMassNotification(message);
+				updateScreen();
 			}
 		});
 		yes.setBounds(800,370, 200, 30);
