@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
 /**
  * Panel that is displayed when manager logs on.
@@ -96,7 +95,7 @@ public class ManagerScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mi.loggedOut=true;
+				mi.logOut();
 			}
 		});
 		yes.setBounds(50,200, 200, 30);
@@ -163,9 +162,17 @@ public class ManagerScreen extends JPanel {
 		JTextField whiteBox;
 		whiteBox = new JTextField();
 		whiteBox.setEditable(false);
-		whiteBox.setBounds(100, 100, 800, 400);
+		whiteBox.setBounds(100, 100, 1000, 400);
 		add(whiteBox);
 		
+		//box that shows message
+				JTextField messageBox=new JTextField();
+				messageBox.setEditable(false);
+				messageBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				messageBox.setHorizontalAlignment(SwingConstants.LEFT);
+				messageBox.setBounds(50,50,900,30);
+				whiteBox.add(messageBox);
+				
 		
 		//Make send button
 		JButton yes = new JButton("SEND");
@@ -173,10 +180,12 @@ public class ManagerScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mi.sendMassNotification("CONTENT");
+				String message=messageBox.getText();
+				messageBox.setText("");
+				mi.sendMassNotification(message);
 			}
 		});
-		yes.setBounds(100,100, 200, 30);
+		yes.setBounds(800,370, 200, 30);
 		whiteBox.add(yes);
 				
 		//Make close button
@@ -188,8 +197,154 @@ public class ManagerScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		no.setBounds(450,100, 200, 30);
+		no.setBounds(0,370, 200, 30);
 		whiteBox.add(no);
+		
+		
+		JButton[] keys=new JButton[27];//26 letters
+		int[] asciiVal=new int[27];
+		JButton[] nums=new JButton[10];
+		JButton backspace=new JButton("BACKSPACE");
+		
+		backspace.setForeground(Color.BLACK);
+		backspace.setBackground(Color.WHITE);
+		backspace.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//updateScreen();
+				messageBox.setText(messageBox.getText().substring(0, messageBox.getText().length()-1));
+			}
+		});
+		backspace.setBounds(800,100, 200, 30);
+		whiteBox.add(backspace);
+		
+		JButton spacebar=new JButton("SPACEBAR");
+		spacebar.setForeground(Color.BLACK);
+		spacebar.setBackground(Color.WHITE);
+		spacebar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//updateScreen();
+				messageBox.setText(messageBox.getText()+" ");
+			}
+		});
+		spacebar.setBounds(250,280,500,30);
+		whiteBox.add(spacebar);
+		
+		
+		int xBound=250; int yBound=100; int length=50; int width=30;
+		
+		for (int i=1;i<nums.length;i++){
+			nums[i]=new JButton(""+i);
+			int d=i;
+			nums[i].setForeground(Color.BLACK);
+			nums[i].setBackground(Color.WHITE);
+			nums[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//updateScreen();
+						messageBox.setText(messageBox.getText()+d);
+				}
+			});
+			nums[i].setBounds(xBound,yBound,length,width);
+			whiteBox.add(nums[i]);
+			xBound+=50;
+		}
+		nums[0]=new JButton("0");
+		nums[0].setForeground(Color.BLACK);
+		nums[0].setBackground(Color.WHITE);
+		nums[0].addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				messageBox.setText(messageBox.getText()+"0");
+			}
+		});
+		nums[0].setBounds(xBound,yBound,length,width);
+		whiteBox.add(nums[0]);
+		
+		//ROW 1
+		keys[1]=new JButton("Q");asciiVal[1]=81;
+		keys[2]=new JButton("W");asciiVal[2]=87;
+		keys[3]=new JButton("E");asciiVal[3]=69;
+		keys[4]=new JButton("R");asciiVal[4]=82;
+		keys[5]=new JButton("T");asciiVal[5]=84;
+		keys[6]=new JButton("Y");asciiVal[6]=89;
+		keys[7]=new JButton("U");asciiVal[7]=85;
+		keys[8]=new JButton("I");asciiVal[8]=73;
+		keys[9]=new JButton("O");asciiVal[9]=79;
+		keys[10]=new JButton("P");asciiVal[10]=80;
+		 xBound=250;  yBound=140;  length=50;  width=30;
+		for (int i=1;i<=10;i++){
+			int d=i;
+			keys[i].setForeground(Color.BLACK);
+			keys[i].setBackground(Color.WHITE);
+			keys[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//updateScreen();
+						messageBox.setText(messageBox.getText()+Character.toString((char)asciiVal[d]));
+				}
+			});
+			keys[i].setBounds(xBound,yBound,length,width);
+			whiteBox.add(keys[i]);
+			xBound+=50;
+			
+			
+			
+		}
+		//ROW 2
+		keys[11]=new JButton("A");asciiVal[11]=65;
+		keys[12]=new JButton("S");asciiVal[12]=83;
+		keys[13]=new JButton("D");asciiVal[13]=68;
+		keys[14]=new JButton("F");asciiVal[14]=70;
+		keys[15]=new JButton("G");asciiVal[15]=71;
+		keys[16]=new JButton("H");asciiVal[16]=72;
+		keys[17]=new JButton("J");asciiVal[17]=74;
+		keys[18]=new JButton("K");asciiVal[18]=75;
+		keys[19]=new JButton("L");asciiVal[19]=76;
+		
+		xBound=275; yBound=180; length=50; width=30;
+		for (int i=11;i<=19;i++){
+			int d=i;
+			keys[i].setForeground(Color.BLACK);
+			keys[i].setBackground(Color.WHITE);
+			keys[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//updateScreen();
+					messageBox.setText(messageBox.getText()+Character.toString((char)asciiVal[d]));
+				}
+			});
+			keys[i].setBounds(xBound,yBound,length,width);
+			whiteBox.add(keys[i]);
+			xBound+=50;
+			
+			
+			
+		}
+		
+		//ROW 3
+		keys[20]=new JButton("Z");asciiVal[20]=90;
+		keys[21]=new JButton("X");asciiVal[21]=88;
+		keys[22]=new JButton("C");asciiVal[22]=67;
+		keys[23]=new JButton("V");asciiVal[23]=86;
+		keys[24]=new JButton("B");asciiVal[24]=66;
+		keys[25]=new JButton("N");asciiVal[25]=78;
+		keys[26]=new JButton("M");asciiVal[26]=77;
+		
+		xBound=325; yBound=220; length=50; width=30;
+		for (int i=20;i<=26;i++){
+			int d=i;
+			keys[i].setForeground(Color.BLACK);
+			keys[i].setBackground(Color.WHITE);
+			keys[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					//updateScreen();
+					messageBox.setText(messageBox.getText()+Character.toString((char)asciiVal[d]));
+				}
+			});
+			keys[i].setBounds(xBound,yBound,length,width);
+			whiteBox.add(keys[i]);
+			xBound+=50;
+			
+			
+			
+		}
+		
 		repaint();
 		
 		
@@ -201,7 +356,6 @@ public class ManagerScreen extends JPanel {
 		makeDeleteButton();
 		makeNewMessageButton();
 		makeLogOutButton();	
-		makeTime();
 		makeListOfMessages();
 		repaint();
 		
@@ -234,20 +388,5 @@ public class ManagerScreen extends JPanel {
 		
 	}
 	
-	/**
-	 * writes the time on screen
-	 */
-		private void makeTime(){
-			Calendar cal=Calendar.getInstance();
-			JTextField timeHeader;
-			String tmp=""+cal.getTime();
-			tmp=tmp.substring(0, tmp.length()-12);
-			timeHeader=new JTextField(tmp);
-			timeHeader.setEditable(false);
-			timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
-			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			timeHeader.setBounds(450, 0, 300, 30);
-			add(timeHeader);
-		}
 
 }

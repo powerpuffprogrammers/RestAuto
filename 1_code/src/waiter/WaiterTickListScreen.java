@@ -179,7 +179,7 @@ public class WaiterTickListScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.loggedOut=true;
+				wi.logOut();
 			}
 		});
 		yes.setBounds(50,200, 200, 30);

@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JFrame;
 
@@ -14,6 +15,8 @@ import com.google.gson.Gson;
 import configuration.Configure;
 import databaseB.Table;
 import databaseB.TableList;
+import loggingIn.LogInScreen;
+import loggingIn.TabletApp;
 import messageController.Message;
 
 /**
@@ -37,8 +40,6 @@ public class HostInterface {
 	 */
 	public HostMessageSender sender;
 	
-	JFrame frame;
-	
 	/**
 	 * Employee ID - this will be used to ID the tablet for the Message Controller
 	 */
@@ -49,10 +50,6 @@ public class HostInterface {
 	 */
 	String name;
 	
-	/**
-	 * When this is true it returns from back to log in page
-	 */
-	public boolean loggedOut;
 	
 	/**
 	 * J panel for the host that displays tables
@@ -87,29 +84,30 @@ public class HostInterface {
 	 */
 	
 	HashMap<String, Integer> waiterTotalTables;
+	
+	LogInScreen loginPanel;
 
 	
     /**
      * Constructor
-     * @param frame - JFrame of the app 
-     * @param eID - host's employee id
-     * @param empName - host's employee name
+     * @param lp= login panel 
      */
-	public HostInterface(JFrame frame, long eID, String empName){
-		name=empName;
-		empID = eID;
+	public HostInterface(LogInScreen lp){
+		loginPanel=lp;
+		name=lp.empName;
+		empID = lp.currIDEntry;
 		jsonConverter = new Gson();
 		waiterTotalTables = new HashMap<String, Integer>();
 		listOfWaiters = new HashMap<String,Integer>();
 		if(!loadWaiters()){
-			loggedOut=true;
+			logOut();
 			return;
 		}
 		
 		
 		//if problem loading menu return right away
 		if (!loadTables()){
-			loggedOut=true;
+			logOut();
 			return;
 		}
 		readyTables = new ArrayList<Integer>();
@@ -129,12 +127,11 @@ public class HostInterface {
 				readyTables.add(key);
 			}
 		}
-		
 		setUpMessageController();
 		
 		tableScreen = new HostTableScreen(this);
-		frame.setContentPane(tableScreen);
-		frame.revalidate();
+		lp.frame.setContentPane(tableScreen);
+		updateScreen();
 	}
 
 	/**
@@ -180,7 +177,7 @@ public class HostInterface {
 			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
 		} catch (Exception e) {
-			System.out.println("Problem setting up Waiter MC.");
+			System.out.println("Problem setting up Host MC.");
 		}
 		
 	}
@@ -252,12 +249,9 @@ public class HostInterface {
 	 * Keeps tablet in host interface screen until it logs out.
 	 * Then sends log out message to MC.
 	 */
-	public void runUntilLogOut(){
-		//Don't return until i logged out
-		while(!loggedOut){
-			System.out.print(loggedOut);
-		}
+	public void logOut(){
 		sender.sendMessage(new Message('X',-1, "Log out"));
+		TabletApp.logOut(loginPanel);
 	}
 
 	/**
@@ -265,7 +259,7 @@ public class HostInterface {
 	 */
 	public void updateScreen() {
 		tableScreen.updateScreen();
-		frame.revalidate();
+		loginPanel.frame.revalidate();
 	}
 
 	/**

@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import messageController.Message;
 
 /**
@@ -32,6 +31,7 @@ public class ManagerMessageSender extends Thread {
 	 * Constructor
 	 * @param listener - socket to be used
 	 * @param empID - Manager's employee id
+	 * @param lock 
 	 */
 	public ManagerMessageSender(Socket listener, long empID) {
 		sock=listener;
@@ -58,7 +58,7 @@ public class ManagerMessageSender extends Thread {
 		try {
 			out = new DataOutputStream(sock.getOutputStream());
 		} catch (IOException e1) {
-			System.out.println("Failed to start up sender for manager.");
+			System.out.println("Failed to start up sender for Manager.");
 			return;
 		}
 		
@@ -67,7 +67,10 @@ public class ManagerMessageSender extends Thread {
 			Message m =pendingMessages.poll();
 			if(m!=null){
 				try {
+					System.out.println("Manager sending message:"+m);
+					
 					out.writeUTF(m.toString());
+					
 				} catch (IOException e) {
 					System.out.println("Manager Messsage Sender shutting down.");
 					return;

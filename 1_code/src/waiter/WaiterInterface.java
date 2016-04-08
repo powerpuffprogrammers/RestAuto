@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.swing.JFrame;
 
 import com.google.gson.Gson;
@@ -15,6 +14,8 @@ import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Menu;
 import dataBaseC.Ticket;
+import loggingIn.LogInScreen;
+import loggingIn.TabletApp;
 import messageController.Message;
 
 /**
@@ -73,19 +74,19 @@ public class WaiterInterface {
 	
 	WaiterTickListScreen ticketListScreen;
 	public WaiterOneTicketScreen oneTickScreen;
+	LogInScreen loginPanel;
 	
 	/**
 	 * Constructor
-	 * @param frame - frame that will be used by waiter app
-	 * @param eID - waiter's unique id 
-	 * @param empName = waiter's name
+	 * @param lp - log in screen 
 	 */
-	public WaiterInterface(JFrame frame, long eID, String empName) {
+	public WaiterInterface(LogInScreen lp) {
+		loginPanel=lp;
+		name=lp.empName;
+		empID = lp.currIDEntry;
 		jsonConverter = new Gson();
-		this.frame=frame;
-		name=empName;
+		frame = loginPanel.frame;
 		listOfTickets = new HashMap<Integer, Ticket>();
-		empID=eID;
 		loggedOut=false;
 		
 		//if problem loading menu return right away
@@ -112,16 +113,13 @@ public class WaiterInterface {
 	 * Returns upon logging out. 
 	 * Sends a message to the Host and MC to notify that waiter is logging out.
 	 */
-	public void runUntilLogOut(){
-		//Don't return until i logged out
-		while(!loggedOut){
-			System.out.print(loggedOut);
-		}
+	public void logOut(){
 		//let the host know you are logging out
 		try {
 			DBCSender.sock.close();
 		} catch (IOException e) {}
 		sender.sendMessage(new Message('X',-1, "Log out"));
+		TabletApp.logOut(loginPanel);
 	}
 
 	/**

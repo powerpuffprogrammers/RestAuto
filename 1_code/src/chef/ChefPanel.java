@@ -237,7 +237,7 @@ public class ChefPanel extends JPanel {
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (i ==1){
-					ci.loggedOut=true;
+					ci.logOut();
 				}
 				else if(i==2){
 					ci.notifyManager();

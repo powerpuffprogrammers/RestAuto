@@ -393,7 +393,7 @@ public class HostTableScreen extends JPanel {
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(choice==1){//log out
-					hi.loggedOut=true;
+					hi.logOut();
 				}
 				else if(choice==2){//notify manager
 					hi.notifyManager();

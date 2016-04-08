@@ -2,9 +2,11 @@ package manager;
 
 import java.net.Socket;
 import java.util.LinkedList;
-
 import javax.swing.JFrame;
+
 import configuration.Configure;
+import loggingIn.LogInScreen;
+import loggingIn.TabletApp;
 import messageController.Message;
 
 /**
@@ -48,17 +50,20 @@ public class ManagerInterface {
 	
 	ManagerScreen manScreen;
 	
-	/**
-	 * Constructor
-	 * @param frame - frame to be used by this application
-	 * @param eID - manager's employee id
-	 * @param empName - manager's name
-	 */
-	public ManagerInterface(JFrame frame, long eID, String empName) {
+	LogInScreen loginPanel;
+
+	
+    /**
+     * Constructor
+     * @param lp= login panel 
+     */
+	public ManagerInterface(LogInScreen lp){
+		loginPanel=lp;
+		name=lp.empName;
+		empID = lp.currIDEntry;
 		listOfMessages = new LinkedList<Message>();
-		this.frame=frame;
-		name=empName;
-		empID=eID;
+		this.frame=lp.frame;
+
 		loggedOut=false;
 		
 		//set up MC
@@ -77,13 +82,10 @@ public class ManagerInterface {
 	 * Returns when manager logs out.
 	 * Sends a message to the MC to alert it that the manager is logging out.
 	 */
-	public void runUntilLogOut(){
-		//Don't return until i logged out
-		while(!loggedOut){
-			System.out.print(loggedOut);
-		}
+	public void logOut(){
 		if(sender!=null)
 		sender.sendMessage(new Message('X',-1, "Logging out"));
+		TabletApp.logOut(loginPanel);
 	}
 
 	/**
@@ -104,10 +106,11 @@ public class ManagerInterface {
 			Thread t= new ManagerMessageListener(listener, this);
 			t.start();
 			sender = new ManagerMessageSender(listener,empID);
+			sender.start();
 			sender.sendMessage(new Message('L',-1, "Logging in"));
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Problem setting up Manager MC.");
 		}
 		
 	}

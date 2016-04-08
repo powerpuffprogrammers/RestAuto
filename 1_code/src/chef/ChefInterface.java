@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import javax.swing.JFrame;
 
 import com.google.gson.Gson;
@@ -12,8 +14,6 @@ import com.google.gson.Gson;
 import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
-import host.HostMessageListener;
-import host.HostMessageSender;
 import messageController.Message;
 
 /**
@@ -46,8 +46,13 @@ public class ChefInterface {
 	public ArrayList<Long> ticketQueueFinished;
 	
 	private ChefPanel chefPanel;
+	/**
+	 * Tells screen when to go back to login screen
+	 */
+	private ReentrantLock lock;
 	
-	public ChefInterface(JFrame frame, long eID, String empName){
+	public ChefInterface(JFrame frame, long eID, String empName, ReentrantLock lock){
+		this.lock = lock;
 		name= empName;
 		empID = eID;
 		//Pull this from SQL
@@ -130,7 +135,8 @@ public class ChefInterface {
 			listener = new Socket(MCdomainName, MCportNumber);
 			Thread t= new ChefMessageListener(listener, this);
 			t.start();
-			sender = new ChefMessageSender(listener,empID);
+			sender = new ChefMessageSender(listener,empID, lock);
+			sender.start();
 			sender.sendMessage(new Message('L',-1, ""));
 			
 		} catch (Exception e) {
@@ -193,13 +199,8 @@ public class ChefInterface {
 
 
 
-	public void runUntilLogOut() {
-		//Don't return until i logged out
-		while(!loggedOut){
-			System.out.print(loggedOut);
-		}
+	public void logOut() {
 		sender.sendMessage(new Message('X',-1, ""));
-		
 	}
 
 	/**

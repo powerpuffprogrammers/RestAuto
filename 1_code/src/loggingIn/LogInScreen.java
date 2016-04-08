@@ -8,8 +8,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Calendar;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -57,12 +59,19 @@ public class LogInScreen extends JPanel{
 	private JTextField txtPleaseEnterEmployee;
 	private JTextField failedAttempt;
 	
+	public JFrame frame;
+	
+	LogInScreen self;
+	
 	/**
 	 * Creates the log in screen panel
+	 * @param frame 
+	 * @param lock
 	 */
-	public LogInScreen(){
+	public LogInScreen(JFrame frame){
+		this.frame = frame;
 		loggedIn='0';
-		
+		self = this;
 		//Set color to blue
 		setBackground(new Color(51, 153, 255));
 		//Array layout where you pick coordinates of each component
@@ -74,6 +83,7 @@ public class LogInScreen extends JPanel{
 	 * Redraws the screen using current data.
 	 */
 	private void updateScreen() {
+		removeAll();
 		makeTime();
 		makeHeaderText();
 		makeIDTextField();
@@ -155,6 +165,9 @@ public class LogInScreen extends JPanel{
 					currIDEntry=-1;
 					failedAttempt.setText("Employee already logged in.");
 					failedAttempt.setVisible(true);
+				}
+				else{
+					TabletApp.logIn(self);
 				}
 				keypadLock=false;
 			}

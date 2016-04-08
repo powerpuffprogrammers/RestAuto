@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 import messageController.Message;
 
@@ -27,13 +28,20 @@ public class ChefMessageSender extends Thread {
 	 * list of messages to send
 	 */
 	ConcurrentLinkedQueue<Message> pendingMessages;
+
+	/**
+	 * used as conditional variable for logging out
+	 */
+	private ReentrantLock lock;
 	
 	/**
 	 * Constructor
 	 * @param listener - socket to be used
 	 * @param empID - chef's employee id
+	 * @param lock 
 	 */
-	public ChefMessageSender(Socket listener, long empID) {
+	public ChefMessageSender(Socket listener, long empID, ReentrantLock lock) {
+		this.lock=lock;
 		sock=listener;
 		this.empID=empID;
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
@@ -54,11 +62,13 @@ public class ChefMessageSender extends Thread {
 	 * Starts sending messages in pendingMessage.
 	 */
 	public void run(){
+		lock.lock();
 		DataOutputStream out;
 		try {
 			out = new DataOutputStream(sock.getOutputStream());
 		} catch (IOException e1) {
 			System.out.println("Failed to start up sender for Chef.");
+			lock.unlock();
 			return;
 		}
 		
@@ -67,9 +77,16 @@ public class ChefMessageSender extends Thread {
 			Message m =pendingMessages.poll();
 			if(m!=null){
 				try {
+					System.out.println("Manager sending message:"+m);
+					
 					out.writeUTF(m.toString());
+					if(m.receiverPosition=='X'){
+						lock.unlock();
+					}
 				} catch (IOException e) {
-					System.out.println("Waiter Messsage Sender shutting down.");
+					System.out.println("Manager Messsage Sender shutting down.");
+					if(lock.tryLock())
+						lock.unlock();
 					return;
 				}
 				
