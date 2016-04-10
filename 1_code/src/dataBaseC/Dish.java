@@ -1,12 +1,17 @@
 package dataBaseC;
 
+import java.util.ArrayList;
+
 /**
  * Data structure to hold dish name, price, and status.
  * Used by waiter, chef, and Database C
  * @author cms549
  */
 public class Dish {
-	
+	/**
+	 * was this dish sent to the chef yet
+	 */
+	public boolean sent;
 	/**
 	 * Name of the dish
 	 */
@@ -18,7 +23,7 @@ public class Dish {
 	public double price;
 	
 	/**
-	 * Status of dish = u=unstarted, s=started, f=finished
+	 * Status of dish = u=unstarted, s=started, f=finished, c = coupon or gift card
 	 */
 	private char status;
 	
@@ -27,6 +32,11 @@ public class Dish {
 	 * Example: Appetizer, Entree, Dessert, Drink
 	 */
 	public String typeOfDish;
+	
+	/**
+	 * Holds all of the specifications for this dish
+	 */
+	public ArrayList<String> comments;
 	
 	/**
 	 * Constructor
@@ -39,6 +49,7 @@ public class Dish {
 		this.name=name;
 		this.price = price;
 		this.typeOfDish=typeOfDish;
+		comments = new ArrayList<String>();
 	}
 	
 	/**
@@ -55,6 +66,10 @@ public class Dish {
 	 * @return 0 on success -2 on failure
 	 */
 	public int changeStatus(char newStatus){
+		if(newStatus=='c'){
+			status = newStatus;
+			return 0;
+		}
 		if(status == 'u' && newStatus=='s'){
 			status = newStatus;
 			return 0;

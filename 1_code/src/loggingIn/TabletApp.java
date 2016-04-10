@@ -16,62 +16,46 @@ import waiter.WaiterInterface;
 public class TabletApp {
 	
 	
-	private static void updateScreen(LogInScreen logInPanel, JFrame frame){
+	public static void logOut(LogInScreen logInPanel){
 		logInPanel.logOut(logInPanel.currIDEntry);
 		//show log in screen again
 		logInPanel.loggedIn='0';
-		logInPanel.currIDEntry=0;
-		frame.setContentPane(logInPanel);
-		frame.revalidate();
+		logInPanel.currIDEntry=-1;
+		logInPanel.frame.setContentPane(logInPanel);
+		logInPanel.frame.revalidate();
 	}
+	
+	
+	public static void logIn(LogInScreen logInPanel){
+		//calls the interface to set up the screen
+		//constructors won't return until the screen closes or they log out
+		if(logInPanel.loggedIn=='h'){
+			new HostInterface(logInPanel);
+		}
+		else if(logInPanel.loggedIn=='c'){
+			new ChefInterface(logInPanel);
+		}
+		else if(logInPanel.loggedIn=='m'){
+			new ManagerInterface(logInPanel);
+		}
+		else if(logInPanel.loggedIn=='w'){
+			new WaiterInterface(logInPanel);
+		}
+	
+	}
+	
 	/**
 	 * Starts the log in GUI 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 		//GUI stuff
 		JFrame frame= new JFrame("SWE");
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		LogInScreen logInPanel= new LogInScreen();
+		LogInScreen logInPanel= new LogInScreen(frame);
 		frame.setContentPane(logInPanel);
 		frame.pack();
 		frame.setSize(new Dimension(1200,650));
-		while(true){
-			System.out.print(logInPanel.loggedIn);
-			//calls the interface to set up the screen
-			//constructors won't return until the screen closes or they log out
-			if(logInPanel.loggedIn=='h'){
-				long id = logInPanel.currIDEntry;
-				HostInterface h = new HostInterface(frame, id, logInPanel.empName);
-				h.runUntilLogOut();
-				logInPanel.logOut(id);
-				updateScreen(logInPanel, frame);
-			}
-			else if(logInPanel.loggedIn=='c'){
-				long id = logInPanel.currIDEntry;
-				ChefInterface c = new ChefInterface(frame,id,logInPanel.empName);
-				c.runUntilLogOut();
-				logInPanel.logOut(id);
-				updateScreen(logInPanel, frame);
-			}
-			else if(logInPanel.loggedIn=='m'){
-				long id = logInPanel.currIDEntry;
-				ManagerInterface m = new ManagerInterface(frame,id, logInPanel.empName);
-				m.runUntilLogOut();
-				logInPanel.logOut(id);
-				updateScreen(logInPanel, frame);
-			}
-			else if(logInPanel.loggedIn=='w'){
-				long id = logInPanel.currIDEntry;
-				WaiterInterface w = new WaiterInterface(frame,id,logInPanel.empName);
-				w.runUntilLogOut();
-				logInPanel.logOut(id);
-				updateScreen(logInPanel, frame);	
-			}
-		}
-		
-		
 	}
 }

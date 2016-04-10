@@ -3,9 +3,8 @@ package dataBaseC;
 import java.util.HashMap;
 
 /**
- * Holds the menu of dishes
+ * Data structure that holds the menu of dishes.
  * @author cms549
- *
  */
 public class Menu {
 	/**
@@ -15,7 +14,7 @@ public class Menu {
 	public HashMap<String, HashMap<String,Dish>> menu;
 	
 	/**
-	 * Constructor for empty menu
+	 * Constructor for empty menu.
 	 */
 	public Menu(){
 		menu = new HashMap<String, HashMap<String,Dish>>();

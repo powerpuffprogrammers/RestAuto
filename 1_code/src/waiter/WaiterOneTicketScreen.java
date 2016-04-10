@@ -16,6 +16,12 @@ import javax.swing.SwingConstants;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
 
+/**
+ * Panel that will be used when one ticket is selected from the list of ticket screen.
+ * Displays the current ticket as well as the menu.
+ * This is where the waiter will place the order.
+ * @author cms549
+ */
 public class WaiterOneTicketScreen extends JPanel {
 
 	public WaiterInterface wi;
@@ -44,6 +50,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		setLayout(null);
 	}
 
+	/**
+	 * Draws the menu tabs near the top of the screen
+	 */
 	private void makeMenuChoices() {
 		//make the categories
 		int i =0; 
@@ -86,6 +95,9 @@ public class WaiterOneTicketScreen extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws the ticket on the left of the screen.
+	 */
 	private void makeTicketOnLeft() {
 		JTextField whiteBox;
 		whiteBox = new JTextField();
@@ -102,27 +114,62 @@ public class WaiterOneTicketScreen extends JPanel {
 		tableNum.setBounds(0, 0, 300, 30);
 		whiteBox.add(tableNum);
 		
-		//make a row for each item on the ticket (or up to 
+		if(currTicket.priority){
+			JTextField prior;
+			prior = new JTextField("PRIORITY");
+			prior.setEditable(false);
+			prior.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			prior.setHorizontalAlignment(SwingConstants.CENTER);
+			prior.setBackground(Color.ORANGE);
+			prior.setBounds(0, 30, 300, 30);
+			whiteBox.add(prior);
+		}
+		
+		//make a row for each item on the ticket (or up to 16)
 		ArrayList<Dish> listOfDishes = currTicket.listOfDishes;
-		int row = 3, i =0;
+		int row = 3, i =0, y=60;
 		while(row<19 && i<listOfDishes.size()){
 			int index =i;
 			Dish dish = listOfDishes.get(i);
 			String name = dish.name;
 			double price = dish.price;
-			//write the name then price
-			JButton oneDishButton = new JButton(name + "\t$"+price);
+			//write the x1 name then price
+			String button = name + "\t$"+price;	
+			JButton oneDishButton = new JButton(button);
 			oneDishButton.setForeground(Color.BLACK);
-			oneDishButton.setBackground(Color.WHITE);
+			if(dish.sent){
+				oneDishButton.setBackground(Color.CYAN);
+			}
+			else{
+				oneDishButton.setBackground(Color.WHITE);
+			}
 			oneDishButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					lastDishSelected = index;
 				}
 			});
-			oneDishButton.setBounds(0, 60+30*i, 300, 30);
+			oneDishButton.setBounds(0, y, 300, 30);
+			y= y+30;
 			whiteBox.add(oneDishButton);
 			i++;
 			row++;
+			for(int k=0; k<dish.comments.size(); k++){
+				String oneComment = " -"+dish.comments.get(k);
+				JTextField oneC = new JTextField(oneComment);
+				oneC.setEditable(false);
+				oneC.setFont(new Font("Tahoma", Font.PLAIN, 12));
+				oneC.setHorizontalAlignment(SwingConstants.LEFT);
+				oneC.setForeground(Color.BLACK);
+				if(dish.sent){
+					oneC.setBackground(Color.CYAN);
+				}
+				else{
+					oneC.setBackground(Color.WHITE);
+				}
+				oneC.setBounds(0, y, 300, 15);
+				whiteBox.add(oneC);
+				y=y+15;
+			}
 		}
 		
 		
@@ -130,7 +177,18 @@ public class WaiterOneTicketScreen extends JPanel {
 		JTextField total;
 		String price = ""+currTicket.price;
 		if(currTicket.price!=0){
-			price=price.substring(0,price.indexOf('.')+3);
+			if(price.indexOf('.')==-1){
+				price=price+".00";
+			}
+			else if(price.indexOf('.')+3 <=price.length()){
+				price=price.substring(0,price.indexOf('.')+3);
+			}
+			else if(price.indexOf('.')+2 <=price.length()){
+				price=price.substring(0,price.indexOf('.')+2)+"0";
+			}
+			else if(price.indexOf('.')+1<=price.length()){
+				price=price+"00";
+			}
 		}
 		total = new JTextField("Total: $"+ price);
 		total.setEditable(false);
@@ -142,7 +200,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 
 	/**
-	 * writes the waiter's name at the top left
+	 * Draws the waiter's name at the top left
 	 */
 	private void makeNameText() {
 		JTextField nameHeader;
@@ -156,7 +214,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Back Button
+	 * Sets up the Back Button which is used to jump back to the list of tickets screen.
 	 */
 	private void makeBackButton(){
 		
@@ -174,7 +232,27 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the notifyManager Button
+	 * Sets up the Priority Button which is used to switch a ticket as a priority or non priority ticket.
+	 */
+	private void makePriorityButton(){
+		
+		JButton prior = new JButton("Priority Ticket");
+		prior.setForeground(Color.ORANGE);
+		prior.setBackground(Color.BLACK);
+		prior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				currTicket.priority = !currTicket.priority;
+				updateScreen();
+			}
+		});
+		prior.setBounds(200,560, 200, 40);
+		add(prior, getComponentCount());
+		
+	}
+	
+	
+	/**
+	 * Sets up the notifyManager Button used to notify the manager about a unhappy table.
 	 */
 	private void makeNotifyManagerButton(){
 		
@@ -186,13 +264,13 @@ public class WaiterOneTicketScreen extends JPanel {
 				makeAreYouSure("you want to notify the manager?",2);
 			}
 		});
-		notifyManager.setBounds(600,570, 300, 30);
+		notifyManager.setBounds(800,560, 200, 40);
 		add(notifyManager, getComponentCount());
 		
 	}
 	
 	/**
-	 * Sets up the sendTicket Button
+	 * Sets up the sendTicket Button used to send the chef the ticket
 	 */
 	private void makeSendTicketButton(){
 		
@@ -202,15 +280,20 @@ public class WaiterOneTicketScreen extends JPanel {
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				wi.sendTicket(currTicket);
+				updateScreen();
 			}
 		});
-		sendButton.setBounds(0,570, 300, 30);
+		sendButton.setBounds(0,560, 200, 40);
 		add(sendButton, getComponentCount());
 		
 	}
 	
+	
+	
+	
 	/**
-	 * Sets up the Paid Button
+	 * Sets up the Paid Button used to notify the host that this table has paid and take it off of this waiter's
+	 * list of tickets as they have paid so the ticket is no longer needed.
 	 */
 	private void makePaidButton(){
 		
@@ -223,13 +306,16 @@ public class WaiterOneTicketScreen extends JPanel {
 				makeAreYouSure("table "+ currTicket.tableNumber +" paid?",0);
 			}
 		});
-		paidButton.setBounds(900,570, 300, 30);
+		paidButton.setBounds(1000,560, 200, 40);
 		add(paidButton, getComponentCount());
 		
 	}
 	
 	/**
-	 * Creates an are you sure message box
+	 * Creates an are you sure message box. Already prints "Are you sure "
+	 * @param m - message to append to Are you sure 
+	 * @param i - used to id what operation you are using this for
+	 * 	0 is for paid, 1 is for log out, 2 is for notify manager
 	 */
 	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
@@ -276,7 +362,40 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 	
 	/**
-	 * Sets up the Remove Dish Button
+	 * Sets up the Modify Dish Button used to modify a dish from the open ticket.
+	 */
+	private void makeModifyButton(){
+		
+		JButton modify = new JButton("Modify");
+		modify.setForeground(Color.WHITE);
+		modify.setBackground(Color.ORANGE);
+		modify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(lastDishSelected != -1){
+					makeModifyOptions();
+					lastDishSelected = -1;
+				}
+			}
+		});
+		modify.setBounds(400,560, 200, 40);
+		add(modify, getComponentCount());
+		
+	}
+	
+	/**
+	 * Draws allergy options, to go, and birthday options
+	 */
+	private void makeModifyOptions(){
+		//make a box
+		//put all options in box
+		//create a back button
+		//update screen no matter what is clicked
+		wi.addComment(lastDishSelected,"To Go");
+		updateScreen();
+	}
+	
+	/**
+	 * Sets up the Remove Dish Button used to remove a dish from the open ticket.
 	 */
 	private void makeRemoveButton(){
 		
@@ -288,14 +407,20 @@ public class WaiterOneTicketScreen extends JPanel {
 				if(lastDishSelected != -1){
 					wi.removeDishFromTicket(lastDishSelected);
 					lastDishSelected = -1;
+					updateScreen();
 				}
 			}
 		});
-		removeButton.setBounds(300,570, 300, 30);
+		removeButton.setBounds(600,560, 200, 40);
 		add(removeButton, getComponentCount());
 		
 	}
 	
+	/**
+	 * This is called when ever you switch to this screen, it sets up the ticket 
+	 * to be displayed on the screen.
+	 * @param t - ticket to be displayed
+	 */
 	public void setTicket(Ticket t){
 		currTicket = t;
 		currTicket.recentlySat=false;
@@ -304,6 +429,35 @@ public class WaiterOneTicketScreen extends JPanel {
 		
 	}
 
+	/**
+	 * Draws button for gift cards or coupons - this includes gift card or coupons/comps
+	 */
+	private void makeSpecialsButton(){
+		JButton spec = new JButton("GC or Coupon");
+		spec.setForeground(Color.BLACK);
+		spec.setBackground(Color.WHITE);
+		spec.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				makeSpecialOptions();
+			}
+		});
+		spec.setBounds(1000,400, 200, 40);
+		add(spec);
+	}
+	
+	/**
+	 * Draws Giftcard or Coupon buttons on the screen
+	 */
+	private void makeSpecialOptions(){
+		//draw a box
+		//draw a giftcard option
+		//draw coupon option
+		wi.toKeyPadScreen('m');
+	}
+	
+	/**
+	 * Refreshes the screen
+	 */
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
@@ -313,14 +467,17 @@ public class WaiterOneTicketScreen extends JPanel {
 		makeSendTicketButton();
 		makePaidButton();
 		makeRemoveButton();
+		makeModifyButton();
+		makeSpecialsButton();
 		makeMenuChoices();
+		makePriorityButton();
 		repaint();
 		validate();
 	}
 
-	/** makes a notification button on top of screen like banner
+	/** Draws a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be put in the notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);

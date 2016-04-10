@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import javax.swing.JFrame;
 
 import com.google.gson.Gson;
@@ -12,12 +14,15 @@ import com.google.gson.Gson;
 import configuration.Configure;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
-import host.HostMessageListener;
-import host.HostMessageSender;
+import loggingIn.LogInScreen;
+import loggingIn.TabletApp;
 import messageController.Message;
-import messageController.SenderInfo;
 
-//Starts the DB B
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefInterface {
 	private final static String MCdomainName = Configure.getDomainName("MessageController");
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
@@ -44,9 +49,12 @@ public class ChefInterface {
 	
 	private ChefPanel chefPanel;
 	
-	public ChefInterface(JFrame frame, long eID, String empName){
-		name= empName;
-		empID = eID;
+	private LogInScreen loginPanel;
+	
+	public ChefInterface(LogInScreen lp){
+		loginPanel=lp;
+		name= lp.empName;
+		empID = lp.currIDEntry;
 		//Pull this from SQL
 		ticketQueueUnstarted = new ArrayList<Long>();
 		ticketQueuesemiStarted = new ArrayList<Long>();
@@ -58,7 +66,7 @@ public class ChefInterface {
 		
 		generateTickets();
 		chefPanel = new ChefPanel(this);
-		frame.setContentPane(chefPanel);
+		lp.frame.setContentPane(chefPanel);
 		
 		
 	}
@@ -125,13 +133,14 @@ public class ChefInterface {
 		Socket listener=null;
 		try {
 			listener = new Socket(MCdomainName, MCportNumber);
-			Thread t= new ChefMessageListener(listener,empID, this);
+			Thread t= new ChefMessageListener(listener, this);
 			t.start();
 			sender = new ChefMessageSender(listener,empID);
-			
+			sender.start();
+			sender.sendMessage(new Message('L',-1, ""));
 			
 		} catch (Exception e) {
-			System.out.println("Host: Disconnected from MC.");
+			System.out.println("Chef: Disconnected from MC.");
 			try {
 				listener.close();
 			} catch (IOException e1) {}
@@ -190,24 +199,30 @@ public class ChefInterface {
 
 
 
-	public void runUntilLogOut() {
-		//Don't return until i logged out
-		while(!loggedOut){
-			
-		}
-		
+	public void logOut() {
+		if(sender!=null)
+		sender.sendMessage(new Message('X',-1, ""));
+		TabletApp.logOut(loginPanel);
 	}
 
 	/**
 	 * Sends a notification to the manager
 	 */
 	public void notifyManager() {
-		sender.sendMessage(new Message(new SenderInfo(), new SenderInfo('m'), name+" needs help in the kitchen."));
+		sender.sendMessage(new Message('m',-1, name+" needs help in the kitchen."));
 		updateScreen();
 	}
 
+	/**
+	 * Adds this notification to the chef screen
+	 * @param message
+	 */
+	public void addNotification(String message){
+		chefPanel.makeNotification(message);
+	}
 
-	private void updateScreen() {
+
+	public void updateScreen() {
 		chefPanel.updateScreen();
 		
 	}

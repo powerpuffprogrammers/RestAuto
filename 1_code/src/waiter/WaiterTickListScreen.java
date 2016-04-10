@@ -11,8 +11,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
+/**
+ * Panel that draws the screen for the waiter's list of ticket screen.
+ * This is shown when a waiter first logs in.
+ * @author cms549
+ *
+ */
 public class WaiterTickListScreen extends JPanel {
 
 	public WaiterInterface wi;
@@ -31,16 +39,21 @@ public class WaiterTickListScreen extends JPanel {
 		updateScreen();
 	}
 
+	/**
+	 * Redraws the screen using current data.
+	 */
 	public void updateScreen() {
 		removeAll();
 		makeNameText();
 		makeLogOutButton();	
 		makeTicketButtons();
+		makeNotifyWaiter();
+		makeTime();
 		repaint();
 	}
 
 	/**
-	 * writes the waiter's name at the top left
+	 * Writes the waiter's name at the top left
 	 */
 	private void makeNameText() {
 		JTextField nameHeader;
@@ -66,6 +79,11 @@ public class WaiterTickListScreen extends JPanel {
 		}
 	}
 
+	/**
+	 * Draws one ticket button on the screen
+	 * @param t - ticket to be drawn
+	 * @param index - spot on the screen to draw the ticket (can be 0-3)
+	 */
 	private void makeTicketButton(Ticket t, int index) {
 		int xbut=0, ybut=0;
 		if(index ==0){
@@ -101,25 +119,21 @@ public class WaiterTickListScreen extends JPanel {
 		
 		if(t.hotFood){
 			JTextField nameHeader;
-			nameHeader = new JTextField();
+			nameHeader = new JTextField("Hot Food");
 			nameHeader.setEditable(false);
 			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			nameHeader.setText("HOT FOOD");
-			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
-			add(nameHeader);
-			nameHeader.setColumns(10);	
+			nameHeader.setBounds(xbut+110, ybut+100, 200, 30);
+			add(nameHeader);	
 		}
 		else if (t.recentlySat){
 			JTextField nameHeader;
-			nameHeader = new JTextField();
+			nameHeader = new JTextField("Recently Sat");
 			nameHeader.setEditable(false);
 			nameHeader.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			nameHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			nameHeader.setText("HOT FOOD");
-			nameHeader.setBounds(xbut+10, ybut+20, 200, 30);
+			nameHeader.setBounds(xbut+110, ybut+100, 200, 30);
 			add(nameHeader);
-			nameHeader.setColumns(10);	
 		}
 		
 		
@@ -141,9 +155,8 @@ public class WaiterTickListScreen extends JPanel {
 		logOutButton.setBounds(1000, 0, 200, 30);
 		add(logOutButton,0);
 		
-	}
+	}	
 	
-
 	/**
 	 * Creates an are you sure message box
 	 */
@@ -166,7 +179,7 @@ public class WaiterTickListScreen extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				wi.loggedOut=true;
+				wi.logOut();
 			}
 		});
 		yes.setBounds(50,200, 200, 30);
@@ -186,11 +199,31 @@ public class WaiterTickListScreen extends JPanel {
 		repaint();
 	}
 	
+
+	/**
+	 * Sets up the Notify Waiter Button
+	 */
+	private void makeNotifyWaiter(){
+		
+		JButton notify = new JButton("Notify Waiter");
+		notify.setForeground(Color.BLACK);
+		notify.setBackground(Color.ORANGE);
+		notify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				wi.toKeyPadScreen('n');
+			}
+		});
+		notify.setBounds(975, 570, 200, 30);
+		add(notify);
+		
+	}
+	
+	
 	
 
-	/** makes a notification button on top of screen like banner
+	/** Makes a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be displayed in notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
@@ -208,5 +241,19 @@ public class WaiterTickListScreen extends JPanel {
 		
 	}
 	
-
+	/**
+	 * writes the time on screen
+	 */
+		private void makeTime(){
+			Calendar cal=Calendar.getInstance();
+			JTextField timeHeader;
+			String tmp=""+cal.getTime();
+			tmp=tmp.substring(0, tmp.length()-12);
+			timeHeader=new JTextField(tmp);
+			timeHeader.setEditable(false);
+			timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
+			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			timeHeader.setBounds(450, 0, 300, 30);
+			add(timeHeader);
+		}
 }

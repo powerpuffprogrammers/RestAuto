@@ -53,33 +53,35 @@ public class DatabaseBController extends Thread {
 	 * @param maxOccupancy - max amount of people that can fit at the table
 	 * @return true on success, false on failure
 	 */
-	public static boolean addTable(int tabNum, int maxOccupancy){
+	public static boolean addTable(int tabNum, int maxOccupancy, char type){
 		if(listOfTables.hm.containsKey(tabNum)){
 			return false;
 		}
-		listOfTables.hm.put(tabNum, new Table(tabNum, maxOccupancy));
+		listOfTables.hm.put(tabNum, new Table(tabNum, maxOccupancy,type));
 		return true;
 	}
 	
 	
 	/**
-	 * Each request will get its own thread. This will be used to send the host the list of tables
+	 * Each request will get its own thread. This will be used to send the host the list of tables.
+	 * Socket hangs up after sending the table list.
 	 */
 	public void run(){
-		try {
-			DataInputStream in = new DataInputStream(currListener.getInputStream());
-			DataOutputStream out = new DataOutputStream(currListener.getOutputStream());
-			while(true){
-				String mess =in.readUTF();
-				char first = mess.charAt(0);
-				if(first=='T'){ //send the host a list of tables
-					out.writeUTF(jsonConverter.toJson(listOfTables));
-				}
+		String mess = "";
+		try(DataInputStream in = new DataInputStream(currListener.getInputStream());
+				DataOutputStream out = new DataOutputStream(currListener.getOutputStream());) {
+			mess=in.readUTF();
+			char first = mess.charAt(0);
+			if(first=='T'){ //send the host a list of tables
+				System.out.println(jsonConverter.toJson(listOfTables));
+				out.writeUTF(jsonConverter.toJson(listOfTables));
 			}
-			
-			
+			in.close();
+			out.close();
+			currListener.close();
 		} catch (Exception e) {
-			System.out.println("Disconnected from a client.");
+			System.out.println("Before Error: Read in: "+ mess);
+			e.printStackTrace();
 		} 
 	}
 	
@@ -90,25 +92,14 @@ public class DatabaseBController extends Thread {
 	public static void main(String[] args){
 		listOfTables = new TableList();
 		generateTables();
-		ServerSocket server = null;
-		try {
-			server = new ServerSocket(portNumber);
-			
-			while(true){
-				Socket listener = server.accept();
-				Thread t= new DatabaseBController(listener);
-				t.start();
-			}
-		} catch (Exception e) {
-			if(server!=null){
-				try {
-					server.close();
-				} catch (IOException e1) {}
-			}
-			System.out.println("ERROR: FAILED TO START SERVER.");
-		}
-		
-		
+		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
+            while (true) {
+               new DatabaseBController(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: DB B failed to start. Port " + portNumber+" is in use.");
+            System.exit(-1);
+        }	
 	}
 	
 	
@@ -116,13 +107,14 @@ public class DatabaseBController extends Thread {
 	 * Used for testing
 	 */
 	public static void generateTables(){
-		addTable(1,4);
-		addTable(2,4);
-		addTable(3,4);
-		addTable(4,6);
-		addTable(5,6);
-		addTable(6,2);
-		addTable(7,2);
+		addTable(1,4,'t');
+		addTable(2,4,'t');
+		addTable(3,4,'t');
+		addTable(4,6,'b');
+		addTable(5,6,'b');
+		addTable(6,2,'t');
+		addTable(7,2,'t');
+		/*
 		addTable(8,4);
 		addTable(9,4);
 		addTable(10,4);
@@ -132,5 +124,6 @@ public class DatabaseBController extends Thread {
 		addTable(14,2);
 		addTable(15,2);
 		addTable(16,2);
+		*/
 	}	
 }

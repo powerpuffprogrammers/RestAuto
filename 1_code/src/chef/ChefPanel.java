@@ -6,14 +6,17 @@ import javax.swing.SwingConstants;
 
 import chef.ChefInterface;
 import dataBaseC.Ticket;
-import waiter.WaiterInterface;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * WIP
+ * @author cms549
+ *
+ */
 public class ChefPanel extends JPanel {
 
 	public ChefInterface ci;
@@ -232,7 +235,7 @@ public class ChefPanel extends JPanel {
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (i ==1){
-					ci.loggedOut=true;
+					ci.logOut();
 				}
 				else if(i==2){
 					ci.notifyManager();

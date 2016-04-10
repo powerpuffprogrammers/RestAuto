@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+
 import configuration.Configure;
+import messageController.MessageControllerListener;
 
 /**
  * Starts the DataBase A. This will handle requests for log in. DB A holds employee info.
  * @author cms549
- *
  */
 public class DatabaseAController extends Thread {
 	
@@ -76,36 +79,41 @@ public class DatabaseAController extends Thread {
 	 * 	it writes L if the employee is already logged in
 	 * on a log out it changes the employee with that id to logged out
 	 * This ensures that an employee doesn't log on to two devices.
+	 * This is also used by the host when the host needs the list of employees and their ids.
+	 * The socket will hang up after it logs a user in or out.
 	 */
 	public void run(){
-		DataInputStream in;
-		DataOutputStream out;
-		try {
-			in = new DataInputStream(currListener.getInputStream());
-			out = new DataOutputStream(currListener.getOutputStream());
-			while(true){
+
+		try(DataInputStream in = new DataInputStream(currListener.getInputStream());
+				DataOutputStream out = new DataOutputStream(currListener.getOutputStream())) {
+			
 				String mess =in.readUTF();
 				char first = mess.charAt(0);
-				if(first=='L'){ //logging in
+				//logging in
+				if(first=='L'){
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
 					//if employee id is invalid return 0
 					if(number>=employeeList.size() || number<0){
+						System.out.println("0");
 						out.writeUTF("0");
 					}
 					else{
 						Employee curE = employeeList.get(number);
 						String ans = curE.position + curE.name;
 						if(curE.loggedIn){
+							System.out.println("L");
 							out.writeUTF("L");//already logged in
 						}
 						else{
 							curE.loggedIn=true;
+							System.out.println(ans);
 							out.writeUTF(ans);
 						}
 					}
 				}
-				if(first=='O'){ //Logging out
+				//Logging out
+				else if(first=='O'){ 
 					String num = mess.substring(2);
 					int number = Integer.parseInt(num);
 					//if employee id is valid log them out
@@ -114,17 +122,32 @@ public class DatabaseAController extends Thread {
 						curE.loggedIn=false;
 					}
 				}
-				in.close();
-				out.close();
-			}
-			
-			
-		} catch (Exception e) {
-			
-			System.out.println("Disconnected from a client.");
-		} 
+				//Grab list of waiters 
+				else if(first =='W'){
+					out.writeUTF(sendWaiters());
+				}
+				currListener.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			} 
 	}
 	
+	/**
+	 * Generates a string of all the waiters. ID,Name:ID,Name:ID,Name:
+	 * @return
+	 */
+	private String sendWaiters() {
+		String ans ="";
+		for(int i=0; i< employeeList.size(); i++){
+			Employee e = employeeList.get(i);
+			if(e.position=='w'){
+				ans = ans+i+","+e.name+":";
+			}
+		}
+		return ans;
+		
+	}
+
 	/**
 	 * Starts the DataBase A. Creates a new thread for each log in request.
 	 * @param args
@@ -134,24 +157,15 @@ public class DatabaseAController extends Thread {
 		currentID=0;
 		employeeList = new ArrayList<Employee>();
 		generateRandomEmployeeList();
-		ServerSocket server = null;
 		
-		try {
-			server = new ServerSocket(portNumber);
-			while(true){
-				Socket listener = server.accept();
-				Thread t= new DatabaseAController(listener);
-				t.start();
-			}
-		} catch (Exception e) {
-			if(server!=null){
-				try {
-					server.close();
-				} catch (IOException e1) {}
-			}
-			System.out.println("ERROR: FAILED TO START SERVER.");
-		}
-		
+		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
+            while (true) {
+               new DatabaseAController(serverSocket.accept()).start();
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: DB A failed to start. Port " + portNumber+" is in use.");
+            System.exit(-1);
+        }
 		
 	}
 	
@@ -159,12 +173,11 @@ public class DatabaseAController extends Thread {
 	 * Used for testing.
 	 */
 	public static void generateRandomEmployeeList(){
-		addEmployee("Christina Segerholm", 'w');
-		addEmployee("Athira Haridas",'m');
-		//addEmployee("Annie Antony",'c');
-		addEmployee("Nishtha Sharma",'w');
-		addEmployee("Emma Roussos",'w');
-		addEmployee("Christina Parry",'h');
+		addEmployee("Emma Roussos", 'w'); //0
+		addEmployee("Athira Haridas",'m');//1
+		addEmployee("Annie Antony",'c');//2
+		addEmployee("Christina Parry",'h');//3
+		addEmployee("Christina Segerholm", 'w');//4
 		
 		
 	}

@@ -3,67 +3,81 @@ package messageController;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.google.gson.Gson;
-
+/**
+ * Sends messages to a particular tablet connected to the message controller.
+ * @author cms549
+ */
 public class MessageControllerSender extends Thread {
 	
-	private Gson gson;
+	/**
+	 * Socket this controller will listen to
+	 */
+	private Socket currSender;
 	
-	//list of messages to send
+	/**
+	 * list of messages to send
+	 */
 	ConcurrentLinkedQueue<Message> pendingMessages;
 	
-	public MessageControllerSender(){
+	/**
+	 * Unique Employee ID of employee communicating with this socket
+	 */
+	private long empId;
+	/**
+	 * Employee position of employee communicating with this socket
+	 */
+	private char empPos;
+	
+	
+	/**
+	 * Constructor
+	 * @param oneTablet - socket sender will be sending messages on
+	 * @param empId - unique id of employee this socket sends messages to
+	 * @param empPos - position of employee this socket sends messages to
+	 */
+	public MessageControllerSender(Socket oneTablet, char empPos, long empId){
 		pendingMessages = new ConcurrentLinkedQueue<Message>();
+		currSender = oneTablet;
+		this.empPos = empPos;
+		this.empId = empId;
 	}
 	
+	/**
+	 * Starts sending messages in pendingMessage.
+	 */
 	public void run(){
+		DataOutputStream out;
+		try {
+			out = new DataOutputStream(currSender.getOutputStream());
+		} catch (IOException e1) {
+			System.out.println("Failed to start up sender for pos = "+empPos);
+			return;
+		}
+		if(empPos=='w'){
+			MessageController.addWaiterSender(empId, this);
+		}
+		else if(empPos=='c'){
+			MessageController.addChefSender(empId, this);
+		}
+		else if(empPos=='h'){
+			MessageController.addHostSender(empId, this);
+		}
+		else if(empPos=='m'){
+			MessageController.addManagerSender(empId, this);
+		}
+		
+		
 		while(true){
 			Message m =pendingMessages.poll();
 			if(m!=null){
-				char pos= m.receiverInfo.position;
-				long id = m.receiverInfo.empID;
-				Socket sock=null;
-				if(pos=='h'){
-					sock=MessageController.hosts.values().iterator().next();
-				}
-				else if(pos=='m'){
-					sock=MessageController.managers.values().iterator().next();
-				}
-				else if(pos=='c'){
-					sock=MessageController.chefs.values().iterator().next();
-				}
-				else if(pos=='w'){
-					//send to all waiters
-					if(id==-1){
-						Iterator<Socket> it = MessageController.waiters.values().iterator();
-						while(it.hasNext()){
-							sock = it.next();
-							try {
-								DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-								out.writeUTF(gson.toJson(m));
-								out.close();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-						continue;
-					}
-					else{
-						sock=MessageController.waiters.get(id);
-					}
-				}
-				if(sock==null){
-					continue;
-				}
 				try {
-					DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-					out.writeUTF(gson.toJson(m));
-					out.close();
+					System.out.println("Sending: "+ m +" - to "+empPos +empId);
+					out.writeUTF(m.toString());
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Messsage Controller for Pos = "+ empPos+" shutting down.");
+					return;
 				}
 				
 			}

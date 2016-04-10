@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Calendar;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -56,46 +59,61 @@ public class LogInScreen extends JPanel{
 	private JTextField txtPleaseEnterEmployee;
 	private JTextField failedAttempt;
 	
+	public JFrame frame;
+	
+	LogInScreen self;
+	
 	/**
 	 * Creates the log in screen panel
+	 * @param frame 
+	 * @param lock
 	 */
-	public LogInScreen(){
+	public LogInScreen(JFrame frame){
+		this.frame = frame;
 		loggedIn='0';
-		
+		self = this;
 		//Set color to blue
 		setBackground(new Color(51, 153, 255));
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
-		
+		updateScreen();
+	}
+	
+	/**
+	 * Redraws the screen using current data.
+	 */
+	private void updateScreen() {
+		removeAll();
+		makeTime();
 		makeHeaderText();
 		makeIDTextField();
 		makeKeypad();
+		
 	}
-	
+
 	/**
 	 * When logged in button is pressed, this should be called to communicate with DB A.
 	 * @param empID - employee id you wish to log in with
 	 */
 	private void logInToDBA(long empID){
 		//set up socket (as client)
-		Socket client;
-		try {
-			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
+		try(Socket client = new Socket(dataBaseAServerName, dataBaseAPortNumber)) {
 			DataOutputStream out = new DataOutputStream(client.getOutputStream());
 			DataInputStream in = new DataInputStream(client.getInputStream());
 			
 			//send request 
 			String message = "L:"+empID;
+			System.out.println(message);
 			out.writeUTF(message);
 			String ans =in.readUTF();
 			loggedIn=ans.charAt(0);
 			if(loggedIn!='0'&& loggedIn!='L'){
 				empName=ans.substring(1);
 			}
+			in.close();
+			out.close();
 			client.close();
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: CLIENT CAN'T CONNECT.");
+		} catch (Exception e){
 			loggedIn='0';
 			return;
 		}
@@ -139,14 +157,17 @@ public class LogInScreen extends JPanel{
 				logInToDBA(currIDEntry);
 				textField.setText("");
 				if(loggedIn=='0'){
-					currIDEntry=0;
+					currIDEntry=-1;
 					failedAttempt.setText("Employee ID not recognized.");
 					failedAttempt.setVisible(true);
 				}
 				else if(loggedIn=='L'){
-					currIDEntry=0;
+					currIDEntry=-1;
 					failedAttempt.setText("Employee already logged in.");
 					failedAttempt.setVisible(true);
+				}
+				else{
+					TabletApp.logIn(self);
 				}
 				keypadLock=false;
 			}
@@ -163,7 +184,7 @@ public class LogInScreen extends JPanel{
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText("");
-				currIDEntry=0;
+				currIDEntry=-1;
 				keypadLock=false;
 			}
 		});
@@ -187,6 +208,9 @@ public class LogInScreen extends JPanel{
 					while(keypadLock){}
 					keypadLock=true;
 					textField.setText(textField.getText()+d);
+					if(currIDEntry==-1){
+						currIDEntry = 0;
+					}
 					currIDEntry=currIDEntry*10+d;
 					keypadLock=false;
 				}
@@ -203,6 +227,9 @@ public class LogInScreen extends JPanel{
 				while(keypadLock){}
 				keypadLock=true;
 				textField.setText(textField.getText()+"0");
+				if(currIDEntry==-1){
+					currIDEntry=0;
+				}
 				currIDEntry=currIDEntry*10;
 				keypadLock=false;
 			}
@@ -229,21 +256,35 @@ public class LogInScreen extends JPanel{
 	 */
 	public void logOut(long empID) {
 		//set up socket (as client)
-		Socket client;
-		try {
-			client = new Socket(dataBaseAServerName, dataBaseAPortNumber);
+		try(Socket client = new Socket(dataBaseAServerName, dataBaseAPortNumber)) {
 			DataOutputStream out = new DataOutputStream(client.getOutputStream());
 			
 			//send log out
 			String message = "O:"+empID;
 			out.writeUTF(message);
+			out.close();
 			client.close();
 			
 		} catch (Exception e) {
-			System.out.println("ERROR:");
 			loggedIn='0';
 			return;
 		}
 	}
+	
+	/**
+	 * writes the time on screen
+	 */
+		private void makeTime(){
+			Calendar cal=Calendar.getInstance();
+			JTextField timeHeader;
+			String tmp=""+cal.getTime();
+			tmp=tmp.substring(0, tmp.length()-12);
+			timeHeader=new JTextField(tmp);
+			timeHeader.setEditable(false);
+			timeHeader.setFont(new Font("Tahoma",Font.PLAIN,14));
+			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			timeHeader.setBounds(0, 0, 300, 30);
+			add(timeHeader);
+		}
 	
 }
