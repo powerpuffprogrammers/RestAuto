@@ -177,7 +177,18 @@ public class WaiterOneTicketScreen extends JPanel {
 		JTextField total;
 		String price = ""+currTicket.price;
 		if(currTicket.price!=0){
-			price=price.substring(0,price.indexOf('.')+3);
+			if(price.indexOf('.')==-1){
+				price=price+".00";
+			}
+			else if(price.indexOf('.')+3 <=price.length()){
+				price=price.substring(0,price.indexOf('.')+3);
+			}
+			else if(price.indexOf('.')+2 <=price.length()){
+				price=price.substring(0,price.indexOf('.')+2)+"0";
+			}
+			else if(price.indexOf('.')+1<=price.length()){
+				price=price+"00";
+			}
 		}
 		total = new JTextField("Total: $"+ price);
 		total.setEditable(false);
@@ -250,11 +261,109 @@ public class WaiterOneTicketScreen extends JPanel {
 		notifyManager.setBackground(Color.ORANGE);
 		notifyManager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				makeAreYouSure("you want to notify the manager?",2);
+				makeNotifyManagerOptions();
+				
 			}
 		});
 		notifyManager.setBounds(800,560, 200, 40);
 		add(notifyManager, getComponentCount());
+		
+	}
+	
+	public String message="";
+	
+	/**
+	 * Draws the options for notifying a manager on the screen
+	 */
+	private void makeNotifyManagerOptions(){
+		updateScreen();
+		JTextField whiteBox;
+		whiteBox = new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setVisible(true);
+		whiteBox.setBounds(450, 240, 475, 300);
+		add(whiteBox);
+		JButton sat = new JButton("Satisfied Customer");
+		sat.setForeground(Color.BLACK);
+		sat.setBackground(Color.WHITE);
+		sat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				message="Satisfied Customer!";
+				updateScreen();
+				wi.notifyManager(currTicket,message);
+				}
+			
+		});
+		sat.setBounds(160,60, 150, 30);
+		whiteBox.add(sat);
+		
+		JButton unsat = new JButton("Angry Customer");
+		unsat.setForeground(Color.BLACK);
+		unsat.setBackground(Color.WHITE);
+		unsat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				message="Angry Customer";
+				updateScreen();
+				wi.notifyManager(currTicket,message);
+				}
+			
+		});
+		unsat.setBounds(160,100, 150, 30);
+		whiteBox.add(unsat);
+		
+		JButton speed = new JButton("Speed of Service Issue");
+		speed.setForeground(Color.BLACK);
+		speed.setBackground(Color.WHITE);
+		speed.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				message="Speed of Service Issue";
+				updateScreen();
+				wi.notifyManager(currTicket,message);
+				}
+			
+		});
+		speed.setBounds(160,140, 150, 30);
+		whiteBox.add(speed);
+		
+		JButton meal = new JButton("Meal Issue");
+		meal.setForeground(Color.BLACK);
+		meal.setBackground(Color.WHITE);
+		meal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				message="Meal Issue";
+				updateScreen();
+				wi.notifyManager(currTicket,message);
+				}
+			
+		});
+		meal.setBounds(160,180, 150, 30);
+		whiteBox.add(meal);
+		
+		JButton waiter = new JButton("Waiter Issue");
+		waiter.setForeground(Color.BLACK);
+		waiter.setBackground(Color.WHITE);
+		waiter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				message="Waiter Issue";
+				updateScreen();
+				wi.notifyManager(currTicket,message);
+				}
+			
+		});
+		waiter.setBounds(160,220, 150, 30);
+		whiteBox.add(waiter);
+		
+		JButton back = new JButton("BACK");
+		back.setForeground(Color.BLACK);
+		back.setBackground(Color.RED);
+		back.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+				}
+			
+		});
+		back.setBounds(0,0, 100, 30);
+		whiteBox.add(back);
 		
 	}
 	
@@ -304,7 +413,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	 * Creates an are you sure message box. Already prints "Are you sure "
 	 * @param m - message to append to Are you sure 
 	 * @param i - used to id what operation you are using this for
-	 * 	0 is for paid, 1 is for log out, 2 is for notify manager
+	 * 	0 is for paid
 	 */
 	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
@@ -327,9 +436,6 @@ public class WaiterOneTicketScreen extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (i ==0){
 					wi.paid(currTicket.tableNumber);
-				}
-				else if(i==2){
-					wi.notifyManager(currTicket);
 				}
 			}
 		});
@@ -362,7 +468,6 @@ public class WaiterOneTicketScreen extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(lastDishSelected != -1){
 					makeModifyOptions();
-					lastDishSelected = -1;
 				}
 			}
 		});
@@ -376,18 +481,58 @@ public class WaiterOneTicketScreen extends JPanel {
 	 */
 	private void makeModifyOptions(){
 		//make a box
-		//put all options in box
-		//create a back button
-		//update screen no matter what is clicked
-		wi.addComment(lastDishSelected,"To Go");
 		updateScreen();
+		JTextField whiteBox= new JTextField();
+		whiteBox.setEditable(false);
+		whiteBox.setVisible(true);
+		whiteBox.setBounds(400, 240, 475, 300);
+		add(whiteBox);
+		
+		
+		//put all options in box
+		String [] options={"Gluten Free", "To Go", "Nut Allergy", "Vegan", "Lactose Intolerant", "Vegetarian", "Birthday","Soy Allergy"};
+		JButton [] optButtons=new JButton[8];
+		int xbound=160; int ybound=60; int length=100; int width=30;
+		for (int i=0;i<optButtons.length;i++){
+			int d=i;
+			optButtons[i]=new JButton(options[i]);
+			optButtons[i].setForeground(Color.BLACK);
+			optButtons[i].setBackground(Color.WHITE);
+			optButtons[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+						wi.addComment(lastDishSelected,options[d]);					
+						updateScreen();	
+						lastDishSelected=-1;
+				}
+			});
+			optButtons[i].setBounds(xbound,ybound,length,width);
+			whiteBox.add(optButtons[i]);
+			if(i%2==0){
+				xbound+=120;
+			}
+			if (i%2!=0){
+				ybound+=40;
+				xbound-=120;
+			}
+		}
+		//create a back button
+		JButton back=new JButton("BACK");
+		back.setForeground(Color.BLACK);
+		back.setBackground(Color.RED);
+		back.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateScreen();
+			}
+		});
+		back.setBounds(0,0, 150, 30);
+		whiteBox.add(back);
+
 	}
 	
 	/**
 	 * Sets up the Remove Dish Button used to remove a dish from the open ticket.
 	 */
 	private void makeRemoveButton(){
-		
 		JButton removeButton = new JButton("Remove");
 		removeButton.setForeground(Color.BLACK);
 		removeButton.setBackground(Color.RED);
@@ -419,30 +564,30 @@ public class WaiterOneTicketScreen extends JPanel {
 	}
 
 	/**
-	 * Draws button for Special - this includes gift card or coupons/comps
+	 * Draws button for gift cards or coupons - this includes gift card or coupons/comps
 	 */
 	private void makeSpecialsButton(){
-		JButton spec = new JButton("Specials");
+		JButton spec = new JButton("Coupon");
 		spec.setForeground(Color.BLACK);
 		spec.setBackground(Color.WHITE);
 		spec.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				makeSpecialOptions();
+				wi.toKeyPadScreen('m');
 			}
 		});
-		spec.setBounds(1000,400, 200, 40);
+		spec.setBounds(1000,360, 200, 40);
 		add(spec);
-	}
-	
-	/**
-	 * Draws Giftcard or Coupon buttons on the screen
-	 */
-	private void makeSpecialOptions(){
-		//draw a box
-		//draw a giftcard option
-		//draw coupon option
-		wi.addGCorCoupon(50);
-		updateScreen();
+		
+		JButton spec2 = new JButton("Gift Card");
+		spec2.setForeground(Color.BLACK);
+		spec2.setBackground(Color.WHITE);
+		spec2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				wi.toKeyPadScreen('g');
+			}
+		});
+		spec2.setBounds(1000,400, 200, 40);
+		add(spec2);
 	}
 	
 	/**
@@ -472,7 +617,7 @@ public class WaiterOneTicketScreen extends JPanel {
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
 		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.WHITE);
+		notificationButton.setBackground(Color.YELLOW);
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);

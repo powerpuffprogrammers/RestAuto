@@ -110,7 +110,7 @@ public class Ticket {
 	 * @return
 	 */
 	public boolean removeDishFromTicket(int indexOfDishInTickList){
-		if(indexOfDishInTickList<0 || indexOfDishInTickList>amountOfDishes){
+		if(indexOfDishInTickList<0 || indexOfDishInTickList>=listOfDishes.size()){
 			return false;
 		}
 		

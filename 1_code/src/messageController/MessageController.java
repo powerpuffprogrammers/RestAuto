@@ -36,9 +36,7 @@ public class MessageController {
 	 * List of output streams(senders) of managers logged in with employee id as key
 	 */
 	static HashMap<Long,MessageControllerSender> managerOut;
-	
 
-	
 	/**
 	 * Adds a waiter to the list of output stream
 	 * @param id - employee id 

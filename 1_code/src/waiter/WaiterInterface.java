@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JFrame;
@@ -72,9 +73,15 @@ public class WaiterInterface {
 	 */
 	Menu menu;
 	
+	/**
+	 * Holds list of manager's ids used to validate a coupon
+	 */
+	ArrayList<Integer> listOfManagerIds;
+	
 	WaiterTickListScreen ticketListScreen;
 	public WaiterOneTicketScreen oneTickScreen;
 	LogInScreen loginPanel;
+	private KeyPadScreen keyPadScreen;
 	
 	/**
 	 * Constructor
@@ -98,7 +105,11 @@ public class WaiterInterface {
 		//set up MC
 		setUpMessageController();
 		
-		//generateTickets();
+		generateTickets();
+		
+		loadManagers();
+		
+		
 		
 		//create waiter screen for list of tickets
 		ticketListScreen = new WaiterTickListScreen(this);
@@ -107,8 +118,18 @@ public class WaiterInterface {
 		frame.revalidate();
 		
 		oneTickScreen = new WaiterOneTicketScreen(this);
+		keyPadScreen = new KeyPadScreen(this);
 	}
 	
+	/**
+	 * Fills in the list of managers
+	 */
+	private void loadManagers() {
+		listOfManagerIds = new ArrayList<Integer>();
+		listOfManagerIds.add(1);
+		//later we will grab this from DB A
+	}
+
 	/**
 	 * Returns upon logging out. 
 	 * Sends a message to the Host and MC to notify that waiter is logging out.
@@ -180,7 +201,7 @@ public class WaiterInterface {
 		else if(price>0){
 			//GIFT CARD
 			Dish gc = new Dish("Gift Card", price, null);
-			gc.changeStatus('c');
+			gc.changeStatus('c');//c means coupon or giftcard
 			currTicket.listOfDishes.add(gc);
 			currTicket.price=currTicket.price + gc.price;
 		}
@@ -220,7 +241,7 @@ public class WaiterInterface {
 	 * @param ind = index of the dish in the current ticket
 	 */
 	public void addComment(int ind, String com) {
-		Dish d =currTicket.listOfDishes.get(ind);
+		Dish d = currTicket.listOfDishes.get(ind);
 		if(d.getStatus()!='c')//can't add a comment to a gc or coupon
 			d.comments.add(com);
 	}
@@ -247,13 +268,35 @@ public class WaiterInterface {
 		ticketListScreen.updateScreen();
 		frame.revalidate();
 	}
+	
+	/**
+	 * Brings you back to the ticket screen you were on before opening the keypad
+	 */
+	public void backToOpenTicketScreen(){
+		frame.setContentPane(oneTickScreen);
+		oneTickScreen.updateScreen();
+		frame.revalidate();
+	}
+	
+	/**
+	 * Switches the screen to the keypad screen
+	 * @param type = Type of question you need the screen for - 'g' = giftCard Amount, 'm'= manager id, 'c'= coupon amount, 'n' = notify waiter
+	 */
+	public void toKeyPadScreen(char type){
+		//set up keyPadScreen
+		keyPadScreen.type=type;
+		frame.setContentPane(keyPadScreen);
+		keyPadScreen.updateScreen();
+		frame.revalidate();
+	}
 
 	/**
-	 * Sends a notification to the Manager that a certain table needs help
-	 * @param currTicket2
+	 * Sends message to manager
+	 * @param currTicket2 - ticket object that holds the table number
+	 * @param message - message to send to manager
 	 */
-	public void notifyManager(Ticket currTicket2) {
-		sender.sendMessage(new Message('m',-1, currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+	public void notifyManager(Ticket currTicket2, String message) {
+		sender.sendMessage(new Message('m',-1, currTicket2.waiterName+"@ Table: "+currTicket2.tableNumber+": "+message));
 		updateScreen();
 	}
 	
@@ -286,7 +329,10 @@ public class WaiterInterface {
 	 * @param content - content to post on the screen
 	 */
 	public void addNotification(String content) {
-		if(currTicket==null){
+		if(keyPadScreen.type !='0'){
+			keyPadScreen.makeNotification(content);
+		}
+		else if(currTicket==null){
 			ticketListScreen.makeNotification(content);
 		}
 		else{
@@ -299,7 +345,10 @@ public class WaiterInterface {
 	 * Updates the current panel - makes them redraw all the buttons
 	 */
 	public void updateScreen() {
-		if(currTicket==null){
+		if(keyPadScreen.type!='0'){
+			keyPadScreen.updateScreen();
+		}
+		else if(currTicket==null){
 			ticketListScreen.updateScreen();
 		}
 		else{

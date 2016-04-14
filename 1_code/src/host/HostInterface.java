@@ -208,29 +208,26 @@ public class HostInterface {
 	 * @param tableNumber
 	 * @return 0 on success and -1 on fail.
 	 */
-	public int seat(String waiterName, int tableNumber){//CHANGE
+	public int seat(String waiterName, int tableNumber){
 		Table t = allTables.get(tableNumber);
-		if (!(t.status=='r')){
+		if (!(t.status=='r')){ //if table is not ready
 			return -1;
 		}
-		t.status = 's';
+		t.status = 's';//change status to seated
 		for(int i =0; i<readyTables.size(); i++){
 			if(readyTables.get(i) == tableNumber){
-				readyTables.remove(i);
+				readyTables.remove(i);//take table off the ready list
+				seatedTables.add(tableNumber);//add it to seated list
+				break;
 			}
 		}
-		seatedTables.add(tableNumber);
 		int currTables=waiterTotalTables.get(waiterName);
 		currTables++;
 		waiterTotalTables.put(waiterName, currTables);
 		waiterOfTable.put(tableNumber, waiterName);
 		sendSeated(listOfWaiters.get(waiterName), tableNumber);
-		try{
 		updateScreen();
-		}catch(Exception e){
-			
-		}
-		return 0;////CHANGE
+		return 0;
 	}
 	
 	/**
@@ -284,6 +281,7 @@ public class HostInterface {
 				int currTables=waiterTotalTables.get(waiterName);
 				currTables--;
 				waiterTotalTables.put(waiterName,currTables);
+				 break;
 			}
 		}
 		updateScreen();
@@ -300,8 +298,9 @@ public class HostInterface {
 		for(int i=0; i<paidTables.size();i++){
 			int curr = paidTables.get(i);
 			if(curr == tableNumber){
-				paidTables.remove(i);
-				readyTables.add(tableNumber);
+				 paidTables.remove(i); //remove table from paid list
+	             readyTables.add(tableNumber) ;//add it to the paid list
+	             break;
 			}
 		}
 		

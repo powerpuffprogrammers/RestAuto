@@ -210,26 +210,12 @@ public class WaiterTickListScreen extends JPanel {
 		notify.setBackground(Color.ORANGE);
 		notify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				makeKeypad();
+				wi.toKeyPadScreen('n');
 			}
 		});
 		notify.setBounds(975, 570, 200, 30);
 		add(notify);
 		
-	}
-	
-	private void makeKeypad(){
-		String entry ="";
-		int tab =0;
-		//draw a box to place everything in
-		//make all numbers 0-9 
-		// make a send 
-		wi.notifyWaiter(tab);
-		//make a clear button
-		//make a back button
-		//DONT HAVE A TEXT FIELD THAT UPDATES JUS
-		//in all the buttons make sure to update the screen
-		updateScreen();
 	}
 	
 	
@@ -242,7 +228,7 @@ public class WaiterTickListScreen extends JPanel {
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
 		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.WHITE);
+		notificationButton.setBackground(Color.YELLOW);
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
