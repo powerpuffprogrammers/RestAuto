@@ -291,11 +291,12 @@ public class WaiterInterface {
 	}
 
 	/**
-	 * Sends a notification to the Manager that a certain table needs help
-	 * @param currTicket2
+	 * Sends message to manager
+	 * @param currTicket2 - ticket object that holds the table number
+	 * @param message - message to send to manager
 	 */
-	public void notifyManager(Ticket currTicket2) {
-		sender.sendMessage(new Message('m',-1, currTicket2.waiterName+" needs help at table "+currTicket2.tableNumber+"."));
+	public void notifyManager(Ticket currTicket2, String message) {
+		sender.sendMessage(new Message('m',-1, currTicket2.waiterName+"@ Table: "+currTicket2.tableNumber+": "+message));
 		updateScreen();
 	}
 	

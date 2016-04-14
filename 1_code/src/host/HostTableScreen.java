@@ -428,7 +428,7 @@ public class HostTableScreen extends JPanel {
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
 		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.WHITE);
+		notificationButton.setBackground(Color.YELLOW);
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);

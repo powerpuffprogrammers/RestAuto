@@ -43,8 +43,8 @@ public class KeyPadScreen extends JPanel{
 	public KeyPadScreen(WaiterInterface wi){
 		this.wi=wi;
 		type='0';
-		//Set color to blue
-		setBackground(new Color(51, 153, 255));
+		//Set color to black
+		setBackground(Color.BLACK);
 		//Array layout where you pick coordinates of each component
 		setLayout(null);
 		answer = new JTextField();
@@ -69,24 +69,6 @@ public class KeyPadScreen extends JPanel{
 		
 	}
 	
-	/** Draws a notification button on top of screen like banner
-	 * once it is clicked it closes it
-	 * @param content - message to be put in the notification
-	 */
-	public void makeNotification(String content) {
-		JButton notificationButton = new JButton(content);
-		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.WHITE);
-		notificationButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				remove(notificationButton);
-			}
-		});
-		notificationButton.setBounds(0, 0, 1200, 30);
-		add(notificationButton,0);
-		repaint();
-		
-	}
 	
 	
 	/**
@@ -318,6 +300,7 @@ public class KeyPadScreen extends JPanel{
 	private void drawBackButton(){
 		JButton back = new JButton("BACK");
 		back.setBounds(900, 0, 300, 30);
+		back.setBackground(Color.RED);
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				answer.setText("");
@@ -334,4 +317,24 @@ public class KeyPadScreen extends JPanel{
 		add(back);
 	}
 		
+	/** Draws a notification button on top of screen like banner
+	 * once it is clicked it closes it
+	 * @param content - message to be put in the notification
+	 */
+	public void makeNotification(String content) {
+		JButton notificationButton = new JButton(content);
+		notificationButton.setForeground(Color.BLACK);
+		notificationButton.setBackground(Color.YELLOW);
+		notificationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				remove(notificationButton);
+			}
+		});
+		notificationButton.setBounds(0, 0, 1200, 30);
+		add(notificationButton,0);
+		repaint();
+		
+	}
+	
+	
 }
