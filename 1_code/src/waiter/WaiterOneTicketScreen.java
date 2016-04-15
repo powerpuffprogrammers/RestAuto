@@ -237,6 +237,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makePriorityButton(){
 		
 		JButton prior = new JButton("Priority Ticket");
+		prior.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		prior.setHorizontalAlignment(SwingConstants.CENTER);
+		prior.setVerticalAlignment(SwingConstants.CENTER);
 		prior.setForeground(Color.ORANGE);
 		prior.setBackground(Color.BLACK);
 		prior.addActionListener(new ActionListener() {
@@ -245,9 +248,8 @@ public class WaiterOneTicketScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		prior.setBounds(200,560, 200, 40);
+		prior.setBounds(200,530, 200, 80);
 		add(prior, getComponentCount());
-		
 	}
 	
 	
@@ -257,6 +259,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makeNotifyManagerButton(){
 		
 		JButton notifyManager = new JButton("Notify Manager");
+		notifyManager.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		notifyManager.setHorizontalAlignment(SwingConstants.CENTER);
+		notifyManager.setVerticalAlignment(SwingConstants.CENTER);
 		notifyManager.setForeground(Color.BLACK);
 		notifyManager.setBackground(Color.ORANGE);
 		notifyManager.addActionListener(new ActionListener() {
@@ -265,7 +270,7 @@ public class WaiterOneTicketScreen extends JPanel {
 				
 			}
 		});
-		notifyManager.setBounds(800,560, 200, 40);
+		notifyManager.setBounds(800,530, 200, 80);
 		add(notifyManager, getComponentCount());
 		
 	}
@@ -373,6 +378,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makeSendTicketButton(){
 		
 		JButton sendButton = new JButton("Send to Chef");
+		sendButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		sendButton.setHorizontalAlignment(SwingConstants.CENTER);
+		sendButton.setVerticalAlignment(SwingConstants.CENTER);
 		sendButton.setForeground(Color.WHITE);
 		sendButton.setBackground(Color.GREEN);
 		sendButton.addActionListener(new ActionListener() {
@@ -381,12 +389,10 @@ public class WaiterOneTicketScreen extends JPanel {
 				updateScreen();
 			}
 		});
-		sendButton.setBounds(0,560, 200, 40);
+		sendButton.setBounds(0,530, 200, 80);
 		add(sendButton, getComponentCount());
 		
 	}
-	
-	
 	
 	
 	/**
@@ -396,6 +402,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makePaidButton(){
 		
 		JButton paidButton = new JButton("Paid");
+		paidButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		paidButton.setHorizontalAlignment(SwingConstants.CENTER);
+		paidButton.setVerticalAlignment(SwingConstants.CENTER);
 		paidButton.setForeground(Color.WHITE);
 		paidButton.setBackground(Color.RED);
 		paidButton.addActionListener(new ActionListener() {
@@ -404,7 +413,7 @@ public class WaiterOneTicketScreen extends JPanel {
 				makeAreYouSure("table "+ currTicket.tableNumber +" paid?",0);
 			}
 		});
-		paidButton.setBounds(1000,560, 200, 40);
+		paidButton.setBounds(1000,530, 200, 80);
 		add(paidButton, getComponentCount());
 		
 	}
@@ -462,6 +471,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	private void makeModifyButton(){
 		
 		JButton modify = new JButton("Modify");
+		modify.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		modify.setHorizontalAlignment(SwingConstants.CENTER);
+		modify.setVerticalAlignment(SwingConstants.CENTER);
 		modify.setForeground(Color.WHITE);
 		modify.setBackground(Color.ORANGE);
 		modify.addActionListener(new ActionListener() {
@@ -471,8 +483,27 @@ public class WaiterOneTicketScreen extends JPanel {
 				}
 			}
 		});
-		modify.setBounds(400,560, 200, 40);
+		modify.setBounds(400,530, 200, 80);
 		add(modify, getComponentCount());
+		
+	}
+	
+	/**
+	 * Creates the print button
+	 */
+	private void makePrintButton(){
+		
+		JButton printButton = new JButton("Print");
+		printButton.setForeground(Color.WHITE);
+		printButton.setBackground(Color.GREEN);
+		printButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//are you sure?
+				//makeAreYouSure("table "+ currTicket.tableNumber +" paid?",0);
+			}
+		});
+		printButton.setBounds(1000,480, 200, 40);
+		add(printButton, getComponentCount());
 		
 	}
 	
@@ -534,6 +565,9 @@ public class WaiterOneTicketScreen extends JPanel {
 	 */
 	private void makeRemoveButton(){
 		JButton removeButton = new JButton("Remove");
+		removeButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		removeButton.setHorizontalAlignment(SwingConstants.CENTER);
+		removeButton.setVerticalAlignment(SwingConstants.CENTER);
 		removeButton.setForeground(Color.BLACK);
 		removeButton.setBackground(Color.RED);
 		removeButton.addActionListener(new ActionListener() {
@@ -545,7 +579,7 @@ public class WaiterOneTicketScreen extends JPanel {
 				}
 			}
 		});
-		removeButton.setBounds(600,560, 200, 40);
+		removeButton.setBounds(600,530, 200, 80);
 		add(removeButton, getComponentCount());
 		
 	}
@@ -606,6 +640,7 @@ public class WaiterOneTicketScreen extends JPanel {
 		makeSpecialsButton();
 		makeMenuChoices();
 		makePriorityButton();
+		makePrintButton();
 		repaint();
 		validate();
 	}
