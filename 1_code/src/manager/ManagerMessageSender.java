@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package manager;
 
 import java.io.DataOutputStream;

@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm and Athira Haridas
+// debugged by: Christina Segerholm
 package host;
 
 import java.io.DataInputStream;
@@ -6,10 +9,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.swing.JFrame;
-
 import com.google.gson.Gson;
 
 import configuration.Configure;
@@ -123,14 +122,8 @@ public class HostInterface {
 		while( it.hasNext()){
 			Integer key= it.next();
 			Table table = allTables.get(key);
-			if(key>5){
-				table.changeStatus('p');
-				paidTables.add(key);
-			}
-			else{
-				table.changeStatus('r');
-				readyTables.add(key);
-			}
+			table.changeStatus('r');
+			readyTables.add(key);
 		}
 		setUpMessageController();
 		

@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package waiter;
 
 import javax.swing.JPanel;
@@ -12,7 +15,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 
 /**

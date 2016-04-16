@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm and Athira Haridas
+// debugged by: Christina Segerholm
 package manager;
 
 import java.net.Socket;

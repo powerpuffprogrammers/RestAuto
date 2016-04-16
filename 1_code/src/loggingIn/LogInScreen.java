@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package loggingIn;
 
 import java.awt.Color;
@@ -8,8 +11,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Calendar;
-import java.util.concurrent.locks.ReentrantLock;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -114,6 +115,7 @@ public class LogInScreen extends JPanel{
 			out.close();
 			client.close();
 		} catch (Exception e){
+			e.printStackTrace();
 			loggedIn='0';
 			return;
 		}

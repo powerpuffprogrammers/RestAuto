@@ -1,3 +1,6 @@
+// written by: Christina Segerholm and Athira Haridas
+// tested by: Christina Segerholm and Athira Haridas
+// debugged by: Christina Segerholm and Athira Haridas
 package host;
 
 import java.awt.Color;

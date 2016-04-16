@@ -1,3 +1,6 @@
+// written by: Christina Segerholm and Athira Haridas
+// tested by: Christina Segerholm and Athira Haridas
+// debugged by: Christina Segerholm and Athira Haridas
 package manager;
 
 import javax.swing.JPanel;

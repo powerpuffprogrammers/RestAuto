@@ -1,10 +1,14 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package dataBaseC;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +24,14 @@ import configuration.Configure;
  *
  */
 public class DatabaseCController {
+	
+	/**
+	 * Name of file that holds the menu
+	 * Each Line is a new item
+	 * Format: TypeOfDish,NameOfDish,Price
+	 * Exp: appetizer,Buffalo Wings,7.99
+	 */
+	private static final String menuFile = "src/configuration/menu.txt";
 	
 	/**
 	 * Port number that Database C will be on.
@@ -53,7 +65,7 @@ public class DatabaseCController {
 	 * Holds the menu. Waiter will need this when logging on.
 	 * See Menu.java
 	 */
-	static Menu menu;
+	public static Menu menu;
 	
 
 	/**
@@ -87,7 +99,10 @@ public class DatabaseCController {
 		waiterSenders= new HashMap<Integer,Sender>();
 		//set up the inventory
 		//set up dishdata converter
-		generateDishes();
+		loadMenuFromFile();
+		if(args!=null && args.length==10){//for testing
+			return;
+		}
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (true) {
                new Listener(serverSocket.accept()).start();
@@ -202,73 +217,25 @@ public class DatabaseCController {
 	}
 	
 	/**
-	 * Used for Testing.
+	 * Load Menu From menu file
 	 */
-	public static void generateDishes(){
+	public static void loadMenuFromFile(){
 		
-		addDishtoMenu("appetizer","Buffalo Wings",7.99);
-        addDishtoMenu("appetizer","Bread Sticks",4.99);
-        addDishtoMenu("appetizer","Spiced Olives",5.99);
-        addDishtoMenu("appetizer","Chips and Guacamole",7.99);
-        addDishtoMenu("appetizer","Chicken Soup ",2.99);
-        addDishtoMenu("appetizer","Spring Rolls ",4.99);
-        addDishtoMenu("appetizer","Prawn Chips ",5.99);
-        addDishtoMenu("appetizer","Mixed Apps  ",7.99);
-        addDishtoMenu("appetizer","Sample Platter",7.50);
-        addDishtoMenu("appetizer","Mozzarella sticks",4.99);
-        addDishtoMenu("appetizer","French Fries",5.99);
-        addDishtoMenu("appetizer","Pizza Fries",7.99);
-        addDishtoMenu("appetizer","Breaded Mushrooms",2.99);
-        addDishtoMenu("appetizer","Onion Rings",4.99);
-        addDishtoMenu("appetizer","Shrimp Basket",5.99);
-        addDishtoMenu("appetizer","Garlic Bread",7.99);
-        
-        addDishtoMenu("entree","pasta",12.99);
-        addDishtoMenu("entree","steak",18.99);
-        addDishtoMenu("entree","Eggplant Parmesan",11.99);
-        addDishtoMenu("entree","Chicken salad",12.99);
-        addDishtoMenu("entree","Chicken Alfredo",12.99);
-        addDishtoMenu("entree","Tossed Salad",18.99);
-        addDishtoMenu("entree","Fried Chicken Salad ",11.99);
-        addDishtoMenu("entree","Tuna Salad",12.99);
-        addDishtoMenu("entree","Stuffed Shells",12.99);
-        addDishtoMenu("entree","Baked Lasagna",18.99);
-        addDishtoMenu("entree","Italian Trio ",11.99);
-        addDishtoMenu("entree","Baked Ziti ",12.99);
-        addDishtoMenu("entree","Sandwich",12.99);
-        addDishtoMenu("entree","Bean Burrito",18.99);
-        addDishtoMenu("entree","Cheese Quesedilla ",11.99);
-        addDishtoMenu("entree","Carnitas ",12.99);
-        
-        addDishtoMenu("dessert","cheesecake",8.99);
-        addDishtoMenu("dessert","creme brulee",10.99);
-        addDishtoMenu("dessert","Tiramasu",13.99);
-        addDishtoMenu("dessert","Ice Cream",2.99);
-        addDishtoMenu("dessert","Pineapple Cheesecake",8.99);
-        addDishtoMenu("dessert","Creme Caramel ",10.99);
-        addDishtoMenu("dessert","Peanut Butter Pie",13.99);
-        addDishtoMenu("dessert","Lemon Marangue Pie ",2.99);
-        addDishtoMenu("dessert","Carrot Cake",8.99);
-        addDishtoMenu("dessert","Red Velvet Cake ",10.99);
-        addDishtoMenu("dessert","Bread Pudding",13.99);
-        addDishtoMenu("dessert","Chocolate Ice Cream ",2.99);
-        addDishtoMenu("dessert","Double Chocolate Brownie",8.99);
-        addDishtoMenu("dessert","Coconut Cake ",10.99);
-        addDishtoMenu("dessert","Peppermint Cupcake",13.99);
-        addDishtoMenu("dessert","Mini Cupcakes",2.99);
-        
-        addDishtoMenu("drinks","water",0.00);
-        addDishtoMenu("drinks","coke",1.99);
-        addDishtoMenu("drinks","pepsi",1.99);
-        addDishtoMenu("drinks","milk",1.49);
-        addDishtoMenu("drinks","tea",1.99);
-        addDishtoMenu("drinks","coffee",1.99);
-        addDishtoMenu("drinks","apple juice",1.99);
-        addDishtoMenu("drinks","orange juice",1.49);
-        addDishtoMenu("drinks","green juice",1.99);
-        addDishtoMenu("drinks","tomato juice",1.99);
-        addDishtoMenu("drinks","red wine",1.99);
-        addDishtoMenu("drinks","white wine",1.49);
+		try (BufferedReader br = new BufferedReader(new FileReader(menuFile))){
+
+			String currLine;
+			int i=0;
+			while ((currLine = br.readLine()) != null) {
+				if(i==0){//skip the header line
+					i=1;
+					continue;
+				}
+				String[] arr = currLine.split(",");
+				addDishtoMenu(arr[0],arr[1], Double.parseDouble(arr[2]) );
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		
 	}
 

@@ -1,22 +1,32 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package databaseA;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-
 import configuration.Configure;
-import messageController.MessageControllerListener;
 
 /**
  * Starts the DataBase A. This will handle requests for log in. DB A holds employee info.
  * @author cms549
  */
 public class DatabaseAController extends Thread {
+	
+	/**
+	 * Name of file that holds the list of employees
+	 * Each Line is a new employee (first line is skipped b/c it is header)
+	 * Format: EmployeeName,Position(character can be w,m,c,h)
+	 * Exp: Christina Segerholm,w
+	 */
+	private static final String empFile = "src/configuration/employeeInfo.txt";
 	
 	/**
 	 * Port number that Database A Controller will be listening for log in attempts on.
@@ -156,8 +166,11 @@ public class DatabaseAController extends Thread {
 		//later we will load this from a file
 		currentID=0;
 		employeeList = new ArrayList<Employee>();
-		generateRandomEmployeeList();
+		loadEmployees();
 		
+		if(args!=null && args.length==10){//for testing
+			return;
+		}
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (true) {
                new DatabaseAController(serverSocket.accept()).start();
@@ -170,16 +183,34 @@ public class DatabaseAController extends Thread {
 	}
 	
 	/**
-	 * Used for testing.
+	 * Loads employee list from file
 	 */
-	public static void generateRandomEmployeeList(){
-		addEmployee("Emma Roussos", 'w'); //0
-		addEmployee("Athira Haridas",'m');//1
-		addEmployee("Annie Antony",'c');//2
-		addEmployee("Christina Parry",'h');//3
-		addEmployee("Christina Segerholm", 'w');//4
+	public static void loadEmployees(){
+		//#EmployeeName,Position(character can be w,m,c,h)
+		try (BufferedReader br = new BufferedReader(new FileReader(empFile))){
+
+			String currLine;
+			int i=0;
+			while ((currLine = br.readLine()) != null) {
+				if(i==0){//skip the header line
+					i=1;
+					continue;
+				}
+				String[] arr = currLine.split(",");
+				addEmployee(arr[0],arr[1].charAt(0));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		
-		
+	}
+	
+	/**
+	 * Used by DatabaseLadFromFileTest.java for testing 
+	 * @return list of employees
+	 */
+	public static ArrayList<Employee> getEmployeeListForTesting(){
+		return employeeList;
 	}
 	
 	

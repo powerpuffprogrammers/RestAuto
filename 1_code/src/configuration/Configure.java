@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package configuration;
 
 import java.io.BufferedReader;
@@ -60,4 +63,5 @@ public class Configure {
 		} 
 		return null;
 	}
+
 }

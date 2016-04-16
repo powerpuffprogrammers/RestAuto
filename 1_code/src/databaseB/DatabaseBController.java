@@ -1,7 +1,12 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package databaseB;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,6 +21,14 @@ import configuration.Configure;
  *
  */
 public class DatabaseBController extends Thread {
+	
+	/**
+	 * Name of file that holds the list of tables for restuarant
+	 * Each Line is a new table (first line is skipped b/c it is header)
+	 * Format: TableNumber,NumberOfSeats,Booth(b)/Table(t)
+	 * Exp: 1,4,b ==> Table Number = 1, Max Occup = 4, Table is a booth.
+	 */
+	private static final String tabNumFile = "src/configuration/tableNumbers.txt";
 	
 	/**
 	 * port number DB B will be listening on
@@ -91,7 +104,10 @@ public class DatabaseBController extends Thread {
 	 */
 	public static void main(String[] args){
 		listOfTables = new TableList();
-		generateTables();
+		loadTablesFromFile();
+		if(args!=null && args.length==10){//for testing
+			return;
+		}
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (true) {
                new DatabaseBController(serverSocket.accept()).start();
@@ -104,26 +120,24 @@ public class DatabaseBController extends Thread {
 	
 	
 	/**
-	 * Used for testing
+	 * Load the tables from the text file
 	 */
-	public static void generateTables(){
-		addTable(1,4,'t');
-		addTable(2,4,'t');
-		addTable(3,4,'t');
-		addTable(4,6,'b');
-		addTable(5,6,'b');
-		addTable(6,2,'t');
-		addTable(7,2,'t');
-		/*
-		addTable(8,4);
-		addTable(9,4);
-		addTable(10,4);
-		addTable(11,6);
-		addTable(12,6);
-		addTable(13,6);
-		addTable(14,2);
-		addTable(15,2);
-		addTable(16,2);
-		*/
+	public static void loadTablesFromFile(){
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(tabNumFile))){
+
+			String currLine;
+			int i=0;
+			while ((currLine = br.readLine()) != null) {
+				if(i==0){//skip the header line
+					i=1;
+					continue;
+				}
+				String[] arr = currLine.split(",");
+				addTable(Integer.parseInt(arr[0]),Integer.parseInt(arr[1]),arr[2].charAt(0));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}	
 }

@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.swing.JFrame;
-
 import com.google.gson.Gson;
 
 import configuration.Configure;

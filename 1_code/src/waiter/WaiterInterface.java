@@ -1,3 +1,6 @@
+// written by: Christina Segerholm
+// tested by: Christina Segerholm
+// debugged by: Christina Segerholm
 package waiter;
 
 import java.io.DataInputStream;
@@ -105,7 +108,7 @@ public class WaiterInterface {
 		//set up MC
 		setUpMessageController();
 		
-		generateTickets();
+		//generateTickets();
 		
 		loadManagers();
 		
@@ -267,6 +270,15 @@ public class WaiterInterface {
 		frame.setContentPane(ticketListScreen);
 		ticketListScreen.updateScreen();
 		frame.revalidate();
+	}
+	
+	/**
+	 * Sends a ticket to printer
+	 * @param t- Ticket to print
+	 */
+	public void printTicket(Ticket t){
+		//connect to printer and send the ticket as a string to print
+		//Printer.print(t.toStringForDBC());
 	}
 	
 	/**
