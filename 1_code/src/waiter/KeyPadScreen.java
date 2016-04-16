@@ -331,9 +331,10 @@ public class KeyPadScreen extends JPanel{
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
+				repaint();
 			}
 		});
-		notificationButton.setBounds(0, 0, 1200, 30);
+		notificationButton.setBounds(0, 0, 1200, 50);
 		add(notificationButton,0);
 		repaint();
 		

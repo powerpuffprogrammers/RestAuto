@@ -424,9 +424,9 @@ public class HostTableScreen extends JPanel {
 	}
 	
 	
-	/** makes a notification button on top of screen like banner
+	/** Draws a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content - message to be displayed
+	 * @param content - message to be put in the notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
@@ -435,10 +435,10 @@ public class HostTableScreen extends JPanel {
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
-				updateScreen();
+				repaint();
 			}
 		});
-		notificationButton.setBounds(0, 0, 1200, 30);
+		notificationButton.setBounds(0, 0, 1200, 50);
 		add(notificationButton,0);
 		repaint();
 		

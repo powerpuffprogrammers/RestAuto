@@ -238,9 +238,11 @@ public class Ticket {
 			ans.listOfDishes.add(d);
 			ans.amountOfDishes++;
 			ans.amountOfDishesUnstarted++;
-			String[] eachComm = namelist[1].split(",");
-			for(int c =1; c<eachComm.length; c++){
-				d.comments.add(eachComm[c]);
+			if(namelist.length!=1){
+				String[] eachComm = namelist[1].split(",");
+				for(int c =1; c<eachComm.length; c++){
+					d.comments.add(eachComm[c]);
+				}
 			}
 			
 		}

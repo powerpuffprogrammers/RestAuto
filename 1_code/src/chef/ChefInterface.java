@@ -1,3 +1,6 @@
+// written by: Christina Segerholm Annie Antony and Nishtha Sharma
+// tested by: Annie Antony and Nishtha Sharma
+// debugged by: Annie Antony and Nishtha Sharma
 package chef;
 
 
@@ -5,6 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.google.gson.Gson;
 
 import configuration.Configure;
@@ -15,7 +19,7 @@ import loggingIn.TabletApp;
 import messageController.Message;
 
 /**
- * WIP
+ * Controls what screen is shown to chef. Holds all data that is shown to Chef.
  * @author cms549
  *
  */
@@ -24,34 +28,51 @@ public class ChefInterface {
 	private final static int MCportNumber = Configure.getPortNumber("MessageController");
 	
 	public static Gson jsonConverter = new Gson();
+	/**
+	 * Employee ID - this will be used to ID the tablet for the Message Controller
+	 */
 	long empID;
+	/**
+	 * Employee Name- this will be displayed on the screen
+	 */
 	String name;
-	
-	public boolean loggedOut;
-	
-	//gives you the currTicketNumber you should give the next ticket created
-	static long currTicketNumber =0;
-	
-	//Ticket number to ticket
+	/**
+	 * Current ticket number opened
+	 */
+	long currTicketNumber =0;
+	/**
+	 * HashMap that maps the ticket number to the ticket 
+	 */
 	HashMap<Long, Ticket>ticketLookup;
-	
+	/**
+	 * Sends messages to the Message controller
+	 */
 	public ChefMessageSender sender;
 	
-	//Ticket Queue = holds all ticket orders
+	/**
+	 * Ticket Queues that the chef can view - separated based on status of preparation
+	 */
 	public ArrayList<Long> ticketQueueUnstarted;
 	public ArrayList<Long> ticketQueuesemiStarted;
 	public ArrayList<Long> ticketQueueStarted;
 	public ArrayList<Long> ticketQueueFinished;
-	
-	private ChefPanel chefPanel;
-	
-	private LogInScreen loginPanel;
-	
+	/**
+	 * The ticket list screen that the chef views
+	 */
+    ChefPanel chefPanel;
+    /**
+     * Once the chef opens a ticket, the screen that shows the dishes of the ticket
+     */
+	public ChefOneTickScreen oneTickScreen;
+    LogInScreen loginPanel;
+    /**
+	 * Constructor
+	 * @param lp - log in screen 
+	 */
 	public ChefInterface(LogInScreen lp){
 		loginPanel=lp;
 		name= lp.empName;
 		empID = lp.currIDEntry;
-		//Pull this from SQL
 		ticketQueueUnstarted = new ArrayList<Long>();
 		ticketQueuesemiStarted = new ArrayList<Long>();
 		ticketQueueStarted = new ArrayList<Long>();
@@ -60,15 +81,20 @@ public class ChefInterface {
 		
 		setUpMessageController();
 		
-		generateTickets();
+		//generateTickets();
 		chefPanel = new ChefPanel(this);
 		lp.frame.setContentPane(chefPanel);
+		lp.frame.revalidate();
+		oneTickScreen = new ChefOneTickScreen(this);
 		
 		
 	}
 
 	
-	//This listener will be used to read incoming tickets from servers and place them on the Q
+	/**
+	 * Function used to read the incoming tickets from the waiters and places them in the queue that the chef can view.
+	 * @param ticket - ticket the waiter sends to the chef
+	 */
 	public void chefTicketListener(Ticket ticket){
 		if(ticket!=null){
 			//set up the index for this ticket
@@ -77,24 +103,26 @@ public class ChefInterface {
 			ticketQueueUnstarted.add(currTicketNumber);
 			ticketLookup.put(currTicketNumber, ticket);
 			currTicketNumber++;
+			if(chefPanel!=null)
+				chefPanel.updateScreen();
 		}
 	}
 	    
 
 	/**
-	 * decrements each item in the dish's inventory amount by the proper amount for this dish
-	 * @param dish
+	 * Decrements the amount of each item in the inventory by the proper amount of ingredients for this dish.
+	 * @param dish - dish that chef makes 
 	 */
 	public void decrementInventoryForDish(Dish dish) {
-			//Send message to DB B to decrement this dish
+			//Send message to DB C to decrement this dish
 			//message should start with a D and end with the name of the dish (and thats it)
 		}
 	
 
 	/**
-	 * Changes the list that the ticket is on. ie: takes ticket off of unstarted and adds it to semi started
-	 * @param oldstatus
-	 * @param t
+	 *Changes the location of the ticket based on the status of it. ie: takes ticket off of unstarted and adds it to semi started
+	 * @param oldstatus - status before modification
+	 * @param t - the ticket with the status modified 
 	 */
 	public void changeTicketLocation(char oldstatus, Ticket t) {
 		if(oldstatus == 'u'){
@@ -124,7 +152,9 @@ public class ChefInterface {
 			ticketQueueFinished.add(t.ticketNumber);
 		}
 	}
-
+	/**
+	 * Sets up the Message Controller and alerts it that chef is logged in.
+	 */
 	private void setUpMessageController() {
 		Socket listener=null;
 		try {
@@ -133,7 +163,7 @@ public class ChefInterface {
 			t.start();
 			sender = new ChefMessageSender(listener,empID);
 			sender.start();
-			sender.sendMessage(new Message('L',-1, ""));
+			sender.sendMessage(new Message('L',-1, "Logging In"));
 			
 		} catch (Exception e) {
 			System.out.println("Chef: Disconnected from MC.");
@@ -144,8 +174,30 @@ public class ChefInterface {
 		
 		
 	}
-	
-	
+	/**
+	 * Switches from list of tickets screen to one open ticket screen
+	 * @param ticketNumber - the ticket number of ticket you wish to open
+	 */
+	public void openTicketScreens(long ticketNumber) { //opens one Ticket on the screen 
+		currTicketNumber = ticketNumber;//ticket number is table number 
+		Ticket currTicket = ticketLookup.get(currTicketNumber);
+		oneTickScreen.setTicket(currTicket);
+		loginPanel.frame.setContentPane(oneTickScreen);
+		loginPanel.frame.revalidate();
+		
+	}
+	/**
+	 * Switches the screen from an open ticket screen to the list of tickets screen.
+	 */
+	public void backToMainScreen(){
+		loginPanel.frame.setContentPane(chefPanel);
+		chefPanel.updateScreen();
+		loginPanel.frame.revalidate();
+	}
+
+	/**
+	 * Used for testing
+	 */
 	public void generateTickets(){
         Dish newdish =  new Dish("Chicken Marsala",8.99, "Entree");
         Dish newdish1 =  new Dish("Cheesecake",12.99, "Dessert");
@@ -193,11 +245,19 @@ public class ChefInterface {
         chefTicketListener(ticket3);
     }
 
-
+	/**
+	 * Returns upon logging out. 
+	 * Sends a message to the Host and MC to notify that chef is logging out.
+	 */
 
 	public void logOut() {
-		if(sender!=null)
-		sender.sendMessage(new Message('X',-1, ""));
+		if(sender!=null){
+			sender.sendMessage(new Message('X',-1, "Log out"));
+			System.out.println("Sender is not null: Sent message");
+		}
+		else{
+			System.out.println("Sender is null");
+		}
 		TabletApp.logOut(loginPanel);
 	}
 
@@ -211,13 +271,15 @@ public class ChefInterface {
 
 	/**
 	 * Adds this notification to the chef screen
-	 * @param message
+	 * @param message - notification
 	 */
 	public void addNotification(String message){
 		chefPanel.makeNotification(message);
 	}
 
-
+	/**
+	 * updates the screen to the main chef screen
+	 */
 	public void updateScreen() {
 		chefPanel.updateScreen();
 		

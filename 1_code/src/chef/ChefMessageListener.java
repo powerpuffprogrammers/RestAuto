@@ -5,6 +5,8 @@ package chef;
 
 import java.io.DataInputStream;
 import java.net.Socket;
+
+import dataBaseC.Ticket;
 import messageController.Message;
 
 /**
@@ -47,12 +49,14 @@ public class ChefMessageListener extends Thread {
 					String second = in.readUTF();
 					mes = mes +second;
 				}
+				System.out.println("Message = "+ mes);
 				Message m = Message.fromString(mes);
 				decodeMessage(m);
 			}
 			
 			
 		}catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Chef Message Listener disconnected from MC.");
 		} 
 		
@@ -70,6 +74,7 @@ public class ChefMessageListener extends Thread {
 		}
 		else if(senderPos=='w'){
 			//add new ticket
+			ci.chefTicketListener(Ticket.fromString(m.content));
 			//THE STRING IS IN THE FORM ticket.toString from the Ticket class
 		}
 	}

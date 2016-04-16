@@ -1,3 +1,6 @@
+// written by: Annie Antony and Nishtha Sharma
+// tested by: Annie Antony and Nishtha Sharma
+// debugged by: Annie Antony and Nishtha Sharma
 package chef;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -8,40 +11,50 @@ import chef.ChefInterface;
 import dataBaseC.Ticket;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * WIP
- * @author cms549
+ * Panel that draws the screen for the chef's list of ticket screen.
+ * This is shown when a chef first logs in.
+ * @author cms549, aa1122, ns662
  *
  */
 public class ChefPanel extends JPanel {
-
+	/**
+	 * used to access all of the methods in chef 
+	 */
 	public ChefInterface ci;
-	
-	private Ticket currTicket;
-	
+
 	/**
 	 * Create the panel.
 	 * @param chefInterface 
 	 */
 	public ChefPanel(ChefInterface chefInterface) {
 		ci = chefInterface;
-		setBackground(SystemColor.textHighlight);
+		setBackground(new Color(51, 153, 255));
+		//Array layout where you pick coordinates of each component
+		setLayout(null);
 		
 		updateScreen();
 	}
-
+	/**
+	 * Redraws the screen using current data.
+	 */
 	public void updateScreen() {
+		removeAll();
 		makeLogOutButton();	
 		makeNotifyManagerButton();
 		makeNameText();
+		System.out.println("Calling displayTickets");
 		displayTickets();
+		System.out.println("Calling repaint");
+		repaint();
 		
 	}
-
+	/**
+	 * Displays the tickets based on status of preparation first and then chronological order 
+	 */
 	private void displayTickets() {
 		int amtleft = 4;
 		int size = ci.ticketQueueFinished.size();
@@ -97,31 +110,32 @@ public class ChefPanel extends JPanel {
 		logOutButton.setBounds(1000, 0, 200, 30);
 		add(logOutButton);
 		
+		
 	}
 	
 	
 	/**
-	 * displays the ticket on the screen in index index
-	 * @param index
-	 * @param t
+	 * displays one ticket on the screen 
+	 * @param index - index based on how many tickets in each list 
+	 * @param t - ticket
 	 */
 	private void displayTicket(int index, Ticket t) {
 		int xbutton, xwords;
 		if(index==0){
-			xbutton = 100;
-			xwords = 120;
+			xbutton = 50;
+		
 		}
 		else if(index==1){
-			xbutton = 400;
-			xwords = 420;
+			xbutton = 350;
+			
 		}
 		else if(index==2){
-			xbutton = 700;
-			xwords = 720;
+			xbutton = 650;
+			
 		}
 		else{
-			xbutton = 1000;
-			xwords = 1020;
+			xbutton = 950;
+			
 		}
 		
 		//draw the rectangle as a button
@@ -130,10 +144,10 @@ public class ChefPanel extends JPanel {
 		tableBut.setBackground(Color.RED);
 		tableBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//open up new screen
+				ci.openTicketScreens(t.ticketNumber); //open a ticket to see the status of each dish 
 			}
 		});
-		tableBut.setBounds(xbutton, 100, 200, 400);
+		tableBut.setBounds(xbutton, 160, 200, 280);
 		add(tableBut);
 		
 		//write table number
@@ -143,7 +157,7 @@ public class ChefPanel extends JPanel {
 		tableNumber.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableNumber.setHorizontalAlignment(SwingConstants.CENTER);
 		tableNumber.setText("Table Number: "+ t.tableNumber);
-		tableNumber.setBounds(xwords, 120, 250, 30);
+		tableNumber.setBounds(xbutton, 120, 200, 30);
 		add(tableNumber);
 		tableNumber.setColumns(10);
 		
@@ -154,11 +168,15 @@ public class ChefPanel extends JPanel {
 		status.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		status.setHorizontalAlignment(SwingConstants.CENTER);
 		status.setText("Status: "+ getStatus(t.status));
-		status.setBounds(xwords, 450, 250, 30);
+		status.setBounds(xbutton, 450, 200, 30);
 		add(status);
 		status.setColumns(10);
 	}
-
+/**
+ * Gets the status of the ticket - Unstarted, Semi-Started, Started, Finished
+ * @param status - status of the ticket
+ * @return
+ */
 	private String getStatus(char status) {
 		if(status =='u'){
 			return "Unstarted";
@@ -177,7 +195,7 @@ public class ChefPanel extends JPanel {
 
 	
 	/**
-	 * Makes the name header at the top left 
+	 * Makes the name header of the chef at the top left 
 	 */
 	private void makeNameText() {
 		JTextField nameHeader;
@@ -213,11 +231,11 @@ public class ChefPanel extends JPanel {
 	
 	
 	/**
-	 * Creates an are you sure message box
+	 * Creates an are you sure message box for either logout or notifyManager
 	 */
 	private void makeAreYouSure(String m, int i) {
 		//Make a White box with "Are you sure"
-		JTextField areYouSure;
+        JTextField areYouSure;
 		areYouSure = new JTextField("Are you sure "+m);
 		areYouSure.setEditable(false);
 		areYouSure.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -225,7 +243,7 @@ public class ChefPanel extends JPanel {
 		areYouSure.setBackground(Color.ORANGE);
 		areYouSure.setBounds(250, 150, 700, 300);
 		add(areYouSure);
-		setComponentZOrder(areYouSure, 2);
+		setComponentZOrder(areYouSure, 0);
 		
 		
 		//Make yes button
@@ -234,12 +252,13 @@ public class ChefPanel extends JPanel {
 		yes.setBackground(Color.GREEN);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (i ==1){
+				if(i==1){//log out
 					ci.logOut();
 				}
-				else if(i==2){
+				else if(i==2){//notify manager
 					ci.notifyManager();
 				}
+				
 			}
 		});
 		yes.setBounds(50,200, 200, 30);
@@ -259,21 +278,21 @@ public class ChefPanel extends JPanel {
 		repaint();
 	}
 	
-	/** makes a notification button on top of screen like banner
+	/** Draws a notification button on top of screen like banner
 	 * once it is clicked it closes it
-	 * @param content
+	 * @param content - message to be put in the notification
 	 */
 	public void makeNotification(String content) {
 		JButton notificationButton = new JButton(content);
 		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.WHITE);
+		notificationButton.setBackground(Color.YELLOW);
 		notificationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(notificationButton);
-				updateScreen();
+				repaint();
 			}
 		});
-		notificationButton.setBounds(0, 0, 1200, 30);
+		notificationButton.setBounds(0, 0, 1200, 50);
 		add(notificationButton,0);
 		repaint();
 		

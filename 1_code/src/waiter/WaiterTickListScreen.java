@@ -221,28 +221,6 @@ public class WaiterTickListScreen extends JPanel {
 	}
 	
 	
-	
-
-	/** Makes a notification button on top of screen like banner
-	 * once it is clicked it closes it
-	 * @param content - message to be displayed in notification
-	 */
-	public void makeNotification(String content) {
-		JButton notificationButton = new JButton(content);
-		notificationButton.setForeground(Color.BLACK);
-		notificationButton.setBackground(Color.YELLOW);
-		notificationButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				remove(notificationButton);
-				updateScreen();
-			}
-		});
-		notificationButton.setBounds(0, 0, 1200, 30);
-		add(notificationButton,0);
-		repaint();
-		
-	}
-	
 	/**
 	 * writes the time on screen
 	 */
@@ -257,5 +235,25 @@ public class WaiterTickListScreen extends JPanel {
 			timeHeader.setHorizontalAlignment(SwingConstants.CENTER);
 			timeHeader.setBounds(450, 0, 300, 30);
 			add(timeHeader);
+		}
+		
+		/** Draws a notification button on top of screen like banner
+		 * once it is clicked it closes it
+		 * @param content - message to be put in the notification
+		 */
+		public void makeNotification(String content) {
+			JButton notificationButton = new JButton(content);
+			notificationButton.setForeground(Color.BLACK);
+			notificationButton.setBackground(Color.YELLOW);
+			notificationButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					remove(notificationButton);
+					repaint();
+				}
+			});
+			notificationButton.setBounds(0, 0, 1200, 50);
+			add(notificationButton,0);
+			repaint();
+			
 		}
 }
