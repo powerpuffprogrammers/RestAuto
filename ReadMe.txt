@@ -1,40 +1,105 @@
-Demo documentantation and code can be found at:
+ï»¿The SWE application code and documentation is stored on github located at:
 https://github.com/powerpuffprogrammers/RestAuto
 
 Thanks,
 The SWE Team
 https://sites.google.com/site/sweservewithease/home
 -------------------------------------------------------------
-Table Of Contents:
- -RestAuto
-    |
-    +-----> doc           // documentation plus Report #3, presentation slides, etc.
-    |
-    +-----> design        // UML diagrams
-    |
-    +--+--> code          // project code
-       |
-       +-------> java     // Java source code
-       |
-       +-------> classes  // compiled Java classes
-       |
-       +-------> images   // images and button icons
-       |
-       +-------> data     // (database) files with example data
-       |
-       +-------> run      // scripts and/or HTML files
-    |
-    +-----> tests         // unit tests for the project code (and any other tests)
-    |
-    +-----> data          // data collected or need for the project
+Table of Contents:
+- RestAuto
+|
++---+--> code         // project code
+	|
+	+---+--> classes  // compiled Java classes
+		|
+		+------> chef
+		|
+		+------> configuration
+		|
+		+------> databaseA
+		|
+		+------> databaseB
+		|
+		+------> databaseC
+		|
+		+------> host
+		|
+		+------> loggingIn
+		|
+		+------> manager
+		|
+		+------> messageController
+		|
+		+------> testing
+		|
+		+------> waiter
+		|
+		+------> gson-2.3.1
+	|
+	+-------> data     // (database) files with example data
+	|
+	+-------> images   // images and button icons
+	|
+	+---+---> java     // Java source code
+		|
+		+------> chef
+		|
+		+------> configuration
+		|
+		+------> databaseA
+		|
+		+------> databaseB
+		|
+		+------> databaseC
+		|
+		+------> host
+		|
+		+------> loggingIn
+		|
+		+------> manager
+		|
+		+------> messageController
+		|
+		+------> testing
+		|
+		+------> waiter
+	|
+	+-------> run      // scripts and/or HTML files
+|
++-----> data     // data collected or need for the project
+|
++-----> doc      // documentation plus Report #3, presentation slides, etc.
+|
++-----> design       // UML diagrams
+|
++-----> tests     // unit tests for the project code (and any other tests)
+---------------------------------------------------------------------------------------
 
--------------------------------------------------------------
 Explain exact process of how to compile your source code and build a runnable file where to find the file:
 
+Setting up the IDE: NOTE: Must be using jdk 1.8 or greater.
+Step 1) Open Java IDE (such as eclipse).
+Step 2) Start a new project.
+Step 3) Copy all folders from code->java-> into yourNewProjectFolder->src
+***Import GSON?!?!??!?!?!?!
 
-how exactly to run the runnable—what are the allowed input parameters:
+Setting up the databases:
+If you are running the database, message controller, and application processes all on the same machine skip to step 4.
+Step 1) Open domainNames.txt and portNumbers.txt (they can be found in the configuration folder)
+Step 2) Change the domainNames file so that instead of localhost it now has your computer's IP Address.
+Step 3) **OPTIONAL** Change the portNumbers file if you would like to select the port numbers the processes will use.
 
-if it is necessary to authenticate the user, then list some example user IDs and passwords that will work:
+Step 4) Run databaseAController.java, databaseBController.java, databaseCController.java
+Step 5) Run messageController.java
+Step 6) Run TabletApp.java for each employee you would like to log in.
+	Running TabletApp.java should open up the login screen. 
+	On each tablet, only the TabletApp.java file will be needed to run the SWE application.
 
-describe the allowed values of all parameters that need to be entered while running your program:
-
+Step 7) Logging in as an employee:
+Authentication is done by a unique employee ID.
+In order to demo our application at this time, we have hardcoded some login IDs for your convenience. 
+0->waiter
+1->manager
+2->chef
+3->host
+4->waiter

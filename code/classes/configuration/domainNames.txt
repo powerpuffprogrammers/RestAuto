@@ -1,0 +1,5 @@
+databaseacontroller=localhost
+messagecontroller=localhost
+databasebcontroller=localhost
+databaseccontroller=localhost
+printer=128.6.36.179
