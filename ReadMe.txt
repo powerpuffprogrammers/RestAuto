@@ -75,13 +75,11 @@ Table of Contents:
 +-----> tests     // unit tests for the project code (and any other tests)
 ---------------------------------------------------------------------------------------
 
-Explain exact process of how to compile your source code and build a runnable file where to find the file:
-
 Setting up the IDE: NOTE: Must be using jdk 1.8 or greater.
 Step 1) Open Java IDE (such as eclipse).
 Step 2) Start a new project.
 Step 3) Copy all folders from code->java-> into yourNewProjectFolder->src
-***Import GSON?!?!??!?!?!?!
+Step 4) Import Gson jar into your working project. (Gson jar can be found in code->gson-2.3.1.jar)
 
 Setting up the databases:
 If you are running the database, message controller, and application processes all on the same machine skip to step 4.

@@ -1,0 +1,13 @@
+﻿Figure out what goes into data folder (the main data folder)
+
+Put uml stuff into diagrams into design --> make sure they have correct funtions
+
+Doc should hold: 
+Report 1, report 2, report 3, brochure, 
+presentation, tech doc, user doc, individual contributions
+
+In Tech doc add message communication section
+
+Unit tests - write a read me for it
+
+Fix the integration tests and re do the read me
