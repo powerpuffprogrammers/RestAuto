@@ -46,9 +46,7 @@ public class ChefPanel extends JPanel {
 		makeLogOutButton();	
 		makeNotifyManagerButton();
 		makeNameText();
-		System.out.println("Calling displayTickets");
 		displayTickets();
-		System.out.println("Calling repaint");
 		repaint();
 		
 	}
@@ -87,6 +85,7 @@ public class ChefPanel extends JPanel {
 			for(int i=0;i<size && amtleft>0;i++){
 				Long tickNum = ci.ticketQueueUnstarted.get(i);
 				Ticket t =ci.ticketLookup.get(tickNum);
+				System.out.println("Chefpan 88: Ticket number = "+t.ticketNumber);
 				displayTicket(4-amtleft, t);
 				amtleft--;
 			}
@@ -144,7 +143,7 @@ public class ChefPanel extends JPanel {
 		tableBut.setBackground(Color.RED);
 		tableBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ci.openTicketScreens(t.ticketNumber); //open a ticket to see the status of each dish 
+				ci.openTicketScreen(t.ticketNumber); //open a ticket to see the status of each dish 
 			}
 		});
 		tableBut.setBounds(xbutton, 160, 200, 280);

@@ -172,7 +172,8 @@ public class DatabaseAController extends Thread {
 			return;
 		}
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
-            while (true) {
+			System.out.println("Actual name="+serverSocket.getInetAddress());
+			while (true) {
                new DatabaseAController(serverSocket.accept()).start();
             }
         } catch (IOException e) {

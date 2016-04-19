@@ -1,5 +1,5 @@
-databaseacontroller=localhost
-messagecontroller=localhost
-databasebcontroller=localhost
-databaseccontroller=localhost
-printer=128.6.36.179
+databaseacontroller=172.31.108.21
+messagecontroller=172.31.108.21
+databasebcontroller=172.31.108.21
+databaseccontroller=172.31.108.21
+printer=172.31.108.21
