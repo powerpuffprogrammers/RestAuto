@@ -37,9 +37,9 @@ public class ChefInterface {
 	 */
 	String name;
 	/**
-	 * Current ticket number opened
+	 * Ticket Number to give next incoming ticket
 	 */
-	long currTicketNumber =0;
+	static long currTicketNumber =0;
 	/**
 	 * HashMap that maps the ticket number to the ticket 
 	 */
@@ -99,6 +99,7 @@ public class ChefInterface {
 		if(ticket!=null){
 			//set up the index for this ticket
 			ticket.ticketNumber = currTicketNumber;
+			System.out.println("Adding ticket "+currTicketNumber);
 			//add the ticket to the end of the unstarted list since it is unstarted
 			ticketQueueUnstarted.add(currTicketNumber);
 			ticketLookup.put(currTicketNumber, ticket);
@@ -178,9 +179,9 @@ public class ChefInterface {
 	 * Switches from list of tickets screen to one open ticket screen
 	 * @param ticketNumber - the ticket number of ticket you wish to open
 	 */
-	public void openTicketScreens(long ticketNumber) { //opens one Ticket on the screen 
-		currTicketNumber = ticketNumber;//ticket number is table number 
-		Ticket currTicket = ticketLookup.get(currTicketNumber);
+	public void openTicketScreen(long ticketNumber) { //opens one Ticket on the screen 
+		Ticket currTicket = ticketLookup.get(ticketNumber);
+		System.out.println("Ticket openning = "+currTicket.toStringForChef());
 		oneTickScreen.setTicket(currTicket);
 		loginPanel.frame.setContentPane(oneTickScreen);
 		loginPanel.frame.revalidate();

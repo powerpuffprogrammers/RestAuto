@@ -97,6 +97,8 @@ public class LogInScreen extends JPanel{
 	 * @param empID - employee id you wish to log in with
 	 */
 	private void logInToDBA(long empID){
+		System.out.println("Saved name="+dataBaseAServerName);
+		
 		//set up socket (as client)
 		try(Socket client = new Socket(dataBaseAServerName, dataBaseAPortNumber)) {
 			DataOutputStream out = new DataOutputStream(client.getOutputStream());

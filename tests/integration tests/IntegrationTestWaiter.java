@@ -1,8 +1,12 @@
+// written by: Annie Antony
+// tested by: Annie Antony
+// debugged by: Annie Antony
 package testing;
 
 import javax.swing.JFrame;
 import dataBaseC.Dish;
 import dataBaseC.Ticket;
+import loggingIn.LogInScreen;
 import waiter.WaiterInterface;
 /**
  * 
@@ -45,10 +49,9 @@ public class IntegrationTestWaiter {
 	}
 
 	public static void main(String[] args) {
-		Long id=(long) 4;
-		String empName="Annie";
 		JFrame frame=new JFrame();
-		WaiterInterface w=new WaiterInterface(frame,id,empName);
+		LogInScreen lp=new LogInScreen(frame);
+		WaiterInterface w=new WaiterInterface(lp);
 		//Integration Test 2 of functions to add dish to the Ticket
 				//Step 1: Load all the menu items
 				boolean func1=testLoadMenu(w);

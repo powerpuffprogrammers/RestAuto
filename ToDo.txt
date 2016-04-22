@@ -1,11 +1,9 @@
-﻿Figure out what goes into data folder (the main data folder)
+﻿-add final demo to slides to doc folder
 
-Put uml stuff into diagrams into design --> make sure they have correct funtions
+-make all html java docs into pdfs
 
-Doc should hold: 
-Report 1, report 2, report 3, brochure, 
-presentation, tech doc, user doc, individual contributions
+-in doc add report 3
 
-In Tech doc add all of the java docs
+-add integrationtext read me into test-integrationtests folder
 
-Fix the integration tests and re do the read me
+-put in uml diagrams in design folder

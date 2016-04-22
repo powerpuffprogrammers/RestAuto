@@ -5,6 +5,7 @@ package testing;
 
 import javax.swing.JFrame;
 
+import loggingIn.LogInScreen;
 import databaseB.Table;
 import host.HostInterface;
 
@@ -66,10 +67,9 @@ public class IntegrationTestHost {
 	
 	
 	public static void main(String args[]){
-		Long id=(long) 3;
-		String empName="Athira";
 		JFrame frame=new JFrame();
-		HostInterface h=new HostInterface(frame,id,empName);
+		LogInScreen lp=new LogInScreen(frame);
+		HostInterface h=new HostInterface(lp);
 		
 		
 		

@@ -1,6 +1,8 @@
 ﻿The SWE application code and documentation is stored on github located at:
 https://github.com/powerpuffprogrammers/RestAuto
 
+Reports 1 and 2 as well as Demo 1 documentation can be found in doc folder.
+
 Thanks,
 The SWE Team
 https://sites.google.com/site/sweservewithease/home

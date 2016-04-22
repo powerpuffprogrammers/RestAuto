@@ -28,12 +28,12 @@ public class TicketToMessageConversion {
 		String st = t.toStringForChef();
 		Ticket t2 = Ticket.fromString(st);
 		if(st.equals(t2.toStringForChef()) ){
-			System.out.println("TicketToMessage Unit Test: Passed");
+			System.out.println("TicketToMessage Test: Passed");
 		}
 		else{
-			System.out.println("Expected:"+st);
-			System.out.println("Got:"+t2.toStringForChef());
-			System.out.println("TicketToMessage Unit Test: Failed");
+			System.out.println("TicketToMessage Test: Failed");
+			System.out.println(st);
+			System.out.println(t2.toStringForChef());
 		}
 
 	}
