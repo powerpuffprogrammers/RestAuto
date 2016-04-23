@@ -1,9 +1,6 @@
-﻿-add final demo to slides to doc folder
+﻿Doc folder:
+	Add slides to doc
+	Add report3 
 
--make all html java docs into pdfs
-
--in doc add report 3
-
--add integrationtext read me into test-integrationtests folder
-
--put in uml diagrams in design folder
+Design folder:
+	UML diagrams in design folder

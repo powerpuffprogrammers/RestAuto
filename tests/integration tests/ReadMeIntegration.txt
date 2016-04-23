@@ -13,35 +13,44 @@ waiter adding a dish to the ticket. Through integration testing we were able to
 confirm that all of our functions worked sequentially with other functions and 
 delivered the correct results when tested.
 
+
+To run the Database File Reading integration test:
+Run DataLoadFromFileTesting.java
+This test will test all three text files that hold the data needed for the database processes to run. These are the text files in the Configuration folder: 
+employeeInfo.txt --- Loaded into DataBaseA
+tableNumbers.txt ---  Loaded into DataBaseB
+menu.txt   --- Loaded into DataBaseC
+
+Each of these is tested with a unit test and all three of these unit tests are run by this Database File Reading Integration test.
+
+The three unit tests are:
+testEmployee - which tests that employeeInfo file is being read correctly
+testTables - which tests that the tableNumbers file is being read correctly
+testMenu - which tests that the menu file is being read correctly
+
 To run this integration test (host changing a table status from ready to 
 seated), first run DatabaseAController.java, DatabaseBController.java and 
 MessageController.java. Then run IntegrationTestHost.java.
 
 The first integration tested host interface with changing the status of a table 
 from ready to seated. In this integration test, two functions were sequentially 
-called. The first function is loadTables() which initially loads all tables and 
-statuses and the second function is seat() which takes the table that is ready 
+called. The first function is testLoadTables() which initially loads all tables and 
+statuses and the second function is testSeat() which takes the table that is ready 
 and changes its status to seated. We first tested these two functions 
 individually to ensure that they worked and then tested them sequentially. 
-If both functions passed then the integration test passed and the output would
-be “Integration Test 1 PASSED”. If one or both functions failed, the output 
-would show which test or tests failed. 
+We individually tested them as unit tests in the following way:
 
-To run this integration test (a waiter adding a dish to the Ticket), first run
-DatabaseAController.java, DatabaseCController.java and MessageController.java. 
-Then run IntegrationTestWaiter.java.
+The function testLoadTables() returns true on success and false on failure to load the tables to the screen. The function testSeat() returns 0 on success of changing the status of a table from ready (‘r’) to seated (‘s’) and redrawing the screen to account for this update. It returns -1 if the host attempts to change the status to seated when a table is not ready. 
 
-The second integration tested waiter interface to add a dish to the ticket.  
-In this integration test, two functions were sequentially called. The first 
-function is loadMenu() which initially loads all the menu items (known to be 
-stored in Database C). The second function is addDishtoTicket() which adds a 
-new dish to the ticket. We first tested these functions individually to ensure 
-that they worked and then we tested them sequentially. If both functions passed 
-then the integration test passed and the overall output would be “Integration 
-Test 2 PASSED”. If one or both functions failed, we would be able to identify 
-the source of error looking at the failure output messages. If one function 
-outputs success and the other outputs failure, we would be able to identify 
-which function has the error. 
+If both functions passed then the integration test passed and the output would be “Integration Test 1 PASSED”. If one or both functions failed, the output would show which test or tests failed. 
+
+To run this integration test (a waiter adding a dish to the Ticket), first run DatabaseAController.java, DatabaseCController.java and MessageController.java. Then run IntegrationTestWaiter.java.
+
+The second integration tested waiter interface to add a dish to the ticket.  In this integration test, two functions were sequentially called. The first function is testLoadMenu() which initially loads all the menu items (known to be stored in Database C). The second function is testaddDishtoTicket() which adds a new dish to the ticket. We first tested these functions individually to ensure that they worked and then we tested them sequentially. We individually tested them as unit tests in the following way:
+
+The function testLoadMenu() returns true on success and false on failure to load the menu items from database C. The function testaddDishtoTicket() returns true if the dish is successfully added to the waiter’s ticket and false if the dish couldn’t be added to the ticket. 
+
+If both the functions passed then the integration test passed and the overall output would be “Integration Test 2 PASSED”. If one or both functions failed, the output would show which test or tests failed.
 
 Additional testing was done visually and sequentially through testing our GUIs.
 Some examples are illustrated below:
@@ -107,43 +116,3 @@ ready. An error message of “table 7 can’t be seated” is shown.
 
 Through integration as well as visual testing we are able to ensure that our 
 application functions well and without bugs!
-
-
-
-
-Unit Tests
-This ReadMe describes the scope of our unit tests and how to run them. 
-
-The unit tests for Host Interface were done in IntegrationTestHost.java. 
-Since a unit test is testing one function of an integration test, we were 
-able to write all the tests in the same file. 
-
-To run the unit tests, first run DatabaseAController.java,
-DatabaseBController.java and MessageController.java. 
-Once those are running, run IntegrationTestHost.java. 
-
-The unit tests we did were for loadTables() and seat(). 
-The function loadTables() returns true on success and false on failure to load
-the tables to the screen. The function seat() returns 0 on success of changing 
-the status of a table from ready (‘r’) to seated (‘s’) and redrawing the screen 
-to account for this update. It returns -1 if the host attempts to change the 
-status to seated when a table is not ready. On success of these integration 
-tests, the output is “TEST PASSED” and on failure of the test the output will
-be “TEST FAILED”. 
-
-The unit tests for Waiter Interface were done in the 
-IntergrationTestWaiter.java. Since a unit test is testing one function of an 
-integration test, we were able to write all the tests in the same file. 
-
-To run the unit tests, first run DatabaseAController.java, 
-DatabaseCController.java and MessageController.java. Once those are running, 
-run IntegrationTestWaiter.java. 
-
-The unit tests we did were for loadMenu() and addDishtoTicket(). The function 
-loadMenu() returns true on success and false on failure to load the menu items 
-on the waiter’s screen. The function addDishtoTicket() returns true if the dish 
-is successfully added to the waiter’s ticket and false if the dish couldn’t be 
-added to the ticket. On success of the loadMenu() function, the output is 
-“TEST PASSED” and on failure of the test the output will be “TEST FAILED”.  
-On success of the addDishtoTicket() function, the output is "The dish is added 
-to the ticket!” and on failure of the test the output will be "Not added :(". 
