@@ -1,6 +1,7 @@
 ﻿Doc folder:
 	Add slides to doc
 	Add report3 
+	Add individual contributions
 
 Design folder:
 	UML diagrams in design folder
