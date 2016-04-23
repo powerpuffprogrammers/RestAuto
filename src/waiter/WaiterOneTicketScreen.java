@@ -319,12 +319,12 @@ public class WaiterOneTicketScreen extends JPanel {
 		unsat.setBounds(160,100, 150, 30);
 		whiteBox.add(unsat);
 		
-		JButton speed = new JButton("Speed of Service Issue");
+		JButton speed = new JButton("Coupon");
 		speed.setForeground(Color.BLACK);
 		speed.setBackground(Color.WHITE);
 		speed.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				message="Speed of Service Issue";
+				message="Coupon";
 				updateScreen();
 				wi.notifyManager(currTicket,message);
 				}
