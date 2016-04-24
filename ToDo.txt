@@ -3,5 +3,3 @@
 	Add report3 
 	Add individual contributions
 
-Design folder:
-	UML diagrams in design folder
