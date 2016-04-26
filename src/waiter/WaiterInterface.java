@@ -328,7 +328,21 @@ public class WaiterInterface {
 		Ticket T1=new Ticket(name,1,empID);//table 1, waiter id=1
 		Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
 		T2.hotFood=true;
-		
+		Dish d = new Dish("Tea",1.99,"drinks");
+		d.sent=true;
+		T2.addDishToTicket(d);
+		d = new Dish("Water",0.00,"drinks");
+		d.sent=true;
+		T2.addDishToTicket(d);
+		d = new Dish("Coke",1.99,"drinks");
+		d.sent=true;
+		T2.addDishToTicket(d);
+		d = new Dish("Chicken Alfredo",12.99,"entree");
+		d.sent=true;
+		T2.addDishToTicket(d);
+		d = new Dish("Eggplant Parmesan",11.99,"entree");
+		d.sent=true;
+		T2.addDishToTicket(d);
 		listOfTickets.put(1,T1);
 		listOfTickets.put(14,T2);
 	}
