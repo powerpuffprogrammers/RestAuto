@@ -214,5 +214,35 @@ public class DatabaseAController extends Thread {
 		return employeeList;
 	}
 	
+	/**
+	 * Returns current id of this object. Will always be 0 or greater.
+	 * @return current id
+	 */
+	public long getCurrentID(){
+		return currentID;
+	}
 	
+	/**
+	 * Returns employeeList of this object.
+	 * @return employeeList
+	 */
+	public ArrayList<Employee> getEmployeeList(){
+		return employeeList;
+	}
+	
+	/**
+	 * Returns currListener which is a socket of this object.
+	 * @return currListener
+	 */
+	public Socket getCurrListener(){
+		return currListener;
+	}
+	
+	/**
+	 * Returns path of file that holds employee info.
+	 * @return empFile
+	 */
+	public String getEmpFile(){
+		return empFile;
+	}
 }
