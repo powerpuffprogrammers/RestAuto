@@ -45,7 +45,7 @@ public class MessageController {
 	 * @param id - employee id 
 	 * @param listener - input stream for this employee
 	 */
-	public static void addWaiterSender(long id,MessageControllerSender sender){
+	public static void addWaiterSender(long id, MessageControllerSender sender){
 		waiterOut.put(id,sender);
 	}
 	/**
@@ -127,6 +127,14 @@ public class MessageController {
             System.err.println("Could not listen on port " + portNumber);
             System.exit(-1);
         }	
+	}
+	
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
 	}
 	
 	

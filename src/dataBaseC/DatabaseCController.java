@@ -264,4 +264,12 @@ public class DatabaseCController {
 		return menuFile;
 	}
 	
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
+	}
+	
 }

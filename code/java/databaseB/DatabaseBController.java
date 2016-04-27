@@ -139,5 +139,28 @@ public class DatabaseBController extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
-	}	
+	}
+	
+	/**
+	 * Getter for tabNumFile - String that holds path to text file that holds all of the table numbers
+	 * @return tabNumFile
+	 */
+	public String getTabNumFile(){
+		return tabNumFile;
+	}
+	/**
+	 * Getter for listOfTables - type = TableList
+	 * @return listOfTables
+	 */
+	public TableList getListOfTables(){
+		return listOfTables;
+	}
+
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
+	}
 }

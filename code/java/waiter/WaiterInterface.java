@@ -55,10 +55,6 @@ public class WaiterInterface {
 	 */
 	String name;
 	
-	/**
-	 * When this is true I return from constructor back to log in page
-	 */
-	public boolean loggedOut;
 	
 	/**
 	 * current ticket open, null if none is open
@@ -97,18 +93,17 @@ public class WaiterInterface {
 		jsonConverter = new Gson();
 		frame = loginPanel.frame;
 		listOfTickets = new HashMap<Integer, Ticket>();
-		loggedOut=false;
 		
 		//if problem loading menu return right away
 		if (!loadMenu()){
-			loggedOut=true;
 			return;
 		}
 		
 		//set up MC
 		setUpMessageController();
 		
-		//generateTickets();
+		if(empID==0)
+			generateTickets();
 		
 		loadManagers();
 		
@@ -235,8 +230,9 @@ public class WaiterInterface {
 	 * Caller should make sure currTicket field is not null and index is valid.
 	 * @param indexInTicket = index of the dish in the current ticket
 	 */
-	public void removeDishFromTicket(int indexInTicket) {
+	public boolean removeDishFromTicket(int indexInTicket) {
 		currTicket.removeDishFromTicket(indexInTicket);
+		return true;
 	}
 
 	/**
@@ -326,11 +322,8 @@ public class WaiterInterface {
 	public void generateTickets(){	
 		Ticket T1=new Ticket(name,1,empID);//table 1, waiter id=1
 		Ticket T2=new Ticket( name ,14,empID);//table 14, waiter id=1
-		if(empID ==0){
-			T1.recentlySat=true;
-		}else{
-			T2.hotFood=true;
-		}
+		T2.hotFood=true;
+		
 		listOfTickets.put(1,T1);
 		listOfTickets.put(14,T2);
 	}
@@ -416,5 +409,34 @@ public class WaiterInterface {
 		
 	}
 
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getMCPortNumber(){
+		return MCportNumber;
+	}
+	
+	/**
+	 * Getter for empID
+	 * @return empID 
+	 */
+	public long getEmpID(){
+		return empID;
+	}
+	/**
+	 * Getter for menu
+	 * @return menu 
+	 */
+	public Menu getMenu(){
+		return menu;
+	}
+	/**
+	 * Getter for listOfTickets
+	 * @return listOfTickets 
+	 */
+	public HashMap<Integer, Ticket> getListOfTickets(){
+		return listOfTickets;
+	}
 	
 }

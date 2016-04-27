@@ -67,26 +67,6 @@ public class DatabaseCController {
 	 */
 	public static Menu menu;
 	
-
-	/**
-	 * Adds ingredient to inventory returns false if ingredient already exists
-	 * @param ingredientName - name of ingredient to add to inventory
-	 * @param amountLeft - amount of ingredient you have at the time
-	 * @param unitOfAmount - unit that the amountLeft is measured in
-	 * @param threshold- the amount at which you wish to be notified when inventory is low for this ingredient
-	 * 	if you put it a threshold>=amount left or threshold = 0 then this will fail
-	 * @return true on success, false on failure
-	 */
-	public static boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
-		if(inventory.containsKey(ingredientName)){
-			return false;
-		}
-		if(threshold>=amountLeft || threshold<0){
-			return false;
-		}
-		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
-		return true;
-	}
 	
 	/**
 	 * Starts the Listener thread for each socket trying to connect with it.
@@ -185,6 +165,30 @@ public class DatabaseCController {
 	}
 	
 	
+	
+	/**
+	 * Load Menu From menu file
+	 */
+	public static void loadMenuFromFile(){
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(menuFile))){
+
+			String currLine;
+			int i=0;
+			while ((currLine = br.readLine()) != null) {
+				if(i==0){//skip the header line
+					i=1;
+					continue;
+				}
+				String[] arr = currLine.split(",");
+				addDishtoMenu(arr[0],arr[1], Double.parseDouble(arr[2]) );
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+	}
+
 	/**
 	 * Sends chef a low inventory notification also send waiter interfaces a message that will take off 
 	 * the dishes with ingredient i in their menu.
@@ -215,28 +219,57 @@ public class DatabaseCController {
 		}
 		
 	}
+
+
+	/**
+	 * Adds ingredient to inventory returns false if ingredient already exists
+	 * @param ingredientName - name of ingredient to add to inventory
+	 * @param amountLeft - amount of ingredient you have at the time
+	 * @param unitOfAmount - unit that the amountLeft is measured in
+	 * @param threshold- the amount at which you wish to be notified when inventory is low for this ingredient
+	 * 	if you put it a threshold>=amount left or threshold = 0 then this will fail
+	 * @return true on success, false on failure
+	 */
+	public static boolean addIngredientToInventory(String ingredientName,Double amountLeft, String unitOfAmount, Double threshold ){
+		if(inventory.containsKey(ingredientName)){
+			return false;
+		}
+		if(threshold>=amountLeft || threshold<0){
+			return false;
+		}
+		inventory.put(ingredientName, new Ingredient(ingredientName, amountLeft, unitOfAmount, threshold));
+		return true;
+	}
 	
 	/**
-	 * Load Menu From menu file
+	 * Getter for inventory
+	 * @return inventory = HashMap<String, Ingredient> 
 	 */
-	public static void loadMenuFromFile(){
-		
-		try (BufferedReader br = new BufferedReader(new FileReader(menuFile))){
-
-			String currLine;
-			int i=0;
-			while ((currLine = br.readLine()) != null) {
-				if(i==0){//skip the header line
-					i=1;
-					continue;
-				}
-				String[] arr = currLine.split(",");
-				addDishtoMenu(arr[0],arr[1], Double.parseDouble(arr[2]) );
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
+	public HashMap<String, Ingredient> getInventory(){
+		return inventory;
 	}
-
+	
+	/**
+	 * Getter for dishdata
+	 * @return dishData = HashMap<String, DishData> 
+	 */
+	public HashMap<String, DishData> getDishData(){
+		return dishData;
+	}
+	/**
+	 * Getter for menu file
+	 * @return menuFile 
+	 */
+	public String getMenuFile(){
+		return menuFile;
+	}
+	
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
+	}
+	
 }

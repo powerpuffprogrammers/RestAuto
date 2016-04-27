@@ -199,12 +199,12 @@ public class HostInterface {
 	 * Seat the table number with this server
 	 * @param waiterName
 	 * @param tableNumber
-	 * @return 0 on success and -1 on fail.
+	 * @return true on success and false on fail.
 	 */
-	public int seat(String waiterName, int tableNumber){
+	public boolean seat(String waiterName, int tableNumber){
 		Table t = allTables.get(tableNumber);
 		if (!(t.status=='r')){ //if table is not ready
-			return -1;
+			return false;
 		}
 		t.status = 's';//change status to seated
 		for(int i =0; i<readyTables.size(); i++){
@@ -220,7 +220,7 @@ public class HostInterface {
 		waiterOfTable.put(tableNumber, waiterName);
 		sendSeated(listOfWaiters.get(waiterName), tableNumber);
 		updateScreen();
-		return 0;
+		return true;
 	}
 	
 	/**
@@ -261,9 +261,13 @@ public class HostInterface {
 	/**
 	 * Moves seated table to paid
 	 * @param tableNumber - table number that paid
+	 * @return true on success and false on fail.
 	 */
-	public void paid(int tableNumber) {
+	public boolean paid(int tableNumber) {
 		Table t = allTables.get(tableNumber);
+		if(t.status!='s'){
+			return false;
+		}
 		t.status = 'p';
 		for(int i=0; i<seatedTables.size();i++){
 			int curr = seatedTables.get(i);
@@ -278,15 +282,20 @@ public class HostInterface {
 			}
 		}
 		updateScreen();
+		return true;
 		
 	}
 
 	/**
 	 * Move a table that was just cleaned from paid into ready list
 	 * @param tableNumber
+	 * @return true on success and false on fail.
 	 */
-	public void cleaned(int tableNumber) {
+	public boolean cleaned(int tableNumber) {
 		Table t = allTables.get(tableNumber);
+		if(t.status!='p'){
+			return false;
+		}
 		t.status = 'r';
 		for(int i=0; i<paidTables.size();i++){
 			int curr = paidTables.get(i);
@@ -298,6 +307,7 @@ public class HostInterface {
 		}
 		
 		updateScreen();
+		return true;
 		
 	}
 
@@ -349,4 +359,22 @@ public class HostInterface {
 		}
 		return waiterID;
 	}
+
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getMCPortNumber(){
+		return MCportNumber;
+	}
+	
+
+	/**
+	 * Getter for empID
+	 * @return empID 
+	 */
+	public long getEmpID(){
+		return empID;
+	}
+
 }

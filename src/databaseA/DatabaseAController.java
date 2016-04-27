@@ -245,4 +245,12 @@ public class DatabaseAController extends Thread {
 	public String getEmpFile(){
 		return empFile;
 	}
+
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
+	}
 }

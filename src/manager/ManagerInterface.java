@@ -46,10 +46,6 @@ public class ManagerInterface {
 	 */
 	String name;
 	
-	/**
-	 * When this is true I return from constructor back to log in page
-	 */
-	public boolean loggedOut;
 	
 	ManagerScreen manScreen;
 	
@@ -66,8 +62,6 @@ public class ManagerInterface {
 		empID = lp.currIDEntry;
 		listOfMessages = new LinkedList<Message>();
 		this.frame=lp.frame;
-
-		loggedOut=false;
 		
 		//set up MC
 		setUpMessageController();
@@ -151,6 +145,9 @@ public class ManagerInterface {
 		
 	}
 	
+	/**
+	 * For Testing
+	 */
 	public void generateMessages(){
 		
 		Message m =new Message();
@@ -160,4 +157,22 @@ public class ManagerInterface {
 		m1.content= "Host needs help at host stand.";
 		addMessageToList(m1);
 	}
+	
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getMCPortNumber(){
+		return MCportNumber;
+	}
+	
+
+	/**
+	 * Getter for empID
+	 * @return empID 
+	 */
+	public long getEmpID(){
+		return empID;
+	}
+	
 }

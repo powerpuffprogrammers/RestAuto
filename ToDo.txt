@@ -1,5 +1,5 @@
 ﻿Doc folder:
-	Add slides to doc
+	Add user doc
 	Add report3 
 	Add individual contributions
 

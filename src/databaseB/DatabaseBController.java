@@ -155,4 +155,12 @@ public class DatabaseBController extends Thread {
 	public TableList getListOfTables(){
 		return listOfTables;
 	}
+
+	/**
+	 * Getter for port number
+	 * @return portNumber 
+	 */
+	public int getPortNumber(){
+		return portNumber;
+	}
 }

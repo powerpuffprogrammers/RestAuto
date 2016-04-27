@@ -45,9 +45,9 @@ public class IntegrationTestHost {
 		System.out.println("Testing seat():");
 		char initStatus=t.status;
 		System.out.println("Initial Status of table 1 Expected value 'r' observed value: "+initStatus);
-		int retval=h.seat(nameofWaiter,tableNum);
+		boolean retval=h.seat(nameofWaiter,tableNum);
 		char finalStatus=t.status;
-		if (retval==-1){
+		if (!retval){
 			System.out.println("seat() TEST FAILED: initial status is not 'r'");
 		}
 		else{
