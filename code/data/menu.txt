@@ -4,9 +4,9 @@ appetizer,Bread Sticks,4.99
 appetizer,Spiced Olives,5.99
 appetizer,Chips and Guacamole,7.99
 appetizer,Chicken Soup,2.99
-appetizer,Spring Rolls,4.99
-appetizer,Prawn Chips,5.99
-appetizer,Mixed Apps,7.99
+appetizer,Spring Rolls ,4.99
+appetizer,Prawn Chips ,5.99
+appetizer,Mixed Apps  ,7.99
 appetizer,Sample Platter,7.50
 appetizer,Mozzarella sticks,4.99
 appetizer,French Fries,5.99
